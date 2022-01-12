@@ -6,6 +6,7 @@ import { useSnackBar } from '../../context/useSnackbarContext';
 import AuthPageWrapper from '../../components/AuthPageWrapper/AuthPageWrapper';
 import PageContainer from '../../components/PageContainer/PageContainer';
 import AuthPageFooter from '../../components/AuthPageFooter/AuthPageFooter';
+import { DemoUserLoginBtn } from '../../components/DevMode';
 
 export default function Register(): JSX.Element {
   const { updateLoginContext } = useAuth();
@@ -37,6 +38,7 @@ export default function Register(): JSX.Element {
       <AuthPageWrapper header="Sign up">
         <SignUpForm handleSubmit={handleSubmit} />
         <AuthPageFooter text="Already a member?" anchorText="Login" anchorTo="/login" />
+        <DemoUserLoginBtn delay={5000}>Login as test user</DemoUserLoginBtn>
       </AuthPageWrapper>
     </PageContainer>
   );
