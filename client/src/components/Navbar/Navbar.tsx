@@ -11,6 +11,7 @@ import {
   Menu,
   MenuItem as DropdownMenuItem,
   styled,
+  Typography,
 } from '@mui/material';
 import { AccountType } from '../../types/AccountType';
 
@@ -133,6 +134,13 @@ const Navbar: React.FC = () => {
         <img className={classes.navbarLogo} src={lovingSitterLogo} />
       </Grid>
       <Grid xs={8} md={6} item>
+        {/* {process.env.NODE_ENV === 'development' && (
+            <Grid container alignItems="center" justifyContent="center">
+              <Grid item>
+                <Typography>Hello</Typography>
+              </Grid>
+            </Grid>
+          )} */}
         <Grid container alignItems="center" gap={2} justifyContent="flex-end">
           {renderMenuItems()}
           {loggedInUser && (
