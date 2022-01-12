@@ -37,7 +37,7 @@ export default function Login(): JSX.Element {
       <AuthPageWrapper header="Log in">
         <LoginForm handleSubmit={handleSubmit} />
         <AuthPageFooter text="Not a member?" anchorText="Sign up" anchorTo="/signup" />
-        <DemoUserLoginBtn delay={5000}>Login as test user</DemoUserLoginBtn>
+        <DemoUserLoginBtn>Login as test user</DemoUserLoginBtn>
       </AuthPageWrapper>
     </PageContainer>
   );

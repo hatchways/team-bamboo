@@ -38,7 +38,7 @@ export default function Register(): JSX.Element {
       <AuthPageWrapper header="Sign up">
         <SignUpForm handleSubmit={handleSubmit} />
         <AuthPageFooter text="Already a member?" anchorText="Login" anchorTo="/login" />
-        <DemoUserLoginBtn delay={5000}>Login as test user</DemoUserLoginBtn>
+        <DemoUserLoginBtn>Login as test user</DemoUserLoginBtn>
       </AuthPageWrapper>
     </PageContainer>
   );
