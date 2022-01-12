@@ -4,7 +4,7 @@ import { useAuth } from '../../context/useAuthContext';
 import { CircularProgress } from '@mui/material';
 
 const ProtectedRoute: React.FC<RouteProps> = ({ ...rest }) => {
-  const {loggedInUser} = useAuth();
+  const { loggedInUser } = useAuth();
   const history = useHistory();
 
   if (loggedInUser === undefined) return <CircularProgress />;
@@ -13,9 +13,8 @@ const ProtectedRoute: React.FC<RouteProps> = ({ ...rest }) => {
     // loading for a split seconds until history.push works
     return <CircularProgress />;
   }
-  
-  return <Route {...rest}/>
-  
-}
+
+  return <Route {...rest} />;
+};
 
 export default ProtectedRoute;
