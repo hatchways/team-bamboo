@@ -2,11 +2,12 @@ import { useContext, createContext, useState, ReactElement, FunctionComponent, u
 import { AccountType } from '../../../types/AccountType';
 import login from '../../../helpers/APICalls/login';
 import { useAuth } from '../../../context/useAuthContext';
+import register from '../../../helpers/APICalls/register';
 
 export type AccountTypeKeys = keyof typeof AccountType;
 
 interface DevModeStaticContext {
-  mode: 'development' | 'production' | 'test';
+  mode: typeof process.env.NODE_ENV;
   isDev: boolean;
 }
 
@@ -26,6 +27,7 @@ export const DevModeContext = createContext<DevModeContext & DevModeStaticContex
   isLoading: false,
 });
 
+const TEST_NAME = process.env.REACT_APP_TEST_NAME;
 const TEST_EMAIL = process.env.REACT_APP_TEST_EMAIL;
 const TEST_PASSWORD = process.env.REACT_APP_TEST_PASSWORD;
 
@@ -39,13 +41,14 @@ export const DevModeProvider: FunctionComponent = ({ children }): ReactElement =
 
   const loginAsDemoUser = useCallback(
     (accountType: AccountTypeKeys, delay = 300) => {
-      if (!TEST_EMAIL || !TEST_PASSWORD) {
-        console.error('Please create a .env file containing the email and password for the test account.');
+      if (!TEST_EMAIL || !TEST_PASSWORD || !TEST_NAME) {
+        console.error('Please create a .env file containing the name, email, and password for the test account.');
         return null;
       }
       if (staticIntialContext.isDev) {
         setIsLoading(true);
-        login(TEST_EMAIL, TEST_PASSWORD)
+        register(TEST_NAME, TEST_EMAIL, TEST_PASSWORD)
+          .then((data) => (data.success ? data : login(TEST_EMAIL, TEST_PASSWORD)))
           .then(async (data) => {
             await wait(() => setIsLoading(false), delay);
             return data;
@@ -53,7 +56,9 @@ export const DevModeProvider: FunctionComponent = ({ children }): ReactElement =
           .then((data) =>
             data.success
               ? updateLoginContext(data.success)
-              : console.error('No account found, make sure to create account in database first.'),
+              : console.error(
+                  'Password for test user does not match test user in database. Either delete existing test user account or create a new one by updating the .env file.',
+                ),
           );
       }
     },
