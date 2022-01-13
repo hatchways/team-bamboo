@@ -17,12 +17,25 @@ const requestSchema = new Schema({
   start: {
     type: Date,
     required,
+    validate: {
+      validator: function (start) {
+        const startMidnight = new Date(start);
+        const currentMidnight = new Date();
+
+        startMidnight.setHours(0, 0, 0, 0);
+        currentMidnight.setHours(0, 0, 0, 0);
+        return startMidnight >= currentMidnight;
+      },
+      message: "'start' must be current day or future",
+    },
   },
   end: {
     type: Date,
     required,
     validate: {
-      validator: (end) => end > this.start,
+      validator: function (end) {
+        return end > this.start;
+      },
       message: "'end' time must come after 'start' time",
     },
   },
