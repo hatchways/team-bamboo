@@ -47,8 +47,8 @@ export const DevModeProvider: FunctionComponent = ({ children }): ReactElement =
       }
       if (staticIntialContext.isDev) {
         setIsLoading(true);
-        register(TEST_NAME, TEST_EMAIL, TEST_PASSWORD)
-          .then((data) => (data.success ? data : login(TEST_EMAIL, TEST_PASSWORD)))
+        login(TEST_EMAIL, TEST_PASSWORD)
+          .then((data) => (data.success ? data : register(TEST_NAME, TEST_EMAIL, TEST_PASSWORD)))
           .then(async (data) => {
             await wait(() => setIsLoading(false), delay);
             return data;
