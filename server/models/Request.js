@@ -41,7 +41,7 @@ const requestSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "accepted", "paid"],
+    enum: ["pending", "accepted", "declined", "paid"],
     default: "pending",
   },
 });
