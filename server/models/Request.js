@@ -4,12 +4,12 @@ const { ObjectId } = Schema.Types;
 const required = true;
 
 const requestSchema = new Schema({
-  user_id: {
+  userId: {
     type: ObjectId,
     ref: "User",
     required,
   },
-  sitter_id: {
+  sitterId: {
     type: ObjectId,
     ref: "User",
     required,
@@ -21,18 +21,15 @@ const requestSchema = new Schema({
   end: {
     type: Date,
     required,
+    validate: {
+      validator: (end) => end > this.start,
+      message: "'end' time must come after 'start' time",
+    },
   },
-  accepted: {
-    type: Boolean,
-    default: false,
-  },
-  declined: {
-    type: Boolean,
-    default: false,
-  },
-  paid: {
-    type: Boolean,
-    default: false,
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "paid"],
+    default: "pending",
   },
 });
 
