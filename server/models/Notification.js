@@ -31,7 +31,7 @@ const notificationSchema = new mongoose.Schema(
     sender: {
       type: mongoose.Types.ObjectId,
     },
-    receiver: {
+    receivers: {
       type: [
         {
           type: mongoose.Types.ObjectId,
