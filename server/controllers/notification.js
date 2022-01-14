@@ -27,12 +27,16 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
   if (notification) {
     res.status(201).json({
       success: {
-        id: notification.id,
-        createdAt: notification.createdAt,
-        notifyType: notification.notifyType,
-        title: notification.title,
-        description: notification.description,
-        receivers: notification.receivers,
+        notification: {
+          id: notification.id,
+          notifyType: notification.notifyType,
+          title: notification.title,
+          description: notification.description,
+          sender: notification.sender,
+          receivers: notification.receivers,
+          readBy: notification.readBy,
+          createdAt: notification.createdAt,
+        },
       },
     });
   } else {
@@ -42,7 +46,58 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
 });
 
 exports.markNotificationRead = asyncHandler(async (req, res, next) => {
-  //
+  const {
+    user,
+    body: { id },
+  } = req;
+
+  const receiver = await User.findById(user.id);
+
+  if (!receiver) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  const query = {
+    id,
+    receivers: {
+      $in: receiver.id,
+    },
+  };
+
+  const data = {
+    $set: {
+      readBy: {
+        receiverId: receiver.id,
+      },
+    },
+  };
+
+  console.log(id);
+
+  const notification = await Notification.findOneAndUpdate(query, data, {
+    new: true,
+  }).exec();
+
+  if (notification) {
+    res.status(201).json({
+      success: {
+        notification: {
+          id: notification.id,
+          notifyType: notification.notifyType,
+          title: notification.title,
+          description: notification.description,
+          sender: notification.sender,
+          receivers: notification.receivers,
+          readBy: notification.readBy,
+          createdAt: notification.createdAt,
+        },
+      },
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid notification data");
+  }
 });
 
 exports.getAllNotifications = asyncHandler(async (req, res, next) => {
