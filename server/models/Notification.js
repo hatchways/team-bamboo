@@ -27,12 +27,19 @@ const notificationSchema = new mongoose.Schema(
       trim: true,
       maxLength: 150,
     },
-    readBy: [
-      {
-        readBy: { type: mongoose.Types.ObjectId, ref: "User" },
-        readAt: { type: Date, default: Date.now() },
-      },
-    ],
+    readBy: {
+      type: [
+        {
+          receiverId: {
+            type: mongoose.Types.ObjectId,
+            ref: "User",
+          },
+          readAt: { type: Date, default: Date.now() },
+        },
+      ],
+      default: [],
+      _id: false,
+    },
     sender: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -65,6 +72,8 @@ function requiresSender() {
 function validReceivers(val) {
   if (val.length < 1) return false;
   if (requiresSender.call(this)) {
+    const newReceivers = Array.from(new Set(this.receivers));
+    this.receivers = newReceivers;
     return !this.receivers.includes(this.sender);
   }
   return true;
