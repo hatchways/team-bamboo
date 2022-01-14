@@ -73,8 +73,6 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
     },
   };
 
-  console.log(id);
-
   const notification = await Notification.findOneAndUpdate(query, data, {
     new: true,
   }).exec();
