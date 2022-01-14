@@ -4,16 +4,20 @@ const notificationSchema = new mongoose.Schema(
   {
     notifyType: {
       type: String,
-      enum: ["system", "event", "user", "message"],
+      enum: ["user", "message"],
       required: true,
     },
     title: {
       type: String,
       required: true,
+      trim: true,
+      maxlength: 40,
     },
     description: {
       type: String,
       required: true,
+      trim: true,
+      maxLength: 150,
     },
     readBy: {
       type: [
@@ -34,7 +38,7 @@ const notificationSchema = new mongoose.Schema(
           ref: "User",
         },
       ],
-      default: [],
+      required: true,
     },
   },
   // Use timestamps instead of date -> createdAt and updatedAt
