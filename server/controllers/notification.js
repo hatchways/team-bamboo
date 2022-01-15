@@ -85,7 +85,7 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
       path: "sender",
       select: "userId name photo",
     })
-    .select("-receivers -updatedAt")
+    .select("-receivers -__v -updatedAt")
     .exec();
 
   if (notification) {
@@ -162,7 +162,7 @@ exports.getAllNotifications = asyncHandler(async (req, res, next) => {
       path: "sender",
       select: "userId name photo",
     })
-    .select("-receivers -updatedAt")
+    .select("-receivers -__v -updatedAt")
     .exec();
 
   if (notifications) {
