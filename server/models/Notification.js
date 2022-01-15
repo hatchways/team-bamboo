@@ -42,7 +42,7 @@ const notificationSchema = new mongoose.Schema(
     },
     sender: {
       type: mongoose.Types.ObjectId,
-      ref: "User",
+      ref: "Profile",
       required: [
         requiresSender,
         "Notification type requires a user as a sender.",
