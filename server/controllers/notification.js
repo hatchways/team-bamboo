@@ -155,7 +155,7 @@ exports.getAllNotifications = asyncHandler(async (req, res, next) => {
   }
 
   const notifications = await Notification.find(query)
-    .skip((page - 1) * limit)
+    .skip((parseInt(page) - 1) * limit)
     .limit(parseInt(limit))
     .sort({ [sort]: parseInt(order) })
     .populate({
