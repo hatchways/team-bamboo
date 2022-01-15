@@ -25,7 +25,7 @@ const notificationSchema = new mongoose.Schema(
       type: String,
       required: [true, "A description of the notification is required."],
       trim: true,
-      maxLength: 150,
+      maxlength: 150,
     },
     readBy: {
       type: [
