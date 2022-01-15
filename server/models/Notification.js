@@ -61,7 +61,6 @@ const notificationSchema = new mongoose.Schema(
       ],
     },
   },
-  // Use timestamps instead of date -> createdAt and updatedAt
   { timestamps: true }
 );
 

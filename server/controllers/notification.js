@@ -4,7 +4,6 @@ const asyncHandler = require("express-async-handler");
 const Profile = require("../models/Profile");
 
 exports.createNotification = asyncHandler(async (req, res, next) => {
-  // received from "protected" middleware function
   const {
     user,
     body: { notifyType, title, description, receivers },
@@ -101,7 +100,6 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
 });
 
 exports.getAllNotifications = asyncHandler(async (req, res, next) => {
-  // Other properties are here in case we need to paginate all of the notifications.
   const {
     query: {
       limit = Infinity,
