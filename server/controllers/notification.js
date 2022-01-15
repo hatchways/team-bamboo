@@ -1,6 +1,7 @@
 const Notification = require("../models/Notification");
 const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
+const Profile = require("../models/Profile");
 
 exports.createNotification = asyncHandler(async (req, res, next) => {
   // received from "protected" middleware function
@@ -9,7 +10,7 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
     body: { notifyType, title, description, receivers },
   } = req;
 
-  const sender = await User.findById(user.id);
+  const sender = await Profile.findOne({ userId: user.id });
 
   if (!sender) {
     res.status(401);
@@ -32,7 +33,11 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
           notifyType: notification.notifyType,
           title: notification.title,
           description: notification.description,
-          sender: notification.sender,
+          sender: {
+            userId: user.id,
+            name: sender.name,
+            photo: sender.photo,
+          },
           receivers: notification.receivers,
           readBy: notification.readBy,
           createdAt: notification.createdAt,
@@ -59,7 +64,7 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
   }
 
   const query = {
-    id,
+    _id: id,
     receivers: {
       $in: receiver.id,
     },
@@ -75,21 +80,18 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
 
   const notification = await Notification.findOneAndUpdate(query, data, {
     new: true,
-  }).exec();
+  })
+    .populate({
+      path: "sender",
+      select: "userId name photo",
+    })
+    .select("-receivers -updatedAt")
+    .exec();
 
   if (notification) {
     res.status(201).json({
       success: {
-        notification: {
-          id: notification.id,
-          notifyType: notification.notifyType,
-          title: notification.title,
-          description: notification.description,
-          sender: notification.sender,
-          receivers: notification.receivers,
-          readBy: notification.readBy,
-          createdAt: notification.createdAt,
-        },
+        notification,
       },
     });
   } else {
@@ -100,5 +102,77 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
 
 exports.getAllNotifications = asyncHandler(async (req, res, next) => {
   // Other properties are here in case we need to paginate all of the notifications.
-  const { limit = 10, page = 1, read = null } = req.query;
+  const {
+    query: {
+      limit = Infinity,
+      page = 1,
+      read = null,
+      sort = "createdAt",
+      order = 1,
+    },
+    user,
+  } = req;
+
+  const receiver = await User.findById(user.id);
+
+  if (!receiver) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  let query = {
+    receivers: {
+      $in: receiver.id,
+    },
+  };
+
+  const total = await Notification.countDocuments(query);
+
+  if (read === "true") {
+    query = {
+      receivers: {
+        $in: receiver.id,
+      },
+      readBy: {
+        $elemMatch: {
+          receiverId: receiver.id,
+        },
+      },
+    };
+  } else if (read === "false") {
+    query = {
+      receivers: {
+        $in: receiver.id,
+      },
+      readBy: {
+        $not: {
+          $elemMatch: {
+            receiverId: receiver.id,
+          },
+        },
+      },
+    };
+  }
+
+  const notifications = await Notification.find(query)
+    .skip((page - 1) * limit)
+    .limit(parseInt(limit))
+    .sort({ [sort]: parseInt(order) })
+    .populate({
+      path: "sender",
+      select: "userId name photo",
+    })
+    .select("-receivers -updatedAt")
+    .exec();
+
+  if (notifications) {
+    res.status(200).json({
+      success: {
+        notifications,
+        total,
+      },
+    });
+  } else {
+    throw new Error("Unable to find any notifications for user");
+  }
 });
