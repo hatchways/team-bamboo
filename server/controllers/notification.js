@@ -29,7 +29,7 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
     res.status(201).json({
       success: {
         notification: {
-          id: notification.id,
+          _id: notification.id,
           notifyType: notification.notifyType,
           title: notification.title,
           description: notification.description,
