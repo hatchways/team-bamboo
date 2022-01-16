@@ -27,19 +27,6 @@ const notificationSchema = new mongoose.Schema(
       trim: true,
       maxlength: 150,
     },
-    readBy: {
-      type: [
-        {
-          receiverId: {
-            type: mongoose.Types.ObjectId,
-            ref: "User",
-          },
-          readAt: { type: Date, default: Date.now() },
-        },
-      ],
-      default: [],
-      _id: false,
-    },
     sender: {
       type: mongoose.Types.ObjectId,
       ref: "Profile",
@@ -51,10 +38,13 @@ const notificationSchema = new mongoose.Schema(
     receivers: {
       type: [
         {
-          type: mongoose.Types.ObjectId,
-          ref: "User",
+          id: { type: mongoose.Types.ObjectId, ref: "User" },
+          readAt: { type: Date, default: Date.now() },
+          readyBy: { type: Boolean, default: false },
         },
       ],
+      default: [],
+      _id: false,
       validate: [
         validReceivers,
         "Must contain at least one recipient and/or sender cannot be included within receivers.",
@@ -75,6 +65,15 @@ function validReceivers(val) {
   }
   return true;
 }
+
+notificationSchema.pre("save", async (next) => {
+  if (this.isModified("receivers")) return next();
+
+  const ids = this.receivers.map((receiver) => receiver.id);
+  this.receivers = this.receivers.filter(
+    (receiver, index) => !ids.includes(receiver.id, index + 1)
+  );
+});
 
 module.exports = Notification = mongoose.model(
   "Notification",
