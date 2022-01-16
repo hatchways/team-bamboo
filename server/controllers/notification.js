@@ -21,38 +21,33 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
     notifyType,
     title,
     description,
-    receivers,
+    receivers: receivers.filter((receiver) => receiver.id !== user.id),
   }).save();
 
-  if (notification) {
-    res.status(201).json({
-      success: {
-        notification: {
-          _id: notification.id,
-          notifyType: notification.notifyType,
-          title: notification.title,
-          description: notification.description,
-          sender: {
-            userId: user.id,
-            name: sender.name,
-            photo: sender.photo,
-          },
-          receivers: notification.receivers,
-          readBy: notification.readBy,
-          createdAt: notification.createdAt,
+  res.status(201).json({
+    success: {
+      notification: {
+        id: notification.id,
+        notifyType: notification.notifyType,
+        title: notification.title,
+        description: notification.description,
+        sender: {
+          userId: user.id,
+          name: sender.name,
+          photo: sender.photo,
         },
+        receivers: notification.receivers,
+        readBy: notification.readBy,
+        createdAt: notification.createdAt,
       },
-    });
-  } else {
-    res.status(400);
-    throw new Error("Invalid notification data");
-  }
+    },
+  });
 });
 
 exports.markNotificationRead = asyncHandler(async (req, res, next) => {
   const {
     user,
-    body: { id },
+    params: { id },
   } = req;
 
   const receiver = await User.findById(user.id);
@@ -99,7 +94,7 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.getAllNotifications = asyncHandler(async (req, res, next) => {
+exports.getNotifications = asyncHandler(async (req, res, next) => {
   const {
     query: {
       limit = Infinity,
