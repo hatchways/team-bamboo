@@ -38,12 +38,11 @@ const notificationSchema = new mongoose.Schema(
     receivers: {
       type: [
         {
-          id: { type: mongoose.Types.ObjectId, ref: "User" },
+          id: { type: mongoose.Types.ObjectId, ref: "User", required: true },
           readAt: { type: Date, default: Date.now() },
           readyBy: { type: Boolean, default: false },
         },
       ],
-      default: [],
       _id: false,
       validate: [validArrayLength, "Must contain at least one recipient."],
     },
@@ -56,7 +55,7 @@ function requiresSender() {
 }
 
 function validArrayLength(val) {
-  return val.length > 1;
+  return val.length >= 1;
 }
 
 notificationSchema.pre("save", async (next) => {
