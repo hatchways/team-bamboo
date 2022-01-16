@@ -3,9 +3,9 @@ const AWS = require("aws-sdk");
 const fs = require("fs");
 
 const bucketName = process.env.AWS_BUCKET_NAME; 
-const secretKey =  process.env.AWS_SECRET_KEY;
-const region = process.env.AWS_BUCKET_REGION; 
-const accessKey = process.env.AWS_ACCESS_KEY; 
+const secretKey =  process.env.AWS_SECRET_ACCESS_KEY;
+const region = process.env.AWS_REGION; 
+const accessKey = process.env.AWS_ACCESS_KEY_ID; 
 
 const s3 = new AWS.S3({
   accessKey, 
