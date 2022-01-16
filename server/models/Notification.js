@@ -39,8 +39,8 @@ const notificationSchema = new mongoose.Schema(
       type: [
         {
           id: { type: mongoose.Types.ObjectId, ref: "User", required: true },
-          readAt: { type: Date, default: Date.now() },
-          readyBy: { type: Boolean, default: false },
+          read: { type: Boolean, default: false },
+          readAt: { type: Date },
         },
       ],
       _id: false,
@@ -55,15 +55,14 @@ function requiresSender() {
 }
 
 function validArrayLength(val) {
+  console.log(this);
   return val.length >= 1;
 }
 
-notificationSchema.pre("save", async (next) => {
-  if (this.isModified("receivers")) return next();
-
-  const ids = this.receivers.map((receiver) => receiver.id);
+notificationSchema.pre("save", async function (next) {
+  const ids = this.receivers.map((receiver) => receiver.id.toString());
   this.receivers = this.receivers.filter(
-    (receiver, index) => !ids.includes(receiver.id, index + 1)
+    (receiver, index) => !ids.includes(receiver.id.toString(), index + 1)
   );
 });
 
