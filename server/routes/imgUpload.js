@@ -17,5 +17,6 @@ const fileStorageEngine = multer.diskStorage({
 const upload = multer({ storage: fileStorageEngine });
 
 router.route('/upload').post(upload.array('images', 15), saveImgsToSever);
+// router.route('/upload').post(upload.single('image'), saveImgsToSever);
 
 module.exports = router;
