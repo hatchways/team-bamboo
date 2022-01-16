@@ -4,13 +4,13 @@ const protect = require("../middleware/auth");
 const {
   createNotification,
   markNotificationRead,
-  getAllNotifications,
+  getNotifications,
 } = require("../controllers/notification");
 
 router.route("/").post(protect, createNotification);
 
 router.route("/mark-read/:id").patch(protect, markNotificationRead);
 
-router.route("/all").get(protect, getAllNotifications);
+router.route("/").get(protect, getNotifications);
 
 module.exports = router;
