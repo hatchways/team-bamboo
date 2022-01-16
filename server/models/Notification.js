@@ -55,7 +55,6 @@ function requiresSender() {
 }
 
 function validArrayLength(val) {
-  console.log(this);
   return val.length >= 1;
 }
 
