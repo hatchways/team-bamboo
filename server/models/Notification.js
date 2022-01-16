@@ -45,10 +45,7 @@ const notificationSchema = new mongoose.Schema(
       ],
       default: [],
       _id: false,
-      validate: [
-        validReceivers,
-        "Must contain at least one recipient and/or sender cannot be included within receivers.",
-      ],
+      validate: [validArrayLength, "Must contain at least one recipient."],
     },
   },
   { timestamps: true }
@@ -58,12 +55,8 @@ function requiresSender() {
   return requireSender.includes(this.notifyType);
 }
 
-function validReceivers(val) {
-  if (val.length < 1) return false;
-  if (requiresSender.call(this)) {
-    return !this.receivers.includes(this.sender);
-  }
-  return true;
+function validArrayLength(val) {
+  return val.length > 1;
 }
 
 notificationSchema.pre("save", async (next) => {
