@@ -42,8 +42,14 @@ exports.validateNotification = [
     .withMessage(
       `notifyType must be one of the following: ${notifyTypes.join(" | ")}`
     ),
-  check("title").isString().not().isEmpty(),
-  check("description").isString().not().isEmpty(),
+  check("title", "Please provide a title for the notification")
+    .isString()
+    .not()
+    .isEmpty(),
+  check("description", "Please provide a description for the notification")
+    .isString()
+    .not()
+    .isEmpty(),
   check("receivers")
     .isArray({ min: 1 })
     .withMessage("Array must contain at least one recipient.")
