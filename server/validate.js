@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+const User = require("./models/User");
 const { check, validationResult } = require("express-validator");
 
 exports.validateRegister = [
@@ -7,7 +9,7 @@ exports.validateRegister = [
     "password",
     "Please enter a password with 6 or more characters"
   ).isLength({
-    min: 6
+    min: 6,
   }),
   (req, res, next) => {
     const errors = validationResult(req);
@@ -16,7 +18,7 @@ exports.validateRegister = [
     if (!errors.isEmpty())
       return res.status(400).json({ errors: errors.array() });
     next();
-  }
+  },
 ];
 
 exports.validateLogin = [
@@ -28,5 +30,47 @@ exports.validateLogin = [
     if (!errors.isEmpty())
       return res.status(400).json({ errors: errors.array() });
     next();
-  }
+  },
+];
+
+const notifyTypes = ["user", "message"];
+
+exports.validateNotification = [
+  check("notifyType")
+    .isString()
+    .isIn(notifyTypes)
+    .withMessage(
+      `notifyType must be one of the following: ${notifyTypes.join(" | ")}`
+    ),
+  check("title").isString().not().isEmpty(),
+  check("description").isString().not().isEmpty(),
+  check("receivers")
+    .isArray({ min: 1 })
+    .withMessage("Array must contain at least one recipient.")
+    .custom(
+      async (receivers) =>
+        new Promise(async (resolve, reject) =>
+          (await receivers.reduce(
+            async (acc, receiver) =>
+              // await previous reduce call value
+              (await acc) &&
+              receiver instanceof Object &&
+              Reflect.has(receiver, "id") &&
+              mongoose.Types.ObjectId.isValid(receiver.id) &&
+              (await User.findById(receiver.id)),
+            true
+          ))
+            ? resolve(true)
+            : reject(false)
+        )
+    )
+    .withMessage("Receivers must be an object that contains a valid user 'id'"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    next();
+  },
 ];
