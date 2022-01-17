@@ -11,11 +11,6 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
 
   const sender = await Profile.findOne({ userId: user.id });
 
-  if (!sender) {
-    res.status(401);
-    throw new Error("Not authorized");
-  }
-
   const notification = await new Notification({
     sender: sender.id,
     notifyType,
@@ -50,11 +45,6 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
   } = req;
 
   const receiver = await User.findById(user.id);
-
-  if (!receiver) {
-    res.status(401);
-    throw new Error("Not authorized");
-  }
 
   const query = {
     _id: id,
@@ -111,11 +101,6 @@ exports.getNotifications = asyncHandler(async (req, res, next) => {
   } = req;
 
   const receiver = await User.findById(user.id);
-
-  if (!receiver) {
-    res.status(401);
-    throw new Error("Not authorized");
-  }
 
   let query = {
     receivers: {
