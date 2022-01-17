@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { saveImgsToSever } = require('../controllers/imgUpload');
+const { uploadImages } = require('../controllers/imgUpload');
 
 const fileStorageEngine = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -16,7 +16,6 @@ const fileStorageEngine = multer.diskStorage({
 
 const upload = multer({ storage: fileStorageEngine });
 
-router.route('/upload').post(upload.array('images', 15), saveImgsToSever);
-// router.route('/upload').post(upload.single('image'), saveImgsToSever);
+router.route('/upload').post(upload.array('images', 15), uploadImages);
 
 module.exports = router;

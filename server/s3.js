@@ -13,6 +13,7 @@ const s3 = new AWS.S3({
   region
 });
 
+// upload files to s3
 exports.uploadImages = (files) => {
   const uploadPromises = [];
   for (let i = 0; i < files.length; i++) {
@@ -34,18 +35,3 @@ exports.uploadImages = (files) => {
   return uploadPromises;
 };
 
-// exports.uploadImage = (file) => {
-//   const fileStream = fs.createReadStream(file.path);
-
-//   const uploadParams = {
-//     Bucket: bucketName,
-//     Body: fileStream,
-//     Key: file.filename
-//   };
-//   return s3.upload(uploadParams).promise();
-// };
-
-
-
-
-// download files from s3
