@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("./models/User");
-const { check, validationResult } = require("express-validator");
+const Notification = require("./models/Notification");
+const { check, param, validationResult } = require("express-validator");
 
 exports.validateRegister = [
   check("name", "Please enter a name").not().isEmpty(),
@@ -73,6 +74,24 @@ exports.validateNotification = [
     .withMessage(
       "Receivers must be and array of objects that contain valid user 'id's"
     ),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    next();
+  },
+];
+
+exports.validateMarkNotification = [
+  param("id", "Notification is not valid")
+    .custom((id) => mongoose.Types.ObjectId.isValid(id))
+    .withMessage("Provided id is not a valid")
+    .custom(async (id) =>
+      (await Notification.findById(id)) ? Promise.resolve() : Promise.reject()
+    )
+    .withMessage("No notification found with provided id."),
   (req, res, next) => {
     const errors = validationResult(req);
 

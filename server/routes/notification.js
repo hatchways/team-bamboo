@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const protect = require("../middleware/auth");
-const { validateNotification } = require("../validate");
+const {
+  validateNotification,
+  validateMarkNotification,
+} = require("../validate");
 const {
   createNotification,
   markNotificationRead,
@@ -10,7 +13,9 @@ const {
 
 router.route("/").post(protect, validateNotification, createNotification);
 
-router.route("/mark-read/:id").patch(protect, markNotificationRead);
+router
+  .route("/mark-read/:id")
+  .patch(protect, validateMarkNotification, markNotificationRead);
 
 router.route("/").get(protect, getNotifications);
 
