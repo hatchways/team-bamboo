@@ -37,7 +37,6 @@ exports.createNotification = asyncHandler(async (req, res, next) => {
           photo: sender.photo,
         },
         receivers: notification.receivers,
-        readBy: notification.readBy,
         createdAt: notification.createdAt,
       },
     },
@@ -60,38 +59,43 @@ exports.markNotificationRead = asyncHandler(async (req, res, next) => {
   const query = {
     _id: id,
     receivers: {
-      $in: receiver.id,
-    },
-  };
-
-  const data = {
-    $set: {
-      readBy: {
-        receiverId: receiver.id,
+      $elemMatch: {
+        id: receiver.id,
       },
     },
   };
 
-  const notification = await Notification.findOneAndUpdate(query, data, {
-    new: true,
-  })
-    .populate({
-      path: "sender",
-      select: "userId name photo",
-    })
-    .select("-receivers -__v -updatedAt")
-    .exec();
+  const notification = await Notification.findOne(query).populate({
+    path: "sender",
+    select: "userId name photo",
+  });
 
-  if (notification) {
-    res.status(201).json({
-      success: {
-        notification,
+  notification.receivers.forEach((r) => {
+    if (r.id.toString() === receiver.id.toString()) {
+      r.read = true;
+      r.readAt = new Date(Date.now());
+    }
+  });
+
+  await notification.save();
+
+  res.status(200).json({
+    success: {
+      notification: {
+        id: notification.id,
+        notifyType: notification.notifyType,
+        title: notification.title,
+        description: notification.description,
+        sender: {
+          userId: notification.sender.userId,
+          name: notification.sender.name,
+          photo: notification.sender.photo,
+        },
+        receivers: notification.receivers,
+        createdAt: notification.createdAt,
       },
-    });
-  } else {
-    res.status(400);
-    throw new Error("Invalid notification data");
-  }
+    },
+  });
 });
 
 exports.getNotifications = asyncHandler(async (req, res, next) => {
