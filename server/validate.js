@@ -64,7 +64,9 @@ exports.validateNotification = [
             : reject(false)
         )
     )
-    .withMessage("Receivers must be an object that contains a valid user 'id'"),
+    .withMessage(
+      "Receivers must be and array of objects that contain valid user 'id's"
+    ),
   (req, res, next) => {
     const errors = validationResult(req);
 
