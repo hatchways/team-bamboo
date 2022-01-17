@@ -119,7 +119,9 @@ exports.getNotifications = asyncHandler(async (req, res, next) => {
 
   let query = {
     receivers: {
-      $in: receiver.id,
+      $elemMatch: {
+        id: receiver.id,
+      },
     },
   };
 
@@ -128,24 +130,18 @@ exports.getNotifications = asyncHandler(async (req, res, next) => {
   if (read === "true") {
     query = {
       receivers: {
-        $in: receiver.id,
-      },
-      readBy: {
         $elemMatch: {
-          receiverId: receiver.id,
+          id: receiver.id,
+          read: true,
         },
       },
     };
   } else if (read === "false") {
     query = {
       receivers: {
-        $in: receiver.id,
-      },
-      readBy: {
-        $not: {
-          $elemMatch: {
-            receiverId: receiver.id,
-          },
+        $elemMatch: {
+          id: receiver.id,
+          read: false,
         },
       },
     };
@@ -154,22 +150,31 @@ exports.getNotifications = asyncHandler(async (req, res, next) => {
   const notifications = await Notification.find(query)
     .skip((parseInt(page) - 1) * limit)
     .limit(parseInt(limit))
-    .sort({ [sort]: parseInt(order) })
+    .sort({ [sort]: order })
     .populate({
       path: "sender",
       select: "userId name photo",
     })
-    .select("-receivers -__v -updatedAt")
-    .exec();
+    .select("-__v -updatedAt");
 
-  if (notifications) {
-    res.status(200).json({
-      success: {
-        notifications,
-        total,
-      },
-    });
-  } else {
-    throw new Error("Unable to find any notifications for user");
-  }
+  res.status(200).json({
+    success: {
+      notifications: notifications.map((notification) => {
+        return {
+          id: notification._id,
+          notifyType: notification.notifyType,
+          title: notification.title,
+          description: notification.description,
+          sender: {
+            userId: notification.sender.userId,
+            name: notification.sender.name,
+            photo: notification.sender.photo,
+          },
+          receivers: notification.receivers,
+          createdAt: notification.createdAt,
+        };
+      }),
+      total,
+    },
+  });
 });
