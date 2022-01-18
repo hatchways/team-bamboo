@@ -13,6 +13,7 @@ import { SnackBarProvider } from './context/useSnackbarContext';
 import { Navbar } from './components/Navbar/Navbar';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
+import Bookings from './pages/Bookings/Bookings';
 
 function App(): JSX.Element {
   return (
@@ -24,6 +25,7 @@ function App(): JSX.Element {
               <CssBaseline />
               <Navbar />
               <Switch>
+                <Route exact path="/bookings" component={Bookings} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={Signup} />
                 <Route exact path="/dashboard" component={Dashboard} />
