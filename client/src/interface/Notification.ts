@@ -10,6 +10,7 @@ export interface NotificationReceiver {
 }
 
 export interface Notification {
+  id: string;
   notifyType: NotifyTypeValues;
   title: string;
   description: string;
@@ -19,5 +20,5 @@ export interface Notification {
     photo: string;
   };
   receivers: NotificationReceiver[];
-  createdAt: Date;
+  createdAt: string;
 }
