@@ -150,11 +150,13 @@ exports.getNotifications = asyncHandler(async (req, res, next) => {
           notifyType: notification.notifyType,
           title: notification.title,
           description: notification.description,
-          sender: {
-            userId: notification.sender.userId,
-            name: notification.sender.name,
-            photo: notification.sender.photo,
-          },
+          sender: notification.sender
+            ? {
+                userId: notification.sender.userId,
+                name: notification.sender.name,
+                photo: notification.sender.photo,
+              }
+            : undefined,
           receivers: notification.receivers,
           createdAt: notification.createdAt,
         };
