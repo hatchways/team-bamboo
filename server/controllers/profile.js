@@ -46,7 +46,7 @@ exports.loadProfile = asyncHandler(async (req, res, next) => {
 // @route POST /profile/upload
 // @desc Upload images to server
 // @access Private
-exports.uploadImages = asyncHandler(async (req, res) => {
+exports.retriveImgUrls = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ userId: req.user.id });
   if (!profile) {
     res.status(404);
