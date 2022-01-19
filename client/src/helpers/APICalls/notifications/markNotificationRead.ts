@@ -6,11 +6,12 @@ export interface ApiDataSuccess {
   notification: Notification;
 }
 
-const markNotificationRead = async (id: string): Promise<ApiData<ApiDataSuccess>> => {
+const markNotificationRead = async (id: string, controller?: AbortController): Promise<ApiData<ApiDataSuccess>> => {
   const fetchOptions: FetchOptions = {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
+    signal: controller?.signal,
   };
 
   return await fetch(`/notifications/mark-read/${id}`, fetchOptions)

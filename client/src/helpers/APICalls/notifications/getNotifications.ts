@@ -17,11 +17,13 @@ const getNotifications = async (
     order?: 'asc' | 'desc';
     read?: boolean;
   } = {},
+  controller?: AbortController,
 ): Promise<ApiData<ApiDataSuccess>> => {
   const fetchOptions: FetchOptions = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
+    signal: controller?.signal,
   };
 
   const params = Object.entries(options)

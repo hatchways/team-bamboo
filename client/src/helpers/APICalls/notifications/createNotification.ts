@@ -6,17 +6,21 @@ export interface ApiDataSuccess {
   notification: Notification;
 }
 
-const createNotification = async (data: {
-  notifyType: NotifyTypeValues;
-  title: string;
-  description: string;
-  receivers: Omit<NotificationReceiver, 'read' | 'readAt'>[];
-}): Promise<ApiData<ApiDataSuccess>> => {
+const createNotification = async (
+  data: {
+    notifyType: NotifyTypeValues;
+    title: string;
+    description: string;
+    receivers: Omit<NotificationReceiver, 'read' | 'readAt'>[];
+  },
+  controller?: AbortController,
+): Promise<ApiData<ApiDataSuccess>> => {
   const fetchOptions: FetchOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
     credentials: 'include',
+    signal: controller?.signal,
   };
 
   return await fetch(`/notifications`, fetchOptions)
