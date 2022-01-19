@@ -1,7 +1,8 @@
-import type { Fetcher, ValidationError, RequestError, OnSuccess, OnError, OnLoading } from '../../../interface/ApiData';
+import type { ValidationError, RequestError, OnSuccess, OnError, OnLoading } from '../../../interface/ApiData';
 import type { GetNotificationsData } from '../../../interface/Notification';
 import { useContext, createContext, useEffect, ReactElement, useCallback, useRef, ReactNode } from 'react';
 import { useRequest } from '../../../hooks';
+import { getNotifications } from '../../../helpers/APICalls/notifications';
 
 interface NotificationsContext {
   isLoading: boolean;
@@ -29,25 +30,29 @@ export const NotificationsContext = createContext<NotificationsContext>({
 
 interface Props {
   children: ReactNode;
-  fetcher: Fetcher<GetNotificationsData>;
+  read?: boolean;
+  limit?: number;
+  page?: number;
+  sortBy?: keyof Notification;
+  order?: 'asc' | 'desc';
   loadOnMount?: boolean;
   delay?: number;
 }
 
-export const NotificationsProvider = ({ children, fetcher, loadOnMount, delay }: Props): ReactElement => {
+export const NotificationsProvider = ({ children, loadOnMount, delay, ...params }: Props): ReactElement => {
   const { data, error, isLoading, makeRequest, matchRequest } = useRequest<GetNotificationsData>(delay || 0);
   const loaded = useRef(false);
 
   useEffect(() => {
     if (loadOnMount && !loaded.current) {
       const controller = new AbortController();
-      makeRequest(() => fetcher(controller));
+      makeRequest(() => getNotifications(params, controller));
       loaded.current = true;
       return () => controller.abort();
     }
-  }, [loadOnMount, makeRequest, fetcher]);
+  }, [loadOnMount, makeRequest, params]);
 
-  const loadNotifications = useCallback(() => makeRequest(() => fetcher()), [makeRequest, fetcher]);
+  const loadNotifications = useCallback(() => makeRequest(() => getNotifications(params)), [makeRequest, params]);
 
   return (
     <NotificationsContext.Provider
