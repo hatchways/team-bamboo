@@ -21,9 +21,9 @@ const NextBooking = ({ booking }: PropTypes) => {
           {format(booking.start, 'd LLLL y, haaa')} - {format(booking.end, 'haaa')}
         </Typography>
         <Grid container direction="row" alignItems="center">
-          <Avatar src={`https://robohash.org/${booking.user.email}`}>{booking.user.name[0]}</Avatar>
+          <Avatar src={`https://robohash.org/${booking.sitter.email}`}>{booking.sitter.name[0]}</Avatar>
           <Typography sx={{ fontSize: '0.9rem', fontWeight: 'bold', marginLeft: '5px' }}>
-            {booking.user.name}
+            {booking.sitter.name}
           </Typography>
         </Grid>
       </CardContent>

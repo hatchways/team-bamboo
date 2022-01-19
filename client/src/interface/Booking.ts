@@ -6,5 +6,6 @@ export interface Booking {
   start: Date;
   end: Date;
   status: Status;
-  user: User;
+  sitter: User;
+  owner: User;
 }
