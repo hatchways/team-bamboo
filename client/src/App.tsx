@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import { AuthProvider } from './context/useAuthContext';
 import { SocketProvider } from './context/useSocketContext';
 import { SnackBarProvider } from './context/useSnackbarContext';
+import { UnreadNotifications } from './components/UnreadNotifications';
 import { Navbar } from './components/Navbar/Navbar';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
@@ -23,7 +24,9 @@ function App(): JSX.Element {
           <AuthProvider>
             <SocketProvider>
               <CssBaseline />
-              <Navbar />
+              <UnreadNotifications>
+                <Navbar />
+              </UnreadNotifications>
               <Switch>
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={Signup} />
