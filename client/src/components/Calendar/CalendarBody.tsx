@@ -14,12 +14,6 @@ const CalendarBody = ({ selectedMonth, highlightedDates }: PropTypes) => {
   const year = selectedMonth.getFullYear();
   const month = selectedMonth.getMonth();
 
-  // the following 3 arrays are 2d arrays
-  // outer arrays represent weeks in the month
-  // all inner arrays will have length of 7, grouping dates into weeks
-
-  // daysOfMonth numbers will either represent the date, or 0
-  //if the date falls outside of the current month
   const daysOfMonth: number[][] = calendar.monthDays(year, month);
   const datesByWeek: Date[][] = calendar.monthDates(year, month);
   const weeks: CalendarDate[][] = [];
