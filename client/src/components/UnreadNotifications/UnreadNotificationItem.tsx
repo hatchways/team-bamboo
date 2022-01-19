@@ -1,4 +1,4 @@
-import type { Notification } from '../../../interface/Notification';
+import type { Notification } from '../../interface/Notification';
 import { Box, Avatar, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 
