@@ -1,21 +1,16 @@
-import ApiData, { RequestError, ValidationError } from './../interface/ApiData';
-import { useState, useCallback } from 'react';
+import type { RequestError, ValidationError, Fetcher, OnError, OnSuccess, OnLoading } from './../interface/ApiData';
+import { useState, useCallback, ReactElement } from 'react';
 import wait from '../helpers/wait';
 
-type FetchData<D> = () => Promise<ApiData<D>>;
-type OnLoading<R> = () => R;
-type OnError<R> = (error: ValidationError[] | RequestError) => R;
-type OnSuccess<D, R> = (data: D) => R;
-
-const useRequest = <D, R>(delay = 0) => {
+const useRequest = <D>(delay = 0) => {
   const [data, setData] = useState<D | null>(null);
   const [error, setError] = useState<ValidationError[] | RequestError | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const makeRequest = useCallback(
-    (fetchData: FetchData<D>) => {
+    (fetcher: Fetcher<D>) => {
       setIsLoading(true);
-      fetchData()
+      fetcher()
         .then((res) =>
           res.success
             ? setData(res.success)
@@ -30,7 +25,7 @@ const useRequest = <D, R>(delay = 0) => {
   );
 
   const matchRequest = useCallback(
-    (onLoading: OnLoading<R>, onError: OnError<R>, onSuccess: OnSuccess<D, R>) => {
+    <R = ReactElement>(onLoading: OnLoading<R>, onError: OnError<R>, onSuccess: OnSuccess<D, R>) => {
       if (!data && !error) return onLoading();
       if (error) return isLoading ? onLoading() : onError(error);
       if (data) return isLoading ? onLoading() : onSuccess(data);
@@ -39,7 +34,7 @@ const useRequest = <D, R>(delay = 0) => {
     [data, error, isLoading],
   );
 
-  return [makeRequest, matchRequest] as const;
+  return { data, error, isLoading, makeRequest, matchRequest } as const;
 };
 
 export default useRequest;
