@@ -35,7 +35,7 @@ const Bookings = () => {
     history.push('/login');
     return <CircularProgress />;
   }
-  const acceptedBookings = bookings.filter((b) => b.status === 'declined');
+  const acceptedBookings = bookings.filter((b) => b.status !== 'declined');
   const highlightedDates = acceptedBookings.map((b) => b.start.toString().slice(0, 10));
 
   const currentBookings: Booking[] = [];
@@ -48,7 +48,6 @@ const Bookings = () => {
   }
 
   const nextBooking = currentBookings.shift();
-  console.log(nextBooking);
 
   const scrollableCardStyles = {
     padding: '0px 10px 10px 10px',
