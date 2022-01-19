@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material';
-import { Booking as IBooking } from '../../interface/Booking';
-import Booking from './Booking';
+import { Booking } from '../../interface/Booking';
+import BookingCard from './BookingCard';
 
 export interface PropTypes {
-  bookings: IBooking[];
+  bookings: Booking[];
   type: string;
 }
 
@@ -14,7 +14,7 @@ const BookingList = ({ bookings, type }: PropTypes) => {
         {type} bookings:
       </Typography>
       {bookings.map((b) => (
-        <Booking key={b.start.getTime()} booking={b} />
+        <BookingCard key={b._id} booking={b} />
       ))}
     </>
   );
