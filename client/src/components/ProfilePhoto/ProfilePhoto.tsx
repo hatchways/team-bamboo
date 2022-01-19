@@ -1,9 +1,26 @@
+import React, { useState } from 'react';
 import { Box, Typography, Input, InputLabel, Button, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import SettingHeader from '../SettingsHeader/SettingsHeader';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const ProfilePhoto = (): JSX.Element => {
+  const [file, setFile] = useState<File>();
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+
+  const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    setFile(e.target.files[0]);
+    if (file) {
+      const formData = new FormData();
+      formData.append('image', file, file?.name);
+      fetch(`https://localhost:3001/profile/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+    }
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <SettingHeader header="Profile Photo" />
@@ -17,14 +34,7 @@ const ProfilePhoto = (): JSX.Element => {
           Be sure to use a photo that <br /> clearly shows your face
         </Typography>
         <form>
-          <Input
-            id="button-file"
-            name="file"
-            type="file"
-            inputProps={{ multiple: true }}
-            // onChange={handleImgChange}
-            sx={{ opacity: 0 }}
-          />
+          <Input id="button-file" name="file" type="file" onChange={handleImgChange} sx={{ opacity: 0 }} />
           <InputLabel htmlFor="button-file">
             <Button component="span" variant="outlined" color="primary" size="large" sx={{ px: 1.5, py: 2 }}>
               Upload a file from your device
