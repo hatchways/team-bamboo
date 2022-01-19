@@ -1,4 +1,4 @@
-import { Badge } from '@mui/material';
+import { Badge, Box, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { CalendarDate } from '../../interface/Calendar';
 
@@ -6,8 +6,8 @@ interface PropTypes {
   calendarDate: CalendarDate;
 }
 
-const useStyles = makeStyles((theme: any) => ({
-  badge: ({ isHighlighted, isInCurrentMonth }: any) => {
+const useStyles = makeStyles((theme: Theme) => ({
+  badge: ({ isHighlighted, isInCurrentMonth }: CalendarDate) => {
     let style = {
       color: 'black',
       backgroundColor: 'white',
@@ -28,9 +28,9 @@ const CalendarDay = ({ calendarDate }: PropTypes) => {
   const classes = useStyles(calendarDate);
   const numDate = calendarDate.date.getDate();
   return (
-    <div style={{ width: '50px', textAlign: 'center', margin: '5px 0px' }}>
+    <Box style={{ width: '50px', textAlign: 'center', margin: '5px 0px' }}>
       <Badge classes={{ badge: classes.badge }} badgeContent={numDate} />
-    </div>
+    </Box>
   );
 };
 export default CalendarDay;
