@@ -6,67 +6,49 @@ import PageContainer from '../../components/PageContainer/PageContainer';
 import NextBooking from '../../components/NextBookings/NextBooking';
 import { Booking } from '../../interface/Booking';
 import BookingList from '../../components/BookingList/BookingList';
-
-const inMemoryNextBooking: Booking = {
-  _id: '1',
-  start: new Date('2022-01-20T10:00'),
-  end: new Date('2022-01-20T12:00'),
-  status: 'accepted',
-  user: {
-    name: 'Norma Byes',
-    email: 'norma.byes@example.com',
-  },
-};
-
-const inMemoryCurrentBookings: Booking[] = [
-  {
-    _id: '2',
-    user: {
-      name: 'Charles Compton',
-      email: 'charles.compton@example.com',
-    },
-    start: new Date('2022-01-20T19:00'),
-    end: new Date('2022-01-20T21:00'),
-    status: 'accepted',
-  },
-  {
-    _id: '3',
-    user: {
-      name: 'Joan Blackeny',
-      email: 'joan.blackeny@example.com',
-    },
-    start: new Date('2022-01-23T08:00'),
-    end: new Date('2022-01-23T12:00'),
-    status: 'declined',
-  },
-];
-
-const inMemoryPastBookings: Booking[] = [
-  {
-    _id: '0',
-    user: {
-      name: 'Michael Carnahan',
-      email: 'michael.carnahan@example.com',
-    },
-    start: new Date('2022-01-16T15:00'),
-    end: new Date('2022-01-16T22:00'),
-    status: 'accepted',
-  },
-];
-
-const combinedBookings = [...inMemoryCurrentBookings, ...inMemoryPastBookings, inMemoryNextBooking];
-const filteredBookings = combinedBookings.filter((b) => b.status !== 'declined');
-const highlightedDates = filteredBookings.map((b) => b.start.toString().slice(0, 10));
+import { getBookings } from '../../helpers/APICalls/requests';
+import { useState, useEffect } from 'react';
 
 const Bookings = () => {
   const { loggedInUser } = useAuth();
   const history = useHistory();
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
-  if (loggedInUser === undefined) return <CircularProgress />;
+  const fetchBookings = async () => {
+    const { success } = await getBookings();
+    if (success) {
+      success.requests.forEach((request) => {
+        const { start, end } = request;
+        request.start = new Date(start);
+        request.end = new Date(end);
+      });
+      setBookings(success.requests);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  if (loggedInUser === undefined || !bookings) return <CircularProgress />;
   if (!loggedInUser) {
     history.push('/login');
     return <CircularProgress />;
   }
+  const acceptedBookings = bookings.filter((b) => b.status === 'declined');
+  const highlightedDates = acceptedBookings.map((b) => b.start.toString().slice(0, 10));
+
+  const currentBookings: Booking[] = [];
+  const pastBookings: Booking[] = [];
+
+  const now = new Date();
+  for (const booking of bookings) {
+    if (booking.start < now) pastBookings.push(booking);
+    else currentBookings.push(booking);
+  }
+
+  const nextBooking = currentBookings.shift();
+  console.log(nextBooking);
 
   const scrollableCardStyles = {
     padding: '0px 10px 10px 10px',
@@ -84,11 +66,11 @@ const Bookings = () => {
     <PageContainer>
       <Grid container justifyContent="space-evenly">
         <Grid item xs={4}>
-          <NextBooking booking={inMemoryNextBooking} />
+          {nextBooking && <NextBooking booking={nextBooking} />}
           <Box sx={{ height: '20px' }} />
           <Card sx={scrollableCardStyles}>
-            <BookingList type="current" bookings={inMemoryCurrentBookings} />
-            <BookingList type="past" bookings={inMemoryPastBookings} />
+            <BookingList type="current" bookings={currentBookings} />
+            <BookingList type="past" bookings={pastBookings} />
           </Card>
         </Grid>
         <Grid item xs={5}>
