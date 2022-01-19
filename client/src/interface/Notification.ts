@@ -9,6 +9,11 @@ export interface NotificationReceiver {
   readAt?: Date;
 }
 
+export interface GetNotificationsData {
+  total: number;
+  notifications: Notification[];
+}
+
 export interface Notification {
   id: string;
   notifyType: NotifyTypeValues;

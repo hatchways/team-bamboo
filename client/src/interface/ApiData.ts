@@ -9,6 +9,10 @@ export interface RequestError {
   message: string;
 }
 
+export type Fetcher<D> = (controller?: AbortController) => Promise<ApiData<D>>;
+export type OnSuccess<D, R> = (data: D) => R;
+export type OnError<R> = (error: ValidationError[] | RequestError) => R;
+export type OnLoading<R> = () => R;
 export default interface ApiData<T> {
   error?: RequestError;
   errors?: ValidationError[];
