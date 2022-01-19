@@ -9,10 +9,10 @@ interface NotificationsContext {
   data: GetNotificationsData | null;
   error: ValidationError[] | RequestError | null;
   loadNotifications: () => void;
-  matchNotifications: (
-    onLoading: OnLoading<any>,
-    onError: OnError<any>,
-    onSuccess: OnSuccess<GetNotificationsData, any>,
+  matchNotifications: <R>(
+    onLoading: OnLoading<R>,
+    onError: OnError<R>,
+    onSuccess: OnSuccess<GetNotificationsData, R>,
   ) => any;
 }
 
