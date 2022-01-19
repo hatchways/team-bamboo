@@ -1,8 +1,8 @@
-import type { ValidationError, RequestError, OnSuccess, OnError, OnLoading } from '../../../interface/ApiData';
-import type { GetNotificationsData } from '../../../interface/Notification';
+import type { ValidationError, RequestError, OnSuccess, OnError, OnLoading } from '../interface/ApiData';
+import type { GetNotificationsData } from '../interface/Notification';
 import { useContext, createContext, useEffect, ReactElement, useCallback, useRef, ReactNode } from 'react';
-import { useRequest } from '../../../hooks';
-import { getNotifications } from '../../../helpers/APICalls/notifications';
+import { useRequest } from '../hooks';
+import { getNotifications } from '../helpers/APICalls/notifications';
 
 interface NotificationsContext {
   isLoading: boolean;
