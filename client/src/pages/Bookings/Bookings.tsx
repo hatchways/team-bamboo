@@ -6,7 +6,6 @@ import PageContainer from '../../components/PageContainer/PageContainer';
 import NextBooking from '../../components/NextBookings/NextBooking';
 import { Booking } from '../../interface/Booking';
 import BookingList from '../../components/BookingList/BookingList';
-import { makeStyles } from '@mui/styles';
 
 const inMemoryNextBooking: Booking = {
   _id: '1',
@@ -59,8 +58,17 @@ const combinedBookings = [...inMemoryCurrentBookings, ...inMemoryPastBookings, i
 const filteredBookings = combinedBookings.filter((b) => b.status !== 'declined');
 const highlightedDates = filteredBookings.map((b) => b.start.toString().slice(0, 10));
 
-const useStyles = makeStyles({
-  scrollableCard: {
+const Bookings = () => {
+  const { loggedInUser } = useAuth();
+  const history = useHistory();
+
+  if (loggedInUser === undefined) return <CircularProgress />;
+  if (!loggedInUser) {
+    history.push('/login');
+    return <CircularProgress />;
+  }
+
+  const scrollableCardStyles = {
     padding: '0px 10px 10px 10px',
     height: '300px',
     overflow: 'auto',
@@ -70,19 +78,7 @@ const useStyles = makeStyles({
       borderRadius: 2,
     },
     '::-webkit-scrollbar-thumb': { bgcolor: 'rgba(0, 0, 0, 0.21)', borderRadius: 2 },
-  },
-});
-
-const Bookings = () => {
-  const { loggedInUser } = useAuth();
-  const history = useHistory();
-  const classes = useStyles();
-
-  if (loggedInUser === undefined) return <CircularProgress />;
-  if (!loggedInUser) {
-    history.push('/login');
-    return <CircularProgress />;
-  }
+  };
 
   return (
     <PageContainer>
@@ -90,7 +86,7 @@ const Bookings = () => {
         <Grid item xs={4}>
           <NextBooking booking={inMemoryNextBooking} />
           <Box sx={{ height: '20px' }} />
-          <Card className={classes.scrollableCard}>
+          <Card sx={scrollableCardStyles}>
             <BookingList type="current" bookings={inMemoryCurrentBookings} />
             <BookingList type="past" bookings={inMemoryPastBookings} />
           </Card>
