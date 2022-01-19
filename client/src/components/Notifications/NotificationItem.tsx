@@ -7,7 +7,7 @@ type Props = Omit<Notification, 'receivers' | 'id'>;
 // Will use notifyType later when we need to style notifications differently based on their type.
 const NotificationItem = ({ notifyType, title, description, sender, createdAt }: Props) => {
   return (
-    <Box display="flex">
+    <Stack direction="row" spacing={2}>
       <Avatar
         alt={sender?.name || 'Robot'}
         src={sender?.photo || `https://robohash.org/${description}.png`}
@@ -32,7 +32,7 @@ const NotificationItem = ({ notifyType, title, description, sender, createdAt }:
           {moment(createdAt).format('MM/DD/YYYY')}
         </Typography>
       </Stack>
-    </Box>
+    </Stack>
   );
 };
 
