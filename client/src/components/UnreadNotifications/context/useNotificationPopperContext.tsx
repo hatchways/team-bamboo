@@ -23,7 +23,7 @@ export const UnreadNotificationsPopperProvider: FunctionComponent = ({ children 
 
   return (
     <UnreadNotificationsPopperContext.Provider value={{ anchorEl, isOpen, toggleOpen }}>
-      <NotificationsProvider loadOnMount read={false} delay={400000}>
+      <NotificationsProvider loadOnMount read={false} delay={500}>
         {children}
       </NotificationsProvider>
     </UnreadNotificationsPopperContext.Provider>

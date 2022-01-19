@@ -43,16 +43,14 @@ export const NotificationsProvider = ({ children, loadOnMount, delay, ...params 
   const { data, error, isLoading, makeRequest, matchRequest } = useRequest<GetNotificationsData>(delay || 0);
   const loaded = useRef(false);
 
+  const loadNotifications = useCallback(() => makeRequest(() => getNotifications(params)), [makeRequest, params]);
+
   useEffect(() => {
     if (loadOnMount && !loaded.current) {
-      const controller = new AbortController();
-      makeRequest(() => getNotifications(params, controller));
+      loadNotifications();
       loaded.current = true;
-      return () => controller.abort();
     }
-  }, [loadOnMount, makeRequest, params]);
-
-  const loadNotifications = useCallback(() => makeRequest(() => getNotifications(params)), [makeRequest, params]);
+  }, [loadNotifications, loadOnMount]);
 
   return (
     <NotificationsContext.Provider

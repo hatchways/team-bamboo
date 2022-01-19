@@ -24,12 +24,14 @@ const Arrow = styled(Box)({
 });
 
 const UnreadNotificationsPopper = () => {
-  const { matchNotifications } = useNotifications();
+  const { matchNotifications, loadNotifications } = useNotifications();
   const { anchorEl, isOpen } = useUnreadNotificationsPopper();
 
   return (
     <>
-      <button ref={anchorEl}>Notifications</button>
+      <button onClick={loadNotifications} ref={anchorEl}>
+        Notifications
+      </button>
       <Popper open={true} anchorEl={anchorEl.current} placement="bottom" transition>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
@@ -53,9 +55,10 @@ const UnreadNotificationsPopper = () => {
                       <UnreadNotificationSkeleton />
                     </>
                   ),
-                  (error) => (
-                    <p>An error occured</p>
-                  ),
+                  (error) => {
+                    console.log(error);
+                    return <p>An error occurred</p>;
+                  },
                   (data) => (
                     <></>
                   ),
