@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
 import { useAuth } from '../../context/useAuthContext';
-import { useSocket } from '../../context/useSocketContext';
 import { useHistory } from 'react-router-dom';
 import { Box, Card, CircularProgress, Grid } from '@mui/material';
 import Calendar from '../../components/Calendar/Calendar';
@@ -8,8 +6,10 @@ import PageContainer from '../../components/PageContainer/PageContainer';
 import NextBooking from '../../components/NextBookings/NextBooking';
 import { Booking } from '../../interface/Booking';
 import BookingList from '../../components/BookingList/BookingList';
+import { makeStyles } from '@mui/styles';
 
 const inMemoryNextBooking: Booking = {
+  _id: '1',
   start: new Date('2022-01-20T10:00'),
   end: new Date('2022-01-20T12:00'),
   status: 'accepted',
@@ -21,6 +21,7 @@ const inMemoryNextBooking: Booking = {
 
 const inMemoryCurrentBookings: Booking[] = [
   {
+    _id: '2',
     user: {
       name: 'Charles Compton',
       email: 'charles.compton@example.com',
@@ -30,6 +31,7 @@ const inMemoryCurrentBookings: Booking[] = [
     status: 'accepted',
   },
   {
+    _id: '3',
     user: {
       name: 'Joan Blackeny',
       email: 'joan.blackeny@example.com',
@@ -42,6 +44,7 @@ const inMemoryCurrentBookings: Booking[] = [
 
 const inMemoryPastBookings: Booking[] = [
   {
+    _id: '0',
     user: {
       name: 'Michael Carnahan',
       email: 'michael.carnahan@example.com',
@@ -54,18 +57,26 @@ const inMemoryPastBookings: Booking[] = [
 
 const combinedBookings = [...inMemoryCurrentBookings, ...inMemoryPastBookings, inMemoryNextBooking];
 const filteredBookings = combinedBookings.filter((b) => b.status !== 'declined');
-console.log(filteredBookings.map((b) => b.start));
 const highlightedDates = filteredBookings.map((b) => b.start.toString().slice(0, 10));
-console.log(highlightedDates);
+
+const useStyles = makeStyles({
+  scrollableCard: {
+    padding: '0px 10px 10px 10px',
+    height: '300px',
+    overflow: 'auto',
+    '::-webkit-scrollbar': {
+      width: 6,
+      bgcolor: 'rgba(0, 0, 0, 0.26)',
+      borderRadius: 2,
+    },
+    '::-webkit-scrollbar-thumb': { bgcolor: 'rgba(0, 0, 0, 0.21)', borderRadius: 2 },
+  },
+});
 
 const Bookings = () => {
   const { loggedInUser } = useAuth();
-  const { initSocket } = useSocket();
   const history = useHistory();
-
-  useEffect(() => {
-    initSocket();
-  }, [initSocket]);
+  const classes = useStyles();
 
   if (loggedInUser === undefined) return <CircularProgress />;
   if (!loggedInUser) {
@@ -79,19 +90,7 @@ const Bookings = () => {
         <Grid item xs={4}>
           <NextBooking booking={inMemoryNextBooking} />
           <Box sx={{ height: '20px' }} />
-          <Card
-            sx={{
-              padding: '0px 10px 10px 10px',
-              height: '300px',
-              overflow: 'auto',
-              '::-webkit-scrollbar': {
-                width: 6,
-                bgcolor: 'rgba(0, 0, 0, 0.26)',
-                borderRadius: 2,
-              },
-              '::-webkit-scrollbar-thumb': { bgcolor: 'rgba(0, 0, 0, 0.21)', borderRadius: 2 },
-            }}
-          >
+          <Card className={classes.scrollableCard}>
             <BookingList type="current" bookings={inMemoryCurrentBookings} />
             <BookingList type="past" bookings={inMemoryPastBookings} />
           </Card>
