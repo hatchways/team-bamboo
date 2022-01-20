@@ -26,12 +26,7 @@ const ErrorText = ({ children }: { children: string }) => {
 const UnreadNotificationsPopper = () => {
   const classes = useStyles();
   const { matchNotifications } = useNotifications();
-  const { anchorEl, onClose, isOpen, markNotificationsRead } = useUnreadNotificationsPopper();
-
-  function handleClose() {
-    onClose();
-    markNotificationsRead();
-  }
+  const { anchorEl, isOpen, onClose } = useUnreadNotificationsPopper();
 
   return (
     // This is where I need to add the markRead functions or I can use a useEffect
@@ -39,7 +34,7 @@ const UnreadNotificationsPopper = () => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Box>
-            <ClickAwayListener onClickAway={handleClose}>
+            <ClickAwayListener onClickAway={onClose}>
               <Box>
                 <Box className={classes.arrow} />
                 <Box className={classes.popperPaper}>
