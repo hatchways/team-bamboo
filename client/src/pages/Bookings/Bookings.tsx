@@ -28,7 +28,7 @@ const Bookings = () => {
         });
         setBookings(success.requests);
       } else {
-        throw new Error('Error fetching bookings from server');
+        updateSnackBarMessage('Error fetching bookings from server');
       }
     } catch (e) {
       const { message } = e as Error;
