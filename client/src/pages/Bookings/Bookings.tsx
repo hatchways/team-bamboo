@@ -7,36 +7,45 @@ import NextBooking from '../../components/NextBookings/NextBooking';
 import { Booking } from '../../interface/Booking';
 import BookingList from '../../components/BookingList/BookingList';
 import { getBookings } from '../../helpers/APICalls/requests';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSnackBar } from '../../context/useSnackbarContext';
 
 const Bookings = () => {
   const { loggedInUser } = useAuth();
   const history = useHistory();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const { updateSnackBarMessage } = useSnackBar();
 
-  const fetchBookings = async () => {
-    const { success } = await getBookings();
-    if (success) {
-      success.requests.forEach((request) => {
-        const { start, end } = request;
-        request.start = new Date(start);
-        request.end = new Date(end);
-      });
-      setBookings(success.requests);
+  const fetchBookings = useCallback(async () => {
+    try {
+      const response = await getBookings();
+      const { success } = response;
+      if (success) {
+        success.requests.forEach((request) => {
+          const { start, end } = request;
+          request.start = new Date(start);
+          request.end = new Date(end);
+        });
+        setBookings(success.requests);
+      } else {
+        throw new Error('Error fetching bookings from server');
+      }
+    } catch (e) {
+      const { message } = e as Error;
+      updateSnackBarMessage(message);
     }
-  };
+  }, [updateSnackBarMessage]);
 
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [fetchBookings]);
 
   if (loggedInUser === undefined || !bookings) return <CircularProgress />;
   if (!loggedInUser) {
     history.push('/login');
     return <CircularProgress />;
   }
-  const acceptedBookings = bookings.filter((b) => b.status !== 'declined');
-  const highlightedDates = acceptedBookings.map((b) => b.start.toString().slice(0, 10));
+  const highlightedDates = bookings.filter((b) => b.status !== 'declined').map((b) => b.start.toString().slice(0, 10));
 
   const currentBookings: Booking[] = [];
   const pastBookings: Booking[] = [];

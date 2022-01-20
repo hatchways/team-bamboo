@@ -1,17 +1,16 @@
 const Request = require("../models/Request");
+const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
 
 // @route GET /requests/sitter
 // @desc get requests for logged in user
 // @access Private
 exports.getRequests = asyncHandler(async (req, res) => {
-  const { isSitter } = req.query ?? "false";
-  if (!["true", "false"].includes(isSitter ?? "false")) {
-    res.status(400);
-    throw new Error("Bad Request");
-  }
-
-  const selectedUserType = isSitter === "true" ? "sitter" : "owner";
+  const { isSitter } = await Profile.findOne(
+    { userId: req.user.id },
+    "isSitter -_id"
+  );
+  const selectedUserType = isSitter ? "sitter" : "owner";
   const requests = await Request.find({
     [selectedUserType]: req.user.id,
   })
