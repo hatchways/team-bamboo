@@ -4,8 +4,8 @@ import { NotificationsProvider } from '../../../context/useNotificationContext';
 interface UnreadNotificationsPopperContext {
   anchorEl: HTMLElement | null;
   isOpen: boolean;
-  toggleOpen: <E extends { currentTarget: HTMLElement }>(event: E) => void;
-  onOpen: <E extends { currentTarget: HTMLElement }>(event: E) => void;
+  toggleOpen: (event: MouseEvent<HTMLElement>) => void;
+  onOpen: (event: MouseEvent<HTMLElement>) => void;
   onClose: () => void;
 }
 
@@ -27,13 +27,13 @@ export const UnreadNotificationsPopperProvider: FunctionComponent = ({ children 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleOpen = <E extends { currentTarget: HTMLElement }>(event: E) => {
-    setAnchorEl(event.currentTarget);
+  const toggleOpen = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget as HTMLElement);
     setIsOpen((prev) => !prev);
   };
 
-  const onOpen = <E extends { currentTarget: HTMLElement }>(event: E) => {
-    setAnchorEl(event.currentTarget);
+  const onOpen = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget as HTMLElement);
     setIsOpen(true);
   };
 
