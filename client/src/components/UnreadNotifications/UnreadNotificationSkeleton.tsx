@@ -1,7 +1,7 @@
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
 
 // Will use notifyType later when we need to style notifications differently based on their type.
-const NotificationItem = () => {
+const UnreadNotificationSkeleton = () => {
   return (
     <Stack direction="row" spacing={2}>
       <Skeleton variant="rectangular" height={54} width={54} animation="wave" />
@@ -28,4 +28,4 @@ const NotificationItem = () => {
   );
 };
 
-export default NotificationItem;
+export default UnreadNotificationSkeleton;
