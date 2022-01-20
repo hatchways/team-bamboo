@@ -1,10 +1,9 @@
 const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
-const path = require('path');
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
-const { uploadImages } = require("../s3");
+const { uploadFileToS3, uploadImages } = require("../s3");
 
 // @route PUT /profile/edit
 // @desc edit user profile
@@ -46,7 +45,7 @@ exports.loadProfile = asyncHandler(async (req, res, next) => {
 // @route POST /profile/upload
 // @desc Upload images to server
 // @access Private
-exports.retriveImgUrls = asyncHandler(async (req, res) => {
+exports.retrieveImgUrls = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ userId: req.user.id });
   if (!profile) {
     res.status(404);
@@ -71,4 +70,20 @@ exports.retriveImgUrls = asyncHandler(async (req, res) => {
     await unlinkFile(file.path);
   }));
   res.status(201).json("image uploaded");
+});
+
+// @route POST /profile/upload-avatar
+// @desc Upload profile photo to server
+// @access Private
+exports.retrieveAvatarUrl = asyncHandler(async(req, res) => {
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (!profile) {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
+  }
+  const file = req.file;
+  const result = await uploadFileToS3(file);
+  profile.photo = result.Location;
+  await profile.save();
+  res.status(201).json("profile photo uploaded");
 });

@@ -13,25 +13,31 @@ const s3 = new AWS.S3({
   region
 });
 
+// upload one profile photo to S3
+const uploadFileToS3 = (file) => {
+  const fileStream = fs.createReadStream(file.path);
+  const uploadParams = {
+    Bucket: bucketName,
+    Body: fileStream,
+    Key: file.filename,
+  };
+  return s3.upload(uploadParams, (error, data) => {
+    if (error) {
+      console.error(error);
+    };
+    console.log(`File uploaded successfully at ${data.Location}`);
+    resolve(data.Location);
+  }).promise();
+};
+
 // upload files to s3
-exports.uploadImages = (files) => {
+const uploadImages = (files) => {
   const uploadPromises = [];
   for (let i = 0; i < files.length; i++) {
-    const fileStream = fs.createReadStream(files[i].path);
-    const uploadParams = {
-      Bucket: bucketName,
-      Body: fileStream,
-      Key: files[i].filename,
-    };
-    const uploadPromise = s3.upload(uploadParams, (error, data) => {
-      if (error) {
-        console.error(error);
-      };
-      console.log(`File uploaded successfully at ${data.Location}`);
-      resolve(data.Location);
-    }).promise();
-    uploadPromises.push(uploadPromise);
+    uploadPromises.push(uploadFileToS3(files[i]));
   }
   return uploadPromises;
 };
+
+module.exports = { uploadFileToS3, uploadImages };
 

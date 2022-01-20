@@ -6,7 +6,8 @@ const protect = require('../middleware/auth');
 const {
   editProfile,
   loadProfile,
-  retriveImgUrls
+  retrieveImgUrls,
+  retrieveAvatarUrl
 } = require('../controllers/profile');
 
 const fileStorageEngine = multer.diskStorage({
@@ -29,7 +30,9 @@ const upload = multer({
     callback(null, true)
 }, });
 
-router.route('/upload').post(protect, upload.array('images', 5), retriveImgUrls);
+router.route('/upload').post(protect, upload.array('images', 5), retrieveImgUrls);
+
+router.route('/upload-avatar').post(protect, upload.single('avatar'), retrieveAvatarUrl);
 
 router.route('/edit').put(protect, editProfile);
 
