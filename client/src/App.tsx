@@ -24,9 +24,7 @@ function App(): JSX.Element {
           <AuthProvider>
             <SocketProvider>
               <CssBaseline />
-              <UnreadNotifications>
-                <Navbar />
-              </UnreadNotifications>
+              <Navbar />
               <Switch>
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={Signup} />
