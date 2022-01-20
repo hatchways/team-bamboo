@@ -40,9 +40,9 @@ const UnreadNotificationsPopper = () => {
         <Fade {...TransitionProps} timeout={350}>
           <Box>
             <ClickAwayListener onClickAway={handleClose}>
-              <Box className={classes.popperPaper}>
+              <Box>
                 <Box className={classes.arrow} />
-                <Box>
+                <Box className={classes.popperPaper}>
                   <Stack className={classes.popper} spacing={3}>
                     {matchNotifications<ReactElement | ReactElement[]>(
                       () => (
