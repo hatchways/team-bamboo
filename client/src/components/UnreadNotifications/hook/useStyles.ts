@@ -15,7 +15,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     maxHeight: 200,
     overflowY: 'auto',
     '&::-webkit-scrollbar': {
-      width: theme.spacing(4),
+      width: theme.spacing(3),
     },
     '&::-webkit-scrollbar-track': {
       borderRight: '6px solid transparent',
