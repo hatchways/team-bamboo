@@ -34,7 +34,7 @@ const useRequest = <D>(delay = 0) => {
     [data, error, isLoading],
   );
 
-  return { data, error, isLoading, makeRequest, matchRequest } as const;
+  return { data, error, isLoading, makeRequest, matchRequest, setData, setError } as const;
 };
 
 export default useRequest;
