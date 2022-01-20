@@ -5,14 +5,14 @@ import { NavLink } from 'react-router-dom';
 
 type Props = Omit<Notification, 'receivers' | 'id'>;
 
-const Link = styled(NavLink)({
+const Link = styled(NavLink)(({ theme }) => ({
   textDecoration: 'none',
-});
+  color: theme.palette.text.primary,
+}));
 
-// Will use notifyType later when we need to style notifications differently based on their type.
 const NotificationItem = ({ notifyType, title, description, sender, createdAt }: Props) => {
   return (
-    //Will need to update notification route in the future based off of the type of notification
+    //Will need to update notification route in the future based off of the type of notification & sender role.
     <Link to="#notification">
       <Stack direction="row" spacing={2}>
         <Avatar
