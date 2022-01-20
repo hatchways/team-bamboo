@@ -1,13 +1,23 @@
 const Request = require("../models/Request");
+const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
 
-// @route GET /requests
+// @route GET /requests/sitter
 // @desc get requests for logged in user
 // @access Private
 exports.getRequests = asyncHandler(async (req, res) => {
+  const { isSitter } = await Profile.findOne(
+    { userId: req.user.id },
+    "isSitter -_id"
+  );
+  const selectedUserType = isSitter ? "sitter" : "owner";
   const requests = await Request.find({
-    sitterId: req.user.id,
-  });
+    [selectedUserType]: req.user.id,
+  })
+    .populate("sitter")
+    .populate("owner")
+    .sort("start")
+    .exec();
 
   res.status(200).json({
     success: { requests },
@@ -18,18 +28,19 @@ exports.getRequests = asyncHandler(async (req, res) => {
 // @desc Create a new request
 // @access Private
 exports.createRequest = asyncHandler(async (req, res) => {
-  const { sitterId, start, end } = req.body;
 
-  const propertyIsMissing = !sitterId || !start || !end;
+  const { sitter, start, end } = req.body;
 
-  if (propertyIsMissing || !mongoose.Types.ObjectId.isValid(sitterId)) {
+  const propertyIsMissing = !sitter || !start || !end;
+
+  if (propertyIsMissing || !mongoose.Types.ObjectId.isValid(sitter)) {
     res.status(400);
     throw new Error("Bad request");
   }
 
   const request = await Request.create({
-    userId: req.user.id,
-    sitterId,
+    owner: req.user.id,
+    sitter,
     start: start,
     end: end,
     status: "pending",
@@ -68,8 +79,8 @@ exports.updateRequestStatus = asyncHandler(async (req, res) => {
     throw new Error("Bad request");
   }
 
-  const { sitterId } = request;
-  if (req.user.id !== sitterId.toString()) {
+  const { sitter } = request;
+  if (req.user.id !== sitter.toString()) {
     res.status(401);
     throw new Error("Not authorized");
   }

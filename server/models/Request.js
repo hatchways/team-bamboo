@@ -4,14 +4,14 @@ const { ObjectId } = Schema.Types;
 const required = true;
 
 const requestSchema = new Schema({
-  userId: {
+  owner: {
     type: ObjectId,
-    ref: "User",
+    ref: "user",
     required,
   },
-  sitterId: {
+  sitter: {
     type: ObjectId,
-    ref: "User",
+    ref: "user",
     required,
   },
   start: {
@@ -41,7 +41,7 @@ const requestSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "accepted", "paid"],
+    enum: ["pending", "accepted", "declined", "paid"],
     default: "pending",
   },
 });
