@@ -2,13 +2,14 @@ import type { ValidationError, RequestError, OnSuccess, OnError, OnLoading } fro
 import type { GetNotificationsData } from '../interface/Notification';
 import { useContext, createContext, useEffect, ReactElement, useCallback, useRef, ReactNode } from 'react';
 import { useRequest } from '../hooks';
-import { getNotifications } from '../helpers/APICalls/notifications';
+import { getNotifications, markNotificationRead } from '../helpers/APICalls/notifications';
 
 interface NotificationsContext {
   isLoading: boolean;
   data: GetNotificationsData | null;
   error: ValidationError[] | RequestError | null;
   loadNotifications: () => void;
+  markNotificationsRead: () => void;
   matchNotifications: <R>(
     onLoading: OnLoading<R>,
     onError: OnError<R>,
@@ -24,6 +25,9 @@ export const NotificationsContext = createContext<NotificationsContext>({
     return null;
   },
   matchNotifications: () => {
+    return null;
+  },
+  markNotificationsRead: () => {
     return null;
   },
 });
@@ -45,6 +49,16 @@ export const NotificationsProvider = ({ children, loadOnMount, delay, ...params 
 
   const loadNotifications = useCallback(() => makeRequest(() => getNotifications(params)), [makeRequest, params]);
 
+  const markNotificationsRead = useCallback(() => {
+    if (data && data.notifications.length && !isLoading) {
+      Promise.all(
+        data.notifications.map(({ id }) => {
+          markNotificationRead(id);
+        }),
+      ).then(loadNotifications);
+    }
+  }, [data, isLoading, loadNotifications]);
+
   useEffect(() => {
     if (loadOnMount && !loaded.current) {
       loadNotifications();
@@ -54,7 +68,7 @@ export const NotificationsProvider = ({ children, loadOnMount, delay, ...params 
 
   return (
     <NotificationsContext.Provider
-      value={{ isLoading, data, error, loadNotifications, matchNotifications: matchRequest }}
+      value={{ isLoading, data, error, loadNotifications, matchNotifications: matchRequest, markNotificationsRead }}
     >
       {children}
     </NotificationsContext.Provider>
