@@ -1,5 +1,6 @@
 import { useContext, createContext, ReactElement, useState, FunctionComponent, MouseEvent } from 'react';
-import { NotificationsProvider } from '../../../context/useNotificationContext';
+import { NotificationsProvider, NotificationsConsumer } from '../../../context/useNotificationContext';
+import { markNotificationRead } from '../../../helpers/APICalls/notifications';
 
 interface UnreadNotificationsPopperContext {
   anchorEl: HTMLElement | null;
@@ -7,6 +8,7 @@ interface UnreadNotificationsPopperContext {
   toggleOpen: (event: MouseEvent<HTMLElement>) => void;
   onOpen: (event: MouseEvent<HTMLElement>) => void;
   onClose: () => void;
+  markNotificationsRead: () => void;
 }
 
 export const UnreadNotificationsPopperContext = createContext<UnreadNotificationsPopperContext>({
@@ -19,6 +21,9 @@ export const UnreadNotificationsPopperContext = createContext<UnreadNotification
     return null;
   },
   onClose: () => {
+    return null;
+  },
+  markNotificationsRead: () => {
     return null;
   },
 });
@@ -40,11 +45,28 @@ export const UnreadNotificationsPopperProvider: FunctionComponent = ({ children 
   const onClose = () => setIsOpen(false);
 
   return (
-    <UnreadNotificationsPopperContext.Provider value={{ anchorEl, isOpen, toggleOpen, onOpen, onClose }}>
-      <NotificationsProvider loadOnMount read={false} delay={500}>
-        {children}
-      </NotificationsProvider>
-    </UnreadNotificationsPopperContext.Provider>
+    <NotificationsProvider loadOnMount read={false} delay={10000}>
+      <NotificationsConsumer>
+        {({ loadNotifications, isLoading, data }) => {
+          const markNotificationsRead = () => {
+            if (data && data.notifications.length && !isLoading) {
+              Promise.all(
+                data.notifications.map(({ id }) => {
+                  markNotificationRead(id);
+                }),
+              ).then(loadNotifications);
+            }
+          };
+          return (
+            <UnreadNotificationsPopperContext.Provider
+              value={{ anchorEl, isOpen, toggleOpen, onOpen, onClose, markNotificationsRead }}
+            >
+              {children}
+            </UnreadNotificationsPopperContext.Provider>
+          );
+        }}
+      </NotificationsConsumer>
+    </NotificationsProvider>
   );
 };
 

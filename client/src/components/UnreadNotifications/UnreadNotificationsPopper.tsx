@@ -51,8 +51,8 @@ const ErrorText = ({ children }: { children: string }) => {
 };
 
 const UnreadNotificationsPopper = () => {
-  const { matchNotifications, markNotificationsRead } = useNotifications();
-  const { anchorEl, onClose, isOpen } = useUnreadNotificationsPopper();
+  const { matchNotifications } = useNotifications();
+  const { anchorEl, onClose, isOpen, markNotificationsRead } = useUnreadNotificationsPopper();
 
   function handleClose() {
     onClose();
