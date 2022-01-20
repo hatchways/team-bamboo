@@ -45,21 +45,36 @@ export const UnreadNotificationsPopperProvider: FunctionComponent = ({ children 
   const onClose = () => setIsOpen(false);
 
   return (
-    <NotificationsProvider loadOnMount read={false} delay={10000}>
+    <NotificationsProvider loadOnMount read={false} delay={500}>
       <NotificationsConsumer>
-        {({ loadNotifications, isLoading, data }) => {
+        {({ isLoading, loadNotifications, data }) => {
           const markNotificationsRead = () => {
             if (data && data.notifications.length && !isLoading) {
               Promise.all(
                 data.notifications.map(({ id }) => {
                   markNotificationRead(id);
                 }),
-              ).then(loadNotifications);
+              );
             }
           };
           return (
             <UnreadNotificationsPopperContext.Provider
-              value={{ anchorEl, isOpen, toggleOpen, onOpen, onClose, markNotificationsRead }}
+              value={{
+                anchorEl,
+                isOpen,
+                toggleOpen,
+                onOpen: (event: MouseEvent<HTMLElement>) => {
+                  onOpen(event);
+                  markNotificationsRead();
+                },
+                onClose: () => {
+                  onClose();
+                  if (data && data.notifications.length && !isLoading) {
+                    loadNotifications();
+                  }
+                },
+                markNotificationsRead,
+              }}
             >
               {children}
             </UnreadNotificationsPopperContext.Provider>
