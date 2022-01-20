@@ -1,37 +1,10 @@
 import type { ReactElement } from 'react';
-import { Stack, Paper, Popper, Box, Typography, ClickAwayListener, styled, Fade } from '@mui/material';
+import { Stack, Popper, Box, Typography, ClickAwayListener, Fade } from '@mui/material';
 import UnreadNotificationSkeleton from './UnreadNotificationSkeleton';
 import UnreadNotificationItem from './UnreadNotificationItem';
 import { useNotifications } from '../../context/useNotificationContext';
 import { useUnreadNotificationsPopper } from './context/useNotificationPopperContext';
-
-const Arrow = styled(Box)({
-  position: 'relative',
-  mt: '10px',
-  width: '100%',
-  height: 4,
-  background: 'black',
-  '&::before': {
-    backgroundColor: 'black',
-    content: '""',
-    display: 'block',
-    position: 'absolute',
-    width: 12,
-    height: 12,
-    top: -6,
-    transform: 'rotate(45deg)',
-    left: 'calc(50% - 6px)',
-    zIndex: -1,
-  },
-});
-
-const StyledStack = styled(Stack)(({ theme }) => ({
-  padding: theme.spacing(3),
-  background: theme.palette.background.default,
-  minWidth: 400,
-  maxHeight: 200,
-  overflowY: 'auto',
-}));
+import { useStyles } from './hook/useStyles';
 
 const NoNotificationsText = () => (
   <Typography
@@ -51,6 +24,7 @@ const ErrorText = ({ children }: { children: string }) => {
 };
 
 const UnreadNotificationsPopper = () => {
+  const classes = useStyles();
   const { matchNotifications } = useNotifications();
   const { anchorEl, onClose, isOpen, markNotificationsRead } = useUnreadNotificationsPopper();
 
@@ -66,10 +40,10 @@ const UnreadNotificationsPopper = () => {
         <Fade {...TransitionProps} timeout={350}>
           <Box>
             <ClickAwayListener onClickAway={handleClose}>
-              <Paper elevation={12}>
-                <Arrow />
-                <Box sx={{ overflowY: 'hidden' }}>
-                  <StyledStack spacing={3}>
+              <Box className={classes.popperPaper}>
+                <Box className={classes.arrow} />
+                <Box>
+                  <Stack className={classes.popper} spacing={3}>
                     {matchNotifications<ReactElement | ReactElement[]>(
                       () => (
                         <>
@@ -93,9 +67,9 @@ const UnreadNotificationsPopper = () => {
                           ))
                         ),
                     )}
-                  </StyledStack>
+                  </Stack>
                 </Box>
-              </Paper>
+              </Box>
             </ClickAwayListener>
           </Box>
         </Fade>
