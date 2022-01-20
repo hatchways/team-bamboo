@@ -14,6 +14,11 @@ const profileSchema = new mongoose.Schema({
     required: true,
     ref: 'User'
   },
+  isSitter: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   name: {
     type: String,
     default: "",
