@@ -1,5 +1,4 @@
-import type { ValidationError, RequestError } from '../../interface/ApiData';
-import type { MouseEvent, ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { Stack, Paper, Popper, Box, Typography, ClickAwayListener, styled, Fade } from '@mui/material';
 import UnreadNotificationSkeleton from './UnreadNotificationSkeleton';
 import UnreadNotificationItem from './UnreadNotificationItem';
@@ -52,48 +51,56 @@ const ErrorText = ({ children }: { children: string }) => {
 };
 
 const UnreadNotificationsPopper = () => {
-  const { matchNotifications } = useNotifications();
+  const { matchNotifications, markNotificationsRead } = useNotifications();
   const { anchorEl, onClose, isOpen } = useUnreadNotificationsPopper();
 
+  function handleClose() {
+    onClose();
+    markNotificationsRead();
+  }
+
   return (
-    <ClickAwayListener onClickAway={onClose}>
-      <Popper open={isOpen} anchorEl={anchorEl} placement="bottom" transition>
-        {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={350}>
-            <Paper elevation={12}>
-              <Arrow />
-              <Box sx={{ overflowY: 'hidden' }}>
-                <StyledStack spacing={3}>
-                  {matchNotifications<ReactElement | ReactElement[]>(
-                    () => (
-                      <>
-                        <UnreadNotificationSkeleton />
-                        <UnreadNotificationSkeleton />
-                        <UnreadNotificationSkeleton />
-                      </>
-                    ),
-                    (error) =>
-                      !(error instanceof Array) ? (
-                        <ErrorText>{error.message}</ErrorText>
-                      ) : (
-                        error.map(({ msg }, index) => <ErrorText key={index}>{msg}</ErrorText>)
+    // This is where I need to add the markRead functions or I can use a useEffect
+    <Popper open={isOpen} anchorEl={anchorEl} placement="bottom" transition>
+      {({ TransitionProps }) => (
+        <Fade {...TransitionProps} timeout={350}>
+          <Box>
+            <ClickAwayListener onClickAway={handleClose}>
+              <Paper elevation={12}>
+                <Arrow />
+                <Box sx={{ overflowY: 'hidden' }}>
+                  <StyledStack spacing={3}>
+                    {matchNotifications<ReactElement | ReactElement[]>(
+                      () => (
+                        <>
+                          <UnreadNotificationSkeleton />
+                          <UnreadNotificationSkeleton />
+                          <UnreadNotificationSkeleton />
+                        </>
                       ),
-                    (data) =>
-                      data.notifications.length === 0 ? (
-                        <NoNotificationsText />
-                      ) : (
-                        data.notifications.map(({ id, receivers, ...notification }) => (
-                          <UnreadNotificationItem key={id} {...notification} />
-                        ))
-                      ),
-                  )}
-                </StyledStack>
-              </Box>
-            </Paper>
-          </Fade>
-        )}
-      </Popper>
-    </ClickAwayListener>
+                      (error) =>
+                        !(error instanceof Array) ? (
+                          <ErrorText>{error.message}</ErrorText>
+                        ) : (
+                          error.map(({ msg }, index) => <ErrorText key={index}>{msg}</ErrorText>)
+                        ),
+                      (data) =>
+                        data.notifications.length === 0 ? (
+                          <NoNotificationsText />
+                        ) : (
+                          data.notifications.map(({ id, receivers, ...notification }) => (
+                            <UnreadNotificationItem key={id} {...notification} />
+                          ))
+                        ),
+                    )}
+                  </StyledStack>
+                </Box>
+              </Paper>
+            </ClickAwayListener>
+          </Box>
+        </Fade>
+      )}
+    </Popper>
   );
 };
 
