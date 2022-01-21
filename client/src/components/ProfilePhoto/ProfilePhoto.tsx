@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Box, Typography, Input, InputLabel, Button, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import SettingHeader from '../SettingsHeader/SettingsHeader';
@@ -10,6 +11,16 @@ const ProfilePhoto = (): JSX.Element => {
   const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setFile(e.target.files[0]);
+    const formData = new FormData();
+    formData.append('avatar', e.target.files[0]);
+
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // };
+    // axios.post('/profile/upload-avatar', { formData });
   };
 
   return (
