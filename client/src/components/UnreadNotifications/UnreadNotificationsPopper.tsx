@@ -29,7 +29,6 @@ const UnreadNotificationsPopper = () => {
   const { anchorEl, isOpen, onClose } = useUnreadNotificationsPopper();
 
   return (
-    // This is where I need to add the markRead functions or I can use a useEffect
     <Popper open={isOpen} anchorEl={anchorEl} placement="bottom" transition>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>

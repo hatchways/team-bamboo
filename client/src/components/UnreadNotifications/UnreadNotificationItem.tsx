@@ -12,7 +12,6 @@ const Link = styled(NavLink)(({ theme }) => ({
 
 const NotificationItem = ({ notifyType, title, description, sender, createdAt }: Props) => {
   return (
-    //Will need to update notification route in the future based off of the type of notification & sender role.
     <Link to="#notification">
       <Stack direction="row" spacing={2}>
         <Avatar

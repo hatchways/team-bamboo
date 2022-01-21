@@ -4,7 +4,7 @@ import { useNotifications } from '../../context/useNotificationContext';
 import { FunctionComponent } from 'react';
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.text.primary,
+  color: 'inherit',
   padding: theme.spacing(2),
   textTransform: 'none',
 }));
