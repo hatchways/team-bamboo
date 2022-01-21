@@ -19,7 +19,11 @@ export const AuthContext = createContext<IAuthContext>({
   logout: () => null,
 });
 
-export const AuthProvider: FunctionComponent = ({ children }): JSX.Element => {
+interface Props {
+  unAuthRoutes: string[];
+}
+
+export const AuthProvider: FunctionComponent<Props> = ({ children, unAuthRoutes }): JSX.Element => {
   // default undefined before loading, once loaded provide user or null if logged out
   const [loggedInUser, setLoggedInUser] = useState<User | null | undefined>();
   const [profile, setProfile] = useState();
@@ -57,14 +61,14 @@ export const AuthProvider: FunctionComponent = ({ children }): JSX.Element => {
         } else {
           // don't need to provide error feedback as this just means user doesn't have saved cookies or the cookies have not been authenticated on the backend
           setLoggedInUser(null);
-          if (!(history.location.pathname === '/signup')) {
+          if (!unAuthRoutes.includes(history.location.pathname)) {
             history.push('/login');
           }
         }
       });
     };
     checkLoginWithCookies();
-  }, [updateLoginContext, history]);
+  }, [updateLoginContext, unAuthRoutes, history]);
 
   return (
     <AuthContext.Provider value={{ loggedInUser, profile, updateLoginContext, logout }}>
