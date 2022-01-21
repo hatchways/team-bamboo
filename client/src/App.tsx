@@ -15,12 +15,14 @@ import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
+const unAuthRoutes = ['/', '/login', '/signup'];
+
 function App(): JSX.Element {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <SnackBarProvider>
-          <AuthProvider>
+          <AuthProvider unAuthRoutes={unAuthRoutes}>
             <SocketProvider>
               <CssBaseline />
               <Navbar />
