@@ -42,6 +42,7 @@ const FormInput: React.FC<FormInputProps> = ({
           fontSize: 16,
           fontWeight: 700,
           textTransform: 'uppercase',
+          color: '#000',
         }}
         shrink
         htmlFor={id}
