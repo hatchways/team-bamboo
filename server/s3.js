@@ -39,5 +39,13 @@ const uploadImages = (files) => {
   return uploadPromises;
 };
 
-module.exports = { uploadFileToS3, uploadImages };
+// download a file from s3
+const getFileStream = (fileKey) => {
+  const downloadParams = {
+    Key: fileKey,
+    Bucket: bucketName,
+  };
+  return s3.getObject(downloadParams).createReadStream();
+};
 
+module.exports = { uploadFileToS3, uploadImages, getFileStream };

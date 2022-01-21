@@ -7,7 +7,8 @@ const {
   editProfile,
   loadProfile,
   retrieveImgUrls,
-  retrieveAvatarUrl
+  retrieveAvatarUrl,
+  getAvatarReadStream
 } = require('../controllers/profile');
 
 const fileStorageEngine = multer.diskStorage({
@@ -23,7 +24,7 @@ const fileStorageEngine = multer.diskStorage({
 const upload = multer({ 
   storage: fileStorageEngine,
   fileFilter: function (req, file, callback) {
-    var ext = path.extname(file.originalname);
+    const ext = path.extname(file.originalname);
     if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
         return callback(new Error('Only images are allowed'))
     };
@@ -34,10 +35,10 @@ router.route('/upload').post(protect, upload.array('images', 5), retrieveImgUrls
 
 router.route('/upload-avatar').post(protect, upload.single('avatar'), retrieveAvatarUrl);
 
+router.route('/upload/:key').get(protect, getAvatarReadStream);
+
 router.route('/edit').put(protect, editProfile);
 
 router.route('/load').get(protect, loadProfile);
-
-
 
 module.exports = router;

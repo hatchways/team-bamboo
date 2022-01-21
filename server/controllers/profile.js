@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
-const { uploadFileToS3, uploadImages } = require("../s3");
+const { uploadFileToS3, uploadImages, getFileStream } = require("../s3");
 
 // @route PUT /profile/edit
 // @desc edit user profile
@@ -73,7 +73,7 @@ exports.retrieveImgUrls = asyncHandler(async (req, res) => {
 });
 
 // @route POST /profile/upload-avatar
-// @desc Upload profile photo to server
+// @desc Upload a profile photo to server
 // @access Private
 exports.retrieveAvatarUrl = asyncHandler(async(req, res) => {
   const profile = await Profile.findOne({ userId: req.user.id });
@@ -85,5 +85,15 @@ exports.retrieveAvatarUrl = asyncHandler(async(req, res) => {
   const result = await uploadFileToS3(file);
   profile.photo = result.Location;
   await profile.save();
-  res.status(201).json("profile photo uploaded");
+  await unlinkFile(file.path);
+  res.send({imagePath: `/upload/${result.Key}`});
 });
+
+// @route GET /profile/upload/:key
+// @desc Get a profile photo from sever
+// @access Private
+exports.getAvatarReadStream = async (req, res) => {
+  const key = req.params.key;
+  const readStream = getFileStream(key);
+  readStream.pipe(res);
+};
