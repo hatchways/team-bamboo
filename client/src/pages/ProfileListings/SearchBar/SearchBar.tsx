@@ -10,7 +10,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   margin: 0,
   '& .MuiInputBase-root': {
     padding: theme.spacing(0, 2),
-    gap: theme.spacing(3),
+    gap: theme.spacing(1),
   },
   '& .MuiInputBase-input': {
     fontSize: 16,
@@ -67,6 +67,7 @@ const SearchBar = () => {
                 value={value.date}
                 onChange={handleChange<Date | null>('date')}
                 minDate={new Date(Date.now())}
+                OpenPickerButtonProps={{ sx: { ml: 0, mr: 0.5 } }}
                 renderInput={(params) => (
                   <StyledTextField
                     {...params}
