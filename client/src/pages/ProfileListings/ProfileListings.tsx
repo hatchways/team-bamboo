@@ -22,22 +22,22 @@ const ProfileListings = () => {
         <Title>Your search results</Title>
         <SearchBar />
         <Grid container spacing={8} sx={{ pt: 4 }}>
-          <Grid item lg={4} md={6} xs={12}>
+          <Grid item xl={2} lg={4} md={6} xs={12}>
             <ProfileCard />
           </Grid>
-          <Grid item lg={4} md={6} xs={12}>
+          <Grid item xl={2} lg={4} md={6} xs={12}>
             <ProfileCard />
           </Grid>
-          <Grid item lg={4} md={6} xs={12}>
+          <Grid item xl={2} lg={4} md={6} xs={12}>
             <ProfileCard />
           </Grid>
-          <Grid item lg={4} md={6} xs={12}>
+          <Grid item xl={2} lg={4} md={6} xs={12}>
             <ProfileCard />
           </Grid>
-          <Grid item lg={4} md={6} xs={12}>
+          <Grid item xl={2} lg={4} md={6} xs={12}>
             <ProfileCard />
           </Grid>
-          <Grid item lg={4} md={6} xs={12}>
+          <Grid item xl={2} lg={4} md={6} xs={12}>
             <ProfileCard />
           </Grid>
         </Grid>
