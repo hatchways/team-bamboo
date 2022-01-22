@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { FinalCheck, MenuItemData } from './interface/Navbar';
+import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { useAuth } from '../../context/useAuthContext';
 import {
@@ -18,12 +19,13 @@ import lovingSitterLogo from '../../images/logo.svg';
 import { useStyles } from './useStyles';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Settings, Logout, Person } from '@mui/icons-material';
+import { checkProfile } from './utils';
 
 const NavbarButton = styled(Button)({
   padding: '15px 0',
 });
 
-const menuItems = [
+const menuItems: MenuItemData[] = [
   {
     item: 'Become a Sitter',
     resource: '/dashboard',
@@ -77,16 +79,19 @@ const menuItems = [
 ];
 
 const MenuItem: React.FC<{
-  resource: string;
+  resource?: string;
   item: string | JSX.Element;
 }> = ({ resource, item }) => {
   const classes = useStyles();
 
   return (
     <Grid key={resource} sx={{ textAlign: 'center' }} xs={2} justifySelf="flex-end" item>
-      <NavLink className={classes.navbarItem} to={resource}>
-        {item}
-      </NavLink>
+      {resource && (
+        <NavLink className={classes.navbarItem} to={resource}>
+          {item}
+        </NavLink>
+      )}
+      {!resource && item}
     </Grid>
   );
 };
@@ -95,7 +100,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { loggedInUser, logout } = useAuth();
+  const { loggedInUser, logout, profile } = useAuth();
   const open = Boolean(anchorEl);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -111,16 +116,17 @@ const Navbar: React.FC = () => {
     logout();
   };
 
-  const renderMenuItems = () => {
-    // TODO: conditionally render based on profile type
-    return menuItems.map((menu) => {
-      if (menu.authenticated) {
-        return loggedInUser && <MenuItem key={menu.resource} {...menu} />;
-      } else {
-        return !loggedInUser && <MenuItem key={menu.resource} {...menu} />;
+  const checkCanView = useCallback<FinalCheck>(
+    (canView, authenticated) => checkProfile(profile, loggedInUser)(canView, authenticated),
+    [loggedInUser, profile],
+  );
+  const renderMenuItems = () =>
+    menuItems.map((menu, index) => {
+      if (checkCanView(menu.canView, menu.authenticated)) {
+        return <MenuItem key={menu?.resource || index} {...menu} />;
       }
+      return null;
     });
-  };
 
   return (
     <Grid
