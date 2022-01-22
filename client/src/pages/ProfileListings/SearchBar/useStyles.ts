@@ -2,9 +2,6 @@ import type { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    minWidth: 425,
-  },
   left: {
     '& .MuiInputBase-root': {
       borderRadius: theme.spacing(1, 0, 0, 1),

@@ -41,8 +41,8 @@ const SearchBar = () => {
     <LocalizationProvider dateAdapter={AdapterDateFns} dateFormat="dd MMM yy">
       <form>
         <Grid container justifyContent="center">
-          <Grid container item md={6} sm={8} xs={12} className={classes.root}>
-            <Grid item xs={7}>
+          <Grid container item md={8} xs={12}>
+            <Grid item md={7} xs={6}>
               <StyledTextField
                 id="location"
                 fullWidth
@@ -62,7 +62,7 @@ const SearchBar = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={5}>
+            <Grid item md={5} xs={6}>
               <DatePicker
                 value={value.date}
                 onChange={handleChange<Date | null>('date')}
@@ -72,6 +72,7 @@ const SearchBar = () => {
                   <StyledTextField
                     {...params}
                     placeholder="DD-DD MMM yy"
+                    fullWidth
                     className={classes.right}
                     inputProps={{
                       ...params.inputProps,
