@@ -82,7 +82,7 @@ const SearchBar = () => {
                       startAdornment: params.InputProps?.endAdornment,
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton onClick={() => handleChange<Date | null>('date')(null)}>
+                          <IconButton onClick={() => handleChange<Date | null>('date')(new Date(Date.now()))}>
                             <Close color="inherit" fontSize="medium" />
                           </IconButton>
                         </InputAdornment>
