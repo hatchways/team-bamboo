@@ -1,26 +1,29 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Box, Typography, Input, InputLabel, Button, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import SettingHeader from '../SettingsHeader/SettingsHeader';
 import DeleteIcon from '@mui/icons-material/Delete';
+import uploadProfilePhoto from '../../helpers/APICalls/uploadProfilePhoto';
+import { useSnackBar } from '../../context/useSnackbarContext';
 
 const ProfilePhoto = (): JSX.Element => {
   const [file, setFile] = useState<File>();
+  const { updateSnackBarMessage } = useSnackBar();
 
   const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setFile(e.target.files[0]);
     const formData = new FormData();
     formData.append('avatar', e.target.files[0]);
-
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // };
-    // axios.post('/profile/upload-avatar', { formData });
+    uploadProfilePhoto(formData).then((data) => {
+      if (data.error) {
+        console.error({ error: data.error });
+        updateSnackBarMessage(data.error.message);
+      }
+      console.log(data);
+      updateSnackBarMessage('Profile photo uploaded!');
+    });
+    setFile(undefined);
   };
 
   return (
@@ -36,7 +39,7 @@ const ProfilePhoto = (): JSX.Element => {
           Be sure to use a photo that <br /> clearly shows your face
         </Typography>
         <form>
-          <Input id="button-file" name="images" type="file" onChange={handleImgChange} sx={{ opacity: 0 }} />
+          <Input id="button-file" name="avatar" type="file" onChange={handleImgChange} sx={{ opacity: 0 }} />
           <InputLabel htmlFor="button-file">
             <Button component="span" variant="outlined" color="primary" size="large" sx={{ px: 1.5, py: 2 }}>
               Upload a file from your device

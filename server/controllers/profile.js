@@ -1,9 +1,9 @@
-const Profile = require("../models/Profile");
-const asyncHandler = require("express-async-handler");
-const fs = require("fs");
-const util = require("util");
+const Profile = require('../models/Profile');
+const asyncHandler = require('express-async-handler');
+const fs = require('fs');
+const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
-const { uploadFileToS3, uploadImages, getFileStream } = require("../s3");
+const { uploadFileToS3, uploadImages, getFileStream } = require('../s3');
 
 // @route PUT /profile/edit
 // @desc edit user profile
@@ -19,8 +19,8 @@ exports.editProfile = asyncHandler(async (req, res, next) => {
   const updatedProfile = await profile.save();
   res.status(200).json({
     success: {
-      profile: updatedProfile,
-    },
+      profile: updatedProfile
+    }
   });
 });
 
@@ -28,17 +28,17 @@ exports.editProfile = asyncHandler(async (req, res, next) => {
 // @desc Get user profile data
 // @access Private
 exports.loadProfile = asyncHandler(async (req, res, next) => {
-  const profile = await User.findById(req.user.id, "profile");
+  const profile = await User.findById(req.user.id, 'profile');
 
   if (!profile) {
     res.status(401);
-    throw new Error("Not authorized");
+    throw new Error('Not authorized');
   }
 
   res.status(200).json({
     success: {
-      profile: profile,
-    },
+      profile: profile
+    }
   });
 });
 
@@ -51,7 +51,7 @@ exports.retrieveImgUrls = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Profile doesn't exist");
   }
- 
+
   const files = req.files;
   const results = await Promise.all(uploadImages(files));
   const saveImagesToDb = async (results) => {
@@ -62,20 +62,22 @@ exports.retrieveImgUrls = asyncHandler(async (req, res) => {
       profile.uploadedImages.push(imageUrl);
       await profile.save();
     }
-  }
+  };
   saveImagesToDb(results);
 
-  //delete images in the uploads folder 
-  await Promise.all(files.map(async (file) => {
-    await unlinkFile(file.path);
-  }));
-  res.status(201).json("image uploaded");
+  //delete images in the uploads folder
+  await Promise.all(
+    files.map(async (file) => {
+      await unlinkFile(file.path);
+    })
+  );
+  res.status(201).json('image uploaded');
 });
 
 // @route POST /profile/upload-avatar
 // @desc Upload a profile photo to server
 // @access Private
-exports.retrieveAvatarUrl = asyncHandler(async(req, res) => {
+exports.retrieveAvatarUrl = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ userId: req.user.id });
   if (!profile) {
     res.status(404);
@@ -86,7 +88,7 @@ exports.retrieveAvatarUrl = asyncHandler(async(req, res) => {
   profile.photo = result.Location;
   await profile.save();
   await unlinkFile(file.path);
-  res.send({imagePath: `/upload/${result.Key}`});
+  res.send({ imagePath: `/upload/${result.Key}` });
 });
 
 // @route GET /profile/upload/:key
