@@ -35,23 +35,20 @@ const ProfilePhoto = (): JSX.Element => {
         sx={{ width: 120, height: 120, marginBottom: 4 }}
       />
       <Box textAlign="center">
-        <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#afafaf' }}>
+        <Typography variant="body1" sx={{ fontWeight: 600, color: 'secondary.main' }}>
           Be sure to use a photo that <br /> clearly shows your face
         </Typography>
         <form>
           <Input id="button-file" name="avatar" type="file" onChange={handleImgChange} sx={{ opacity: 0 }} />
           <InputLabel htmlFor="button-file">
-            <Button component="span" variant="outlined" color="primary" size="large" sx={{ px: 1.5, py: 2 }}>
+            <Button component="span" variant="outlined" color="primary" size="large" sx={{ px: 1.5, py: 2, mb: 3 }}>
               Upload a file from your device
             </Button>
           </InputLabel>
         </form>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 3 }}>
-          <IconButton sx={{ marginRight: 1, cursor: 'pointer' }}>
-            <DeleteIcon />
-          </IconButton>
-          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#afafaf' }}>Delete photo</Typography>
-        </Box>
+        <Button variant="text" startIcon={<DeleteIcon color="info" />} color="secondary" sx={{ textTransform: 'none' }}>
+          Delete photo
+        </Button>
       </Box>
     </Box>
   );
