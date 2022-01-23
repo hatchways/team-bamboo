@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Input, InputLabel, Button, IconButton } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import SettingHeader from '../SettingsHeader/SettingsHeader';
@@ -8,20 +8,20 @@ import { useSnackBar } from '../../context/useSnackbarContext';
 
 const ProfilePhoto = (): JSX.Element => {
   const [file, setFile] = useState<File>();
+  const [photo, setPhoto] = useState<string>('');
   const { updateSnackBarMessage } = useSnackBar();
 
-  const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImgChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setFile(e.target.files[0]);
     const formData = new FormData();
     formData.append('avatar', e.target.files[0]);
     uploadProfilePhoto(formData).then((data) => {
       if (data.error) {
-        console.error({ error: data.error });
-        updateSnackBarMessage(data.error.message);
+        console.error(data.error);
+        updateSnackBarMessage(data.error);
       }
-      console.log(data);
-      updateSnackBarMessage('Profile photo uploaded!');
+      setPhoto(data.imagePath);
     });
     setFile(undefined);
   };
@@ -31,7 +31,7 @@ const ProfilePhoto = (): JSX.Element => {
       <SettingHeader header="Profile Photo" />
       <Avatar
         alt="profile photo"
-        src={`https://www.nj.com/resizer/zovGSasCaR41h_yUGYHXbVTQW2A=/1280x0/smart/cloudfront-us-east-1.images.arcpublishing.com/advancelocal/SJGKVE5UNVESVCW7BBOHKQCZVE.jpg`}
+        src={photo && `http://localhost:3001/profile/${photo}`}
         sx={{ width: 120, height: 120, marginBottom: 4 }}
       />
       <Box textAlign="center">

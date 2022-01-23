@@ -16,26 +16,31 @@ const fileStorageEngine = multer.diskStorage({
     cb(null, './uploads');
   },
   filename: function (req, file, cb) {
-    const fileName = `${Date.now()} ${path.extname(file.originalname)}`;
+    const fileName = `${Date.now()}${path.extname(file.originalname)}`;
     cb(null, fileName);
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: fileStorageEngine,
   fileFilter: function (req, file, callback) {
     const ext = path.extname(file.originalname);
-    if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
-        return callback(new Error('Only images are allowed'))
-    };
-    callback(null, true)
-}, });
+    if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+      return callback(new Error('Only images are allowed'));
+    }
+    callback(null, true);
+  }
+});
 
-router.route('/upload').post(protect, upload.array('images', 5), retrieveImgUrls);
+router
+  .route('/upload')
+  .post(protect, upload.array('images', 5), retrieveImgUrls);
 
-router.route('/upload-avatar').post(protect, upload.single('avatar'), retrieveAvatarUrl);
+router
+  .route('/upload-avatar')
+  .post(protect, upload.single('avatar'), retrieveAvatarUrl);
 
-router.route('/upload/:key').get(protect, getAvatarReadStream);
+router.route('/photo/:key').get(protect, getAvatarReadStream);
 
 router.route('/edit').put(protect, editProfile);
 
