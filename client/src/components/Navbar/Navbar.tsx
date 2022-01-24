@@ -1,5 +1,5 @@
 import { FinalCheck, MenuItemData } from './interface/Navbar';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import clsx from 'clsx';
 import { useAuth } from '../../context/useAuthContext';
 import {
@@ -116,10 +116,8 @@ const Navbar: React.FC = () => {
     logout();
   };
 
-  const checkCanView = useCallback<FinalCheck>(
-    (canView, authenticated) => checkProfile(profile, loggedInUser)(canView, authenticated),
-    [loggedInUser, profile],
-  );
+  const checkCanView = useMemo<FinalCheck>(() => checkProfile(profile, loggedInUser), [loggedInUser, profile]);
+
   const renderMenuItems = () =>
     menuItems.map((menu, index) => {
       if (checkCanView(menu.canView, menu.authenticated)) {
