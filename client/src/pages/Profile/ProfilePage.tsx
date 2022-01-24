@@ -23,14 +23,14 @@ const profile: Profile = {
 };
 
 const ProfilePage = () => {
-  // const { loggedInUser } = useAuth();
-  // const history = useHistory();
+  const { loggedInUser } = useAuth();
+  const history = useHistory();
 
-  // if (loggedInUser === undefined) return <CircularProgress />;
-  // if (!loggedInUser) {
-  //   history.push('/login');
-  //   return <CircularProgress />;
-  // }
+  if (loggedInUser === undefined) return <CircularProgress />;
+  if (!loggedInUser) {
+    history.push('/login');
+    return <CircularProgress />;
+  }
   return (
     <PageContainer>
       <Grid container justifyContent="space-evenly" alignItems="flex-start">
