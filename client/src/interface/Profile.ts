@@ -7,4 +7,5 @@ export interface Profile {
   hourlyRate: number;
   availability: boolean[];
   city: string;
+  averageRating: number;
 }
