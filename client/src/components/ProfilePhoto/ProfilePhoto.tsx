@@ -5,6 +5,7 @@ import SettingHeader from '../SettingsHeader/SettingsHeader';
 import DeleteIcon from '@mui/icons-material/Delete';
 import uploadProfilePhoto from '../../helpers/APICalls/uploadProfilePhoto';
 import { useSnackBar } from '../../context/useSnackbarContext';
+import deleteProfilePhoto from '../../helpers/APICalls/deleteProfilePhoto';
 
 const ProfilePhoto = (): JSX.Element => {
   const [file, setFile] = useState<File>();
@@ -24,6 +25,12 @@ const ProfilePhoto = (): JSX.Element => {
       setPhoto(data.imagePath);
     });
     setFile(undefined);
+  };
+
+  const deletePhoto = () => {
+    deleteProfilePhoto(photo);
+    console.log('deleted');
+    updateSnackBarMessage('Profile photo deleted!');
   };
 
   return (
@@ -46,7 +53,13 @@ const ProfilePhoto = (): JSX.Element => {
             </Button>
           </InputLabel>
         </form>
-        <Button variant="text" startIcon={<DeleteIcon color="info" />} color="secondary" sx={{ textTransform: 'none' }}>
+        <Button
+          variant="text"
+          startIcon={<DeleteIcon color="info" />}
+          color="secondary"
+          sx={{ textTransform: 'none' }}
+          onClick={deletePhoto}
+        >
           Delete photo
         </Button>
       </Box>

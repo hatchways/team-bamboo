@@ -1,9 +1,14 @@
-const Profile = require('../models/Profile');
-const asyncHandler = require('express-async-handler');
-const fs = require('fs');
-const util = require('util');
+const Profile = require("../models/Profile");
+const asyncHandler = require("express-async-handler");
+const fs = require("fs");
+const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
-const { uploadFileToS3, uploadImages, getFileStream } = require('../s3');
+const {
+  uploadFileToS3,
+  uploadImages,
+  getFileStream,
+  deleteFile
+} = require("../s3");
 
 // @route PUT /profile/edit
 // @desc edit user profile
@@ -28,11 +33,11 @@ exports.editProfile = asyncHandler(async (req, res, next) => {
 // @desc Get user profile data
 // @access Private
 exports.loadProfile = asyncHandler(async (req, res, next) => {
-  const profile = await User.findById(req.user.id, 'profile');
+  const profile = await User.findById(req.user.id, "profile");
 
   if (!profile) {
     res.status(401);
-    throw new Error('Not authorized');
+    throw new Error("Not authorized");
   }
 
   res.status(200).json({
@@ -71,7 +76,7 @@ exports.retrieveImgUrls = asyncHandler(async (req, res) => {
       await unlinkFile(file.path);
     })
   );
-  res.status(201).json('image uploaded');
+  res.status(201).json("image uploaded");
 });
 
 // @route POST /profile/upload-avatar
@@ -98,4 +103,20 @@ exports.getAvatarReadStream = async (req, res) => {
   const key = req.params.key;
   const readStream = getFileStream(key);
   readStream.pipe(res);
+};
+
+// @route DELETE /profile/photo/:key
+// @desc Delete a profile photo from sever
+// @access Private
+exports.deleteProfilePhoto = async (req, res) => {
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (!profile) {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
+  }
+  const key = req.params.key;
+  const result = await deleteFile(key);
+  profile.photo = "";
+  await profile.save();
+  res.status(201).json("profile photo deleted");
 };
