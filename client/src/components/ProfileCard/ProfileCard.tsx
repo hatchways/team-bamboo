@@ -1,6 +1,7 @@
-import { Card, CardMedia, Box, Typography } from '@mui/material';
-import { Profile } from '../../interface/Profile';
 import { Room } from '@mui/icons-material';
+import { Card, CardContent, CardMedia, Grid, Typography, Avatar } from '@mui/material';
+import { Profile } from '../../interface/Profile';
+import Gallery from './Gallery';
 
 interface PropTypes {
   profile: Profile;
@@ -8,25 +9,29 @@ interface PropTypes {
 
 const ProfileCard = ({ profile }: PropTypes) => {
   return (
-    <Card>
-      <CardMedia image={profile.coverPhoto} title="cover photo" sx={{ height: '20%' }} />
-      <Typography>{profile.name}</Typography>
-      <Typography>
-        {<Room />} {profile.city}
-      </Typography>
-      <Typography>About me</Typography>
-      <Typography>{profile.description}</Typography>
-      <Box display="flex" flexDirection="row">
-        {/* <CardMedia
-          key={'profile.uploadedImages[0]'}
-          image={profile.uploadedImages[0]}
-          title="gallery photo"
-          sx={{ height: '50px' }}
-        /> */}
-        {profile.uploadedImages.map((image, i) => (
-          <img width="20%" key={image} src={image} alt={`gallery photo ${i + 1}`} />
-        ))}
-      </Box>
+    <Card sx={{ width: '50%' }}>
+      <CardMedia image={profile.coverPhoto} title="cover photo" sx={{ minHeight: '200px' }} />
+      <CardContent sx={{ position: 'relative', bottom: '135px', marginBottom: '-135px', padding: '30px' }}>
+        <Grid
+          container
+          direction="column"
+          alignItems="center"
+          justifyContent="space-evenly"
+          sx={{ minHeight: '600px' }}
+        >
+          <Avatar sx={{ border: '4px solid white', width: '170px', height: '170px' }} src={profile.photo} />
+          <Typography variant="h5">{profile.name}</Typography>
+          <Typography>
+            <Room sx={{ margin: '0rem 0.3rem', color: 'primary.main' }} />
+            {profile.city}
+          </Typography>
+          <Typography variant="h6" sx={{ width: '100%' }}>
+            About me
+          </Typography>
+          <Typography>{profile.description}</Typography>
+          <Gallery images={profile.uploadedImages} />
+        </Grid>
+      </CardContent>
     </Card>
   );
 };
