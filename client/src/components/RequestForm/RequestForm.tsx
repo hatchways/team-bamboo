@@ -1,6 +1,7 @@
 import { DateTimePicker } from '@mui/lab';
 import { Button, Card, Grid, TextField, Typography } from '@mui/material';
 import { FormEvent, useState } from 'react';
+import { useSnackBar } from '../../context/useSnackbarContext';
 import { Profile } from '../../interface/Profile';
 import StarRating from '../StarRating/StarRating';
 
@@ -12,9 +13,11 @@ const RequestForm = ({ profile }: PropTypes) => {
   const hourFromNowTimestamp = Date.now() + MILLISECONDS_PER_HOUR;
   const [dropoff, setDropoff] = useState<Date | null>(new Date());
   const [pickup, setPickup] = useState<Date | null>(new Date(hourFromNowTimestamp));
+  const { updateSnackBarMessage } = useSnackBar();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    updateSnackBarMessage('Request sent');
   };
 
   return (
