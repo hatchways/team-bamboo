@@ -93,13 +93,13 @@ exports.retrieveAvatarUrl = asyncHandler(async (req, res) => {
   profile.photo = result.Location;
   await profile.save();
   await unlinkFile(file.path);
-  res.send({ imagePath: `/photo/${result.Key}` });
+  res.status(201).json({ imagePath: `/photo/${result.Key}` });
 });
 
 // @route GET /profile/photo/:key
 // @desc Get a profile photo from sever
 // @access Private
-exports.getAvatarReadStream = async (req, res) => {
+exports.getAvatarReadStream = (req, res) => {
   const key = req.params.key;
   const readStream = getFileStream(key);
   readStream.pipe(res);

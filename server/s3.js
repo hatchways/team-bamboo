@@ -21,15 +21,7 @@ const uploadFileToS3 = (file) => {
     Body: fileStream,
     Key: file.filename
   };
-  return s3
-    .upload(uploadParams, (error, data) => {
-      if (error) {
-        console.error(error);
-      }
-      console.log(`File uploaded successfully at ${data.Location}`);
-      resolve(data.Location);
-    })
-    .promise();
+  return s3.upload(uploadParams).promise();
 };
 
 // delete a file from s3

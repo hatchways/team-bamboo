@@ -1,6 +1,6 @@
 import { FetchOptions } from '../../interface/FetchOptions';
 
-const deleteProfilePhoto = async (photoPath: string) => {
+const deleteProfilePhoto = async (photoPath: string): Promise<void> => {
   const fetchOptions: FetchOptions = {
     method: 'DELETE',
     credentials: 'include',
