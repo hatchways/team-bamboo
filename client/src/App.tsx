@@ -10,9 +10,12 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import { AuthProvider } from './context/useAuthContext';
 import { SocketProvider } from './context/useSocketContext';
 import { SnackBarProvider } from './context/useSnackbarContext';
+import DateAdapter from '@mui/lab/AdapterDateFns';
 import { Navbar } from './components/Navbar/Navbar';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
+import Profile from './pages/Profile/ProfilePage';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 function App(): JSX.Element {
@@ -22,17 +25,20 @@ function App(): JSX.Element {
         <SnackBarProvider>
           <AuthProvider>
             <SocketProvider>
-              <CssBaseline />
-              <Navbar />
-              <Switch>
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/signup" component={Signup} />
-                <Route exact path="/dashboard" component={Dashboard} />
-                <Route path="/profile/settings" component={Settings} />
-                <Route path="*">
-                  <NotFound />
-                </Route>
-              </Switch>
+              <LocalizationProvider dateAdapter={DateAdapter}>
+                <CssBaseline />
+                <Navbar />
+                <Switch>
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/signup" component={Signup} />
+                  <Route exact path="/dashboard" component={Dashboard} />
+                  <Route exact path="/profile/settings" component={Settings} />
+                  <Route exact path="/profile" component={Profile} />
+                  <Route path="*">
+                    <NotFound />
+                  </Route>
+                </Switch>
+              </LocalizationProvider>
             </SocketProvider>
           </AuthProvider>
         </SnackBarProvider>
