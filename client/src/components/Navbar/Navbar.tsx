@@ -39,6 +39,11 @@ const menuItems: MenuItemData[] = [
     authenticated: false,
   },
   {
+    item: <UnreadNotificationsBtn>Notifications</UnreadNotificationsBtn>,
+    canView: [AccountType.PET_SITTER, AccountType.PET_OWNER],
+    authenticated: true,
+  },
+  {
     item: 'My Jobs',
     resource: '/my-jobs',
     canView: [AccountType.PET_SITTER],
@@ -81,7 +86,8 @@ const menuItems: MenuItemData[] = [
 const MenuItem: React.FC<{
   resource?: string;
   item: string | JSX.Element;
-}> = ({ resource, item }) => {
+  index: number;
+}> = ({ resource, item, index }) => {
   const classes = useStyles();
 
   return (
@@ -115,7 +121,6 @@ const Navbar: React.FC = () => {
     handleClose();
     logout();
   };
-
   const checkCanView = useMemo<FinalCheck>(() => checkProfile(profile, loggedInUser), [loggedInUser, profile]);
 
   const renderMenuItems = () =>
@@ -127,72 +132,74 @@ const Navbar: React.FC = () => {
     });
 
   return (
-    <Grid
-      className={clsx(classes.navbar, location.pathname === '/' && classes.transparentNavbar)}
-      justifyContent="space-between"
-      alignItems="center"
-      container
-    >
-      <Grid xs={4} md={6} item>
-        <img className={classes.navbarLogo} src={lovingSitterLogo} />
-      </Grid>
-      <Grid xs={8} md={6} item>
-        <Grid container alignItems="center" gap={2} justifyContent="flex-end">
-          {renderMenuItems()}
-          {loggedInUser && (
-            <Grid xs={2} item>
-              <>
-                <IconButton
-                  size="large"
-                  aria-label="account profile picture"
-                  aria-controls="menu-navbar"
-                  arais-haspopup="true"
-                  onClick={handleMenuOpen}
-                  color="inherit"
-                >
-                  <img style={{ width: 50 }} src={`https://robohash.org/${loggedInUser.email}`} />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={handleClose}
-                >
-                  <DropdownMenuItem component={NavLink} to="/profile/settings" onClick={handleClose}>
-                    <ListItemIcon>
-                      <Settings fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Settings</ListItemText>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                      <Person fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Profile</ListItemText>
-                  </DropdownMenuItem>
-                  <Divider />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                      <Logout fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Logout</ListItemText>
-                  </DropdownMenuItem>
-                </Menu>
-              </>
-            </Grid>
-          )}
+    <UnreadNotifications>
+      <Grid
+        className={clsx(classes.navbar, location.pathname === '/' && classes.transparentNavbar)}
+        justifyContent="space-between"
+        alignItems="center"
+        container
+      >
+        <Grid xs={4} md={6} item>
+          <img className={classes.navbarLogo} alt="Love Sitter logo" src={lovingSitterLogo} />
+        </Grid>
+        <Grid xs={8} md={6} item>
+          <Grid container alignItems="center" gap={2} justifyContent="flex-end">
+            {renderMenuItems()}
+            {loggedInUser && (
+              <Grid xs={2} item>
+                <>
+                  <IconButton
+                    size="large"
+                    aria-label="account profile picture"
+                    aria-controls="menu-navbar"
+                    arais-haspopup="true"
+                    onClick={handleMenuOpen}
+                    color="inherit"
+                  >
+                    <img style={{ width: 50 }} src={`https://robohash.org/${loggedInUser.email}`} />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={open}
+                    onClose={handleClose}
+                  >
+                    <DropdownMenuItem component={NavLink} to="/profile/settings" onClick={handleClose}>
+                      <ListItemIcon>
+                        <Settings fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Settings</ListItemText>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleClose}>
+                      <ListItemIcon>
+                        <Person fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Profile</ListItemText>
+                    </DropdownMenuItem>
+                    <Divider />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Logout</ListItemText>
+                    </DropdownMenuItem>
+                  </Menu>
+                </>
+              </Grid>
+            )}
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </UnreadNotifications>
   );
 };
 
