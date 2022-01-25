@@ -14,7 +14,7 @@ import {
   styled,
 } from '@mui/material';
 import { AccountType } from '../../types/AccountType';
-
+import { UnreadNotifications, UnreadNotificationsBtn } from '../UnreadNotifications';
 import lovingSitterLogo from '../../images/logo.svg';
 import { useStyles } from './useStyles';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -86,8 +86,7 @@ const menuItems: MenuItemData[] = [
 const MenuItem: React.FC<{
   resource?: string;
   item: string | JSX.Element;
-  index: number;
-}> = ({ resource, item, index }) => {
+}> = ({ resource, item }) => {
   const classes = useStyles();
 
   return (
