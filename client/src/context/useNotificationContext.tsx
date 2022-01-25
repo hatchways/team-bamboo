@@ -1,7 +1,7 @@
 import type { ValidationError, RequestError, OnSuccess, OnError, OnLoading } from '../interface/ApiData';
 import type { GetNotificationsData } from '../interface/Notification';
 import { useContext, createContext, useEffect, ReactElement, useCallback, useRef, ReactNode } from 'react';
-import { useRequest } from '../hooks';
+import { useFetchRequest } from '../hooks';
 import { getNotifications } from '../helpers/APICalls/notifications';
 
 interface NotificationsContext {
@@ -40,7 +40,7 @@ interface Props {
 }
 
 export const NotificationsProvider = ({ children, loadOnMount, delay, ...params }: Props): ReactElement => {
-  const { data, error, isLoading, makeRequest, matchRequest } = useRequest<GetNotificationsData>(delay || 0);
+  const { data, error, isLoading, makeRequest, matchRequest } = useFetchRequest<GetNotificationsData>(delay || 0);
   const loaded = useRef(false);
 
   const loadNotifications = useCallback(() => makeRequest(() => getNotifications(params)), [makeRequest, params]);
