@@ -15,6 +15,8 @@ const ShowMoreBtn = styled(Button)(({ theme }) => ({
   borderColor: theme.palette.grey[400],
 }));
 
+const cards = Array(6).fill(1);
+
 const ProfileListings = () => {
   return (
     <PageContainer>
@@ -22,24 +24,11 @@ const ProfileListings = () => {
         <Title>Your search results</Title>
         <SearchBar />
         <Grid container spacing={8} sx={{ pt: 4 }}>
-          <Grid item xl={2} lg={4} md={6} xs={12}>
-            <ProfileCard />
-          </Grid>
-          <Grid item xl={2} lg={4} md={6} xs={12}>
-            <ProfileCard />
-          </Grid>
-          <Grid item xl={2} lg={4} md={6} xs={12}>
-            <ProfileCard />
-          </Grid>
-          <Grid item xl={2} lg={4} md={6} xs={12}>
-            <ProfileCard />
-          </Grid>
-          <Grid item xl={2} lg={4} md={6} xs={12}>
-            <ProfileCard />
-          </Grid>
-          <Grid item xl={2} lg={4} md={6} xs={12}>
-            <ProfileCard />
-          </Grid>
+          {cards.map((_, index) => (
+            <Grid key={index} item xl={2} lg={4} md={6} xs={12}>
+              <ProfileCard id={index.toString()} />
+            </Grid>
+          ))}
         </Grid>
         <Box width="100%" display="flex" justifyContent="center" pt={2}>
           <ShowMoreBtn variant="outlined" color="inherit">
