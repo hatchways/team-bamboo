@@ -8,6 +8,7 @@ import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Home from './pages/Home/Home';
+import ProfileListings from './pages/ProfileListings/ProfileListings';
 import { AuthProvider } from './context/useAuthContext';
 import { SocketProvider } from './context/useSocketContext';
 import { SnackBarProvider } from './context/useSnackbarContext';
@@ -16,7 +17,10 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { Navbar } from './components/Navbar/Navbar';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
+import Bookings from './pages/Bookings/Bookings';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+
+const unAuthUserRoutes = ['/', '/login', '/signup', '/listings'];
 
 function App(): JSX.Element {
   return (
@@ -29,10 +33,11 @@ function App(): JSX.Element {
                 <CssBaseline />
                 <Navbar />
                 <Switch>
-                  <Route exact path="/" component={Home} />
+                  <Route exact path="/bookings" component={Bookings} />
                   <Route exact path="/login" component={Login} />
                   <Route exact path="/signup" component={Signup} />
                   <Route exact path="/dashboard" component={Dashboard} />
+                  <Route exact path="/listings" component={ProfileListings} />
                   <Route path="/profile/settings" component={Settings} />
                   <Route path="*">
                     <NotFound />

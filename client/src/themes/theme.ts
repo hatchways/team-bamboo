@@ -5,6 +5,12 @@ export const theme = createTheme({
     primary: {
       main: '#f14140',
     },
+    secondary: {
+      main: '#afafaf',
+    },
+    info: {
+      main: '#555',
+    },
   },
   typography: {
     fontFamily: '"Roboto", "Open Sans", "sans-serif"',

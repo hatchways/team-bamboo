@@ -1,6 +1,6 @@
 const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
-const path = require('path');
+const path = require("path");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
@@ -52,23 +52,25 @@ exports.retriveImgUrls = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Profile doesn't exist");
   }
- 
+
   const files = req.files;
   const results = await Promise.all(uploadImages(files));
   const saveImagesToDb = async (results) => {
     for (let i = 0; i < results.length; i++) {
       const imageUrl = {
-        filePath: results[i].Location
+        filePath: results[i].Location,
       };
       profile.uploadedImages.push(imageUrl);
       await profile.save();
     }
-  }
+  };
   saveImagesToDb(results);
 
-  //delete images in the uploads folder 
-  await Promise.all(files.map(async (file) => {
-    await unlinkFile(file.path);
-  }));
+  //delete images in the uploads folder
+  await Promise.all(
+    files.map(async (file) => {
+      await unlinkFile(file.path);
+    })
+  );
   res.status(201).json("image uploaded");
 });
