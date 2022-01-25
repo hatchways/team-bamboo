@@ -4,15 +4,20 @@ const imgUrlSchema = new mongoose.Schema({
   filePath: {
     type: String,
     required: true,
-    unique: true
-  }
+    unique: true,
+  },
 });
 
 const profileSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref: "User",
+  },
+  isSitter: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
   isSitter: {
     type: Boolean,
@@ -29,7 +34,7 @@ const profileSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['male', 'female', 'other'],
+    enum: ["male", "female", "other"],
   },
   address: {
     type: String,
@@ -41,7 +46,7 @@ const profileSchema = new mongoose.Schema({
   },
   birthday: {
     type: Date,
-    default: null
+    default: null,
   },
   photo: {
     type: String,
