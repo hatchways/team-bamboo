@@ -1,5 +1,13 @@
 const mongoose = require("mongoose");
 
+const imgUrlSchema = new mongoose.Schema({
+  filePath: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
+
 const profileSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -39,6 +47,7 @@ const profileSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  uploadedImages: [imgUrlSchema],
 });
 
 module.exports = Profile = mongoose.model("Profile", profileSchema);
