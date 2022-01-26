@@ -32,6 +32,10 @@ const profileSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  jobTitle: {
+    type: String,
+    default: "",
+  },
   gender: {
     type: String,
     enum: ["male", "female", "other"],
@@ -51,6 +55,9 @@ const profileSchema = new mongoose.Schema({
   photo: {
     type: String,
     default: "",
+  },
+  hourlyRate: {
+    type: Number,
   },
   uploadedImages: [imgUrlSchema],
 });
