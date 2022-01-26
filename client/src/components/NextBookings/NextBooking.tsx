@@ -1,7 +1,7 @@
-import { Avatar, Card, CardContent, Grid, IconButton, Typography } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import format from 'date-fns/format';
 import { Booking } from '../../interface/Booking';
+import HandleRequestButton from '../HandleRequestButton/HandleRequestButton';
 
 interface PropTypes {
   booking: Booking;
@@ -13,9 +13,7 @@ const NextBooking = ({ booking }: PropTypes) => {
       <CardContent>
         <Grid container direction="row" justifyContent="space-between" alignItems="flex-end">
           <Typography sx={{ fontVariant: 'small-caps', fontWeight: 'bold' }}>your next booking:</Typography>
-          <IconButton>
-            <SettingsIcon />
-          </IconButton>
+          <HandleRequestButton />
         </Grid>
         <Typography sx={{ margin: '10px 0px' }}>
           {format(booking.start, 'd LLLL y, haaa')} - {format(booking.end, 'haaa')}
