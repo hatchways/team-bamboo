@@ -1,3 +1,4 @@
+import type { Profile } from '../../interface/Profile';
 import { FunctionComponent } from 'react';
 import {
   Stack,
@@ -50,30 +51,30 @@ const Location = styled(Typography)(({ theme }) => ({
   color: theme.palette.grey[500],
 }));
 
-interface Props {
-  id: string;
+interface Props extends Omit<Profile, 'userId' | 'isSitter' | 'gender' | 'telephone' | 'birthday' | 'uploadedImages'> {
+  hourlyRate: number;
 }
 
-const ProfileCard: FunctionComponent<Props> = ({ id }) => {
+const ProfileCard: FunctionComponent<Props> = (profile) => {
   return (
     <StyledCard variant="elevation">
-      <CardActionArea component={Link} to={`profile-details/${id}`} disableRipple>
+      <CardActionArea component={Link} to={`profile-details/${profile.id}`} disableRipple>
         <CardContent sx={{ p: 0 }}>
           <Stack alignItems="center" gap={1} p={2} pt={4}>
-            <ProfileAvatar src="https://robohash.org/hello-world" />
+            <ProfileAvatar src={profile.photo || `https://robohash.org/${profile.id}`} />
             <Stack alignItems="center">
-              <Title>Norma Byers</Title>
-              <Status>Loving pet sitter</Status>
+              <Title>{profile?.name || 'No Name'}</Title>
+              <Status>{profile?.jobTitle || 'Unknown'}</Status>
               <Rating
                 name="rating"
                 readOnly
-                value={3}
+                value={profile?.averageRating || 0}
                 size="small"
                 emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
               />
             </Stack>
             <Description variant="body1" fontSize={14}>
-              Dog sitting, cat sitting, pocket pet and bird care
+              {profile?.description || 'No description provided'}
             </Description>
           </Stack>
           <Box pt={3}>
@@ -81,10 +82,10 @@ const ProfileCard: FunctionComponent<Props> = ({ id }) => {
             <Stack direction="row" justifyContent="space-between" alignItems="center" p={3}>
               <Stack direction="row" spacing={0.5}>
                 <LocationOn color="primary" />
-                <Location>Toronto, Ontario</Location>
+                <Location>{profile?.address || 'No location'}</Location>
               </Stack>
               <Typography fontWeight="bold" variant="h6">
-                $14/hr
+                ${profile.hourlyRate}/hr
               </Typography>
             </Stack>
           </Box>
