@@ -16,6 +16,7 @@ import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
 import Bookings from './pages/Bookings/Bookings';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import { BookingsProvider } from './context/useBookingsContext';
 
 const unAuthUserRoutes = ['/', '/login', '/signup', '/listings'];
 
@@ -26,19 +27,21 @@ function App(): JSX.Element {
         <SnackBarProvider>
           <AuthProvider unAuthUserRoutes={unAuthUserRoutes}>
             <SocketProvider>
-              <CssBaseline />
-              <Navbar />
-              <Switch>
-                <Route exact path="/bookings" component={Bookings} />
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/signup" component={Signup} />
-                <Route exact path="/dashboard" component={Dashboard} />
-                <Route exact path="/listings" component={ProfileListings} />
-                <Route path="/profile/settings" component={Settings} />
-                <Route path="*">
-                  <NotFound />
-                </Route>
-              </Switch>
+              <BookingsProvider>
+                <CssBaseline />
+                <Navbar />
+                <Switch>
+                  <Route exact path="/bookings" component={Bookings} />
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/signup" component={Signup} />
+                  <Route exact path="/dashboard" component={Dashboard} />
+                  <Route exact path="/listings" component={ProfileListings} />
+                  <Route path="/profile/settings" component={Settings} />
+                  <Route path="*">
+                    <NotFound />
+                  </Route>
+                </Switch>
+              </BookingsProvider>
             </SocketProvider>
           </AuthProvider>
         </SnackBarProvider>
