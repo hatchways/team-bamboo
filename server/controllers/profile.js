@@ -74,3 +74,43 @@ exports.retriveImgUrls = asyncHandler(async (req, res) => {
   );
   res.status(201).json("image uploaded");
 });
+
+// @route GET /profiles/sitters?location=null&start=Date&end=Date&limit=6&page=1&order=asc
+// @desc fetch all profiles that match the provided criteria
+// @access Public
+
+exports.getAllSitters = asyncHandler(async (req, res) => {
+  let { limit = 6, page = 1, order = "desc" } = req.query;
+  limit = parseInt(limit);
+  page = parseInt(page);
+
+  const query = {
+    isSitter: {
+      $eq: true,
+    },
+    hourlyRate: {
+      $exists: true,
+    },
+  };
+
+  if (req.user) {
+    query.userId = {
+      $ne: req.user.id,
+    };
+  }
+
+  const profiles = await Profile.find(query)
+    .skip(limit * (page - 1))
+    .limit(limit)
+    .lean()
+    .exec();
+
+  res.status(200).json({
+    success: {
+      profiles: profiles.map(({ _id, ...profile }) => ({
+        id: _id,
+        ...profile,
+      })),
+    },
+  });
+});
