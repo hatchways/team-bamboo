@@ -34,6 +34,8 @@ const profileSchema = new mongoose.Schema({
   },
   jobTitle: {
     type: String,
+    max: 20,
+    trim: "",
     default: "",
   },
   gender: {
@@ -58,6 +60,12 @@ const profileSchema = new mongoose.Schema({
   },
   hourlyRate: {
     type: Number,
+    validate: [
+      function (val) {
+        return val > 0;
+      },
+      "Hourly rate must be a positive number",
+    ],
   },
   uploadedImages: [imgUrlSchema],
 });
