@@ -22,9 +22,7 @@ export interface SitterProfile extends Profile {
 export interface GetSitterProfileParams {
   limit?: number;
   page?: number;
-  order?: 'asc' | 'desc';
-  sort?: keyof Profile;
-  address?: string;
+  location?: string;
   start?: string;
   end?: string;
 }
