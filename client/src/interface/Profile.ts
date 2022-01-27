@@ -16,6 +16,7 @@ export interface Profile {
 }
 
 export interface SitterProfile extends Profile {
+  isSitter: true;
   hourlyRate: number;
 }
 export interface GetSitterProfileParams {
