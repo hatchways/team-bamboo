@@ -1,16 +1,36 @@
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { MouseEvent, useState } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { Status } from '../../interface/Booking';
+import { useBookings } from '../../context/useBookingsContext';
+import { useAuth } from '../../context/useAuthContext';
+import { useSnackBar } from '../../context/useSnackbarContext';
 
-const HandleRequestButton = () => {
+interface PropTypes {
+  bookingId: string;
+}
+
+const HandleRequestButton = ({ bookingId }: PropTypes) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { setBookingStatus } = useBookings();
+  const { profile } = useAuth();
+  const { updateSnackBarMessage } = useSnackBar();
+
+  if (!profile.isSitter) {
+    return <></>;
+  }
+
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (action: string) => {
+  const handleClose = (status?: Status) => {
+    if (status) {
+      setBookingStatus(bookingId, status);
+      updateSnackBarMessage('Request ' + status);
+    }
     setAnchorEl(null);
   };
 
@@ -26,7 +46,7 @@ const HandleRequestButton = () => {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
