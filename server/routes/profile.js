@@ -3,10 +3,12 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const protect = require("../middleware/auth");
+const { retrieveUser } = require("../middleware/user");
 const {
   editProfile,
   loadProfile,
   retriveImgUrls,
+  getAllSitters,
 } = require("../controllers/profile");
 
 const fileStorageEngine = multer.diskStorage({
@@ -37,5 +39,7 @@ router
 router.route("/edit").put(protect, editProfile);
 
 router.route("/load").get(protect, loadProfile);
+
+router.route("/sitters").get(retrieveUser, getAllSitters);
 
 module.exports = router;
