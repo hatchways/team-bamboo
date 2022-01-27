@@ -12,6 +12,7 @@ import {
   Divider,
   Box,
 } from '@mui/material';
+import LinesEllipsis from 'react-lines-ellipsis';
 import { LocationOn, Star } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
@@ -39,11 +40,13 @@ const Status = styled(Typography)(({ theme }) => ({
   color: theme.palette.grey[500],
 }));
 
-const Description = styled(Typography)(({ theme }) => ({
+const Description = styled(LinesEllipsis)(({ theme }) => ({
   ...theme.typography.body1,
   textAlign: 'center',
   fontSize: 16,
   fontWeight: 400,
+  height: 50,
+  maxHeight: 50,
 }));
 
 const Location = styled(Typography)(({ theme }) => ({
@@ -73,9 +76,12 @@ const ProfileCard: FunctionComponent<Props> = (profile) => {
                 emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
               />
             </Stack>
-            <Description variant="body1" fontSize={14}>
-              {profile?.description || 'No description provided'}
-            </Description>
+            <Description
+              text={profile?.description || 'No description provided'}
+              maxLine="2"
+              basedOn="letters"
+              trimRight
+            />
           </Stack>
           <Box pt={3}>
             <Divider />
