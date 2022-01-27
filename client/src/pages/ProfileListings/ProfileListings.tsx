@@ -23,7 +23,6 @@ const ProfileListings = () => {
   const query = useQuery();
   const { matchProfiles, loadMore, isLoading } = useSitterProfiles({
     ...query,
-    limit: 8,
     delay: 1000,
   });
 
