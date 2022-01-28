@@ -16,7 +16,7 @@ const HandleRequestButton = ({ bookingId }: PropTypes) => {
   const { profile } = useAuth();
   const { updateSnackBarMessage } = useSnackBar();
 
-  if (!profile.isSitter) {
+  if (!profile?.isSitter) {
     return <></>;
   }
 
