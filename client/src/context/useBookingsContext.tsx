@@ -3,8 +3,9 @@ import { getBookings, updateBooking, SingleBookingResponse } from '../helpers/AP
 import { Booking, Status } from '../interface/Booking';
 
 interface BookingsContext {
-  bookings: Booking[] | null | undefined;
+  bookings: Booking[] | null;
   setBookingStatus: (id: string, status: Status) => Promise<SingleBookingResponse>;
+  isLoadingBookings: boolean;
 }
 
 interface ProviderPropTypes {
@@ -12,14 +13,18 @@ interface ProviderPropTypes {
 }
 
 const BookingsContext = createContext<BookingsContext>({
-  bookings: undefined,
+  bookings: [],
   setBookingStatus: async (): Promise<SingleBookingResponse> => ({}),
+  isLoadingBookings: true,
 });
 
 export const BookingsProvider = ({ children }: ProviderPropTypes) => {
-  const [bookings, setBookings] = useState<Booking[] | null | undefined>(undefined);
+  const [bookings, setBookings] = useState<Booking[] | null>([]);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(true);
+
   const fetchBookings = useCallback(async () => {
     try {
+      setIsLoadingBookings(true);
       const response = await getBookings();
       const { success } = response;
       if (success) {
@@ -34,6 +39,8 @@ export const BookingsProvider = ({ children }: ProviderPropTypes) => {
       }
     } catch (e) {
       setBookings(null);
+    } finally {
+      setIsLoadingBookings(false);
     }
   }, []);
 
@@ -54,7 +61,11 @@ export const BookingsProvider = ({ children }: ProviderPropTypes) => {
     return booking;
   }, []);
 
-  return <BookingsContext.Provider value={{ bookings, setBookingStatus }}>{children}</BookingsContext.Provider>;
+  return (
+    <BookingsContext.Provider value={{ bookings, setBookingStatus, isLoadingBookings }}>
+      {children}
+    </BookingsContext.Provider>
+  );
 };
 
 export const useBookings = (): BookingsContext => useContext(BookingsContext);
