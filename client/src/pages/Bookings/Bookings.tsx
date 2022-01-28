@@ -1,5 +1,3 @@
-import { useAuth } from '../../context/useAuthContext';
-import { useHistory } from 'react-router-dom';
 import { Box, Card, CircularProgress, Grid } from '@mui/material';
 import Calendar from '../../components/Calendar/Calendar';
 import PageContainer from '../../components/PageContainer/PageContainer';
@@ -10,15 +8,10 @@ import { useSnackBar } from '../../context/useSnackbarContext';
 import { useBookings } from '../../context/useBookingsContext';
 
 const Bookings = () => {
-  const { loggedInUser } = useAuth();
-  const history = useHistory();
-  const { bookings } = useBookings();
+  const { bookings, isLoadingBookings } = useBookings();
   const { updateSnackBarMessage } = useSnackBar();
-  if (loggedInUser === undefined || bookings === undefined) return <CircularProgress />;
-  if (!loggedInUser) {
-    history.push('/login');
-    return <CircularProgress />;
-  }
+
+  if (isLoadingBookings) return <CircularProgress />;
 
   if (!bookings) {
     updateSnackBarMessage('Error fetching bookings');
