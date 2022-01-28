@@ -8,7 +8,7 @@ const {
   loadProfile,
   retrieveImgUrls,
   retrieveAvatarUrl,
-  getAvatarReadStream,
+  getAvatar,
   deleteProfilePhoto
 } = require("../controllers/profile");
 
@@ -41,7 +41,7 @@ router
   .route("/upload-avatar")
   .post(protect, upload.single("avatar"), retrieveAvatarUrl);
 
-router.route("/photo/:key").get(protect, getAvatarReadStream);
+router.route("/photo/:key").get(protect, getAvatar);
 
 router.route("/photo/:key").delete(protect, deleteProfilePhoto);
 

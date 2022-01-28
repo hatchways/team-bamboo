@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import { AuthProvider } from './context/useAuthContext';
 import { SocketProvider } from './context/useSocketContext';
 import { SnackBarProvider } from './context/useSnackbarContext';
+import { ProfilePhotoProvider } from './context/useProfilePhotoContext';
 import { Navbar } from './components/Navbar/Navbar';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
@@ -22,17 +23,19 @@ function App(): JSX.Element {
         <SnackBarProvider>
           <AuthProvider>
             <SocketProvider>
-              <CssBaseline />
-              <Navbar />
-              <Switch>
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/signup" component={Signup} />
-                <Route exact path="/dashboard" component={Dashboard} />
-                <Route path="/profile/settings" component={Settings} />
-                <Route path="*">
-                  <NotFound />
-                </Route>
-              </Switch>
+              <ProfilePhotoProvider>
+                <CssBaseline />
+                <Navbar />
+                <Switch>
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/signup" component={Signup} />
+                  <Route exact path="/dashboard" component={Dashboard} />
+                  <Route path="/profile/settings" component={Settings} />
+                  <Route path="*">
+                    <NotFound />
+                  </Route>
+                </Switch>
+              </ProfilePhotoProvider>
             </SocketProvider>
           </AuthProvider>
         </SnackBarProvider>

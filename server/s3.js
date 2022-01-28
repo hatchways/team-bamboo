@@ -19,6 +19,7 @@ const uploadFileToS3 = (file) => {
   const uploadParams = {
     Bucket: bucketName,
     Body: fileStream,
+    ContentType: file.mimetype,
     Key: file.filename
   };
   return s3.upload(uploadParams).promise();
@@ -42,13 +43,4 @@ const uploadImages = (files) => {
   return uploadPromises;
 };
 
-// download a file from s3
-const getFileStream = (fileKey) => {
-  const downloadParams = {
-    Key: fileKey,
-    Bucket: bucketName
-  };
-  return s3.getObject(downloadParams).createReadStream();
-};
-
-module.exports = { uploadFileToS3, uploadImages, getFileStream, deleteFile };
+module.exports = { uploadFileToS3, uploadImages, deleteFile };

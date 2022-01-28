@@ -3,12 +3,7 @@ const asyncHandler = require("express-async-handler");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
-const {
-  uploadFileToS3,
-  uploadImages,
-  getFileStream,
-  deleteFile
-} = require("../s3");
+const { uploadFileToS3, uploadImages, deleteFile } = require("../s3");
 
 // @route PUT /profile/edit
 // @desc edit user profile
@@ -93,16 +88,23 @@ exports.retrieveAvatarUrl = asyncHandler(async (req, res) => {
   profile.photo = result.Location;
   await profile.save();
   await unlinkFile(file.path);
-  res.status(201).json({ imagePath: `/photo/${result.Key}` });
+  res.status(201).json({
+    imageKey: result.Key
+  });
 });
 
 // @route GET /profile/photo/:key
 // @desc Get a profile photo from sever
 // @access Private
-exports.getAvatarReadStream = (req, res) => {
-  const key = req.params.key;
-  const readStream = getFileStream(key);
-  readStream.pipe(res);
+exports.getAvatar = async (req, res) => {
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (!profile) {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
+  }
+  res.status(201).json({
+    imagePath: profile.photo
+  });
 };
 
 // @route DELETE /profile/photo/:key

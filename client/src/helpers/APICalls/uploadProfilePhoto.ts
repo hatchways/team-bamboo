@@ -1,7 +1,7 @@
 import { FetchOptions } from '../../interface/FetchOptions';
-import { imageUrlData } from '../../interface/imageUrlData';
+import { uploadPhotoData } from '../../interface/uploadPhotoData';
 
-const uploadProfilePhoto = async (formData: FormData): Promise<imageUrlData> => {
+const uploadProfilePhoto = async (formData: FormData): Promise<uploadPhotoData> => {
   const fetchOptions: FetchOptions = {
     method: 'POST',
     body: formData,

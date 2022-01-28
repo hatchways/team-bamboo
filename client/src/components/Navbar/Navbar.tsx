@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { useAuth } from '../../context/useAuthContext';
+import { useProfilePhoto } from '../../context/useProfilePhotoContext';
 import {
   Button,
   Divider,
@@ -96,6 +97,7 @@ const Navbar: React.FC = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { loggedInUser, logout } = useAuth();
+  const { photoPath } = useProfilePhoto();
   const open = Boolean(anchorEl);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -113,6 +115,7 @@ const Navbar: React.FC = () => {
 
   const renderMenuItems = () => {
     // TODO: conditionally render based on profile type
+    console.log(photoPath);
     return menuItems.map((menu) => {
       if (menu.authenticated) {
         return loggedInUser && <MenuItem key={menu.resource} {...menu} />;
@@ -146,7 +149,10 @@ const Navbar: React.FC = () => {
                   onClick={handleMenuOpen}
                   color="inherit"
                 >
-                  <img style={{ width: 50 }} src={`https://robohash.org/${loggedInUser.email}`} />
+                  <img
+                    style={{ width: 50, borderRadius: '50%' }}
+                    src={photoPath ? photoPath : `https://robohash.org/${loggedInUser.email}`}
+                  />
                 </IconButton>
                 <Menu
                   id="menu-appbar"
