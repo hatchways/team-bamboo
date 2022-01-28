@@ -1,9 +1,8 @@
 import { DateTimePicker } from '@mui/lab';
-import { Button, Card, Grid, TextField, Typography } from '@mui/material';
+import { Button, Card, Grid, Rating, TextField, Typography } from '@mui/material';
 import { FormEvent, useState } from 'react';
 import { useSnackBar } from '../../context/useSnackbarContext';
 import { Profile } from '../../interface/Profile';
-import StarRating from '../StarRating/StarRating';
 
 interface PropTypes {
   profile: Profile;
@@ -32,7 +31,7 @@ const RequestForm = ({ profile }: PropTypes) => {
         >
           <Typography variant="h6">${profile.hourlyRate}/hr</Typography>
           <Grid item>
-            <StarRating rating={profile.averageRating} />
+            <Rating readOnly value={profile.averageRating} />
           </Grid>
           <DateTimePicker
             label="Drop off"
