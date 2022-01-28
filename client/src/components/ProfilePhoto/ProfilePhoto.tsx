@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box, Typography, Input, InputLabel, Button } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
 import Avatar from '@mui/material/Avatar';
 import SettingHeader from '../SettingsHeader/SettingsHeader';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,7 +10,6 @@ import { useProfilePhoto } from '../../context/useProfilePhotoContext';
 
 const ProfilePhoto = (): JSX.Element => {
   const [file, setFile] = useState<File>();
-  const [isUploading, setIsUploading] = useState<boolean>(false);
   const { photoKey, setPhotoKey, photoPath } = useProfilePhoto();
   const { updateSnackBarMessage } = useSnackBar();
 
@@ -22,7 +20,6 @@ const ProfilePhoto = (): JSX.Element => {
     setFile(e.target.files[0]);
     const formData = new FormData();
     formData.append('avatar', e.target.files[0]);
-    setIsUploading(true);
     uploadProfilePhoto(formData).then((data) => {
       if (data.error) {
         console.error(data.error);
@@ -30,12 +27,13 @@ const ProfilePhoto = (): JSX.Element => {
       }
       setPhotoKey(data.imageKey);
     });
-    setIsUploading(false);
     setFile(undefined);
+    updateSnackBarMessage('Photo uploaded!');
   };
 
   const deletePhoto = () => {
     deleteProfilePhoto(photoKey);
+    updateSnackBarMessage('Photo deleted!');
     setPhotoKey('');
   };
 
@@ -50,13 +48,9 @@ const ProfilePhoto = (): JSX.Element => {
         <form>
           <Input id="button-file" name="avatar" type="file" onChange={handleImgChange} sx={{ opacity: 0 }} />
           <InputLabel htmlFor="button-file">
-            {isUploading ? (
-              <LoadingButton loading sx={{ px: 1.5, py: 2, mb: 3 }} />
-            ) : (
-              <Button component="span" variant="outlined" color="primary" size="large" sx={{ px: 1.5, py: 2, mb: 3 }}>
-                Upload a file from your device
-              </Button>
-            )}
+            <Button component="span" variant="outlined" color="primary" size="large" sx={{ px: 1.5, py: 2, mb: 3 }}>
+              Upload a file from your device
+            </Button>
           </InputLabel>
         </form>
         <Button

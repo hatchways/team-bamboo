@@ -115,7 +115,6 @@ const Navbar: React.FC = () => {
 
   const renderMenuItems = () => {
     // TODO: conditionally render based on profile type
-    console.log(photoPath);
     return menuItems.map((menu) => {
       if (menu.authenticated) {
         return loggedInUser && <MenuItem key={menu.resource} {...menu} />;
@@ -150,7 +149,7 @@ const Navbar: React.FC = () => {
                   color="inherit"
                 >
                   <img
-                    style={{ width: 50, borderRadius: '50%' }}
+                    style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%' }}
                     src={photoPath ? photoPath : `https://robohash.org/${loggedInUser.email}`}
                   />
                 </IconButton>
