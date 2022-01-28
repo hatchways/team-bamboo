@@ -31,7 +31,7 @@ function App(): JSX.Element {
                 <CssBaseline />
                 <Navbar />
                 <Switch>
-                  <Route exact path="/bookings" component={Bookings} />
+                  <ProtectedRoute exact path="/bookings" component={Bookings} />
                   <Route exact path="/login" component={Login} />
                   <Route exact path="/signup" component={Signup} />
                   <Route exact path="/dashboard" component={Dashboard} />
