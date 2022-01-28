@@ -1,67 +1,62 @@
 const mongoose = require("mongoose");
 
-const availableDaySchema = new mongoose.Schema({
+const availabilitySchema = new mongoose.Schema({
   sitterId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "User"
   },
-  available_day: {
-    type: String,
-    required: true,
-    enum: ["Mon", "Tue", "Wed", "Thu", "Fri"]
-  },
-  start_hour: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 24
-  },
-  end_hour: {
-    type: Number,
-    required: true,
-    validate: {
-      validator: function (endHour) {
-        return endHour >= this.start_hour && endHour <= 24;
-      }
-    }
-  },
-  start_min: {
-    type: Number,
-    required: true,
-    min: 0,
-    max: 59
-  },
-  end_min: {
-    type: Number,
-    required: true,
-    validate: {
-      validator: function (endMin) {
-        if (this.end_hour === this.start_hour) {
-          return endMin > this.start_min;
+  availableTime: [
+    {
+      day: {
+        type: Date,
+        required: true
+      },
+      start: {
+        type: Date,
+        required: true
+      },
+      end: {
+        type: Date,
+        required: true,
+        validate: {
+          validator: function (endTime) {
+            return endTime > this.start;
+          }
         }
-        return endMin >= 0 && endMin < 60;
       }
     }
-  },
-  isActive: { type: Boolean, default: false }
+  ]
 });
 
-availableDaySchema.pre("save", async function (next) {
-  try {
-    const previousActiveDay = await mongoose.models["Availability"].findOne({
-      isActive: true
+availabilitySchema.virtual("weekDay").get(function () {
+  return this.availableTime.map((item) => {
+    const preFormat = new Date(item.day);
+    const formattedDay = preFormat.toLocaleString(navigator.language, {
+      weekday: "short"
     });
-    if (previousActiveDay) {
-      throw new Error("There is already an active schedule");
-    }
-    next();
-  } catch (error) {
-    throw error;
-  }
+    return formattedDay;
+  });
+});
+
+availabilitySchema.virtual("startTime").get(function () {
+  this.availabil;
+  const preFormat = new Date(parseInt(this.availableTime.start));
+  return preFormat.toLocaleTimeString(navigator.language, {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+});
+
+availabilitySchema.virtual("endTime").get(function () {
+  const preFormat = new Date(parseInt(this.availableTime.end));
+  return preFormat.toLocaleTimeString(navigator.language, {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 });
 
 module.exports = Avalability = mongoose.model(
   "Availability",
-  availableDaySchema
+  availabilitySchema
 );
