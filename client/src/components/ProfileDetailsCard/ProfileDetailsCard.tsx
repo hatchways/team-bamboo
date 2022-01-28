@@ -7,7 +7,7 @@ interface PropTypes {
   profile: Profile;
 }
 
-const ProfileCard = ({ profile }: PropTypes) => {
+const ProfileDetailsCard = ({ profile }: PropTypes) => {
   return (
     <Card sx={{ width: '50%' }}>
       <CardMedia image={profile.coverPhoto} title="cover photo" sx={{ minHeight: '200px' }} />
@@ -35,3 +35,5 @@ const ProfileCard = ({ profile }: PropTypes) => {
     </Card>
   );
 };
+
+export default ProfileDetailsCard;
