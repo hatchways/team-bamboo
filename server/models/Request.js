@@ -19,7 +19,6 @@ const requestSchema = new Schema({
     required,
     validate: {
       validator: function (start) {
-        if (!this.isNew) return true;
         const startMidnight = new Date(start);
         const currentMidnight = new Date();
 
