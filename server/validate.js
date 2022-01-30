@@ -104,7 +104,7 @@ exports.validateMarkNotification = [
   },
 ];
 
-exports.validateMessagesQuery = [
+exports.validateConversationId = [
   param("convoId", "Need id of related conversation")
     .custom((convoId) => mongoose.Types.ObjectId.isValid(convoId))
     .withMessage("Provided conversation id is not valid")
