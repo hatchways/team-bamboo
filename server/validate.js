@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const User = require("./models/User");
 const Notification = require("./models/Notification");
 const { check, param, validationResult } = require("express-validator");
+const Conversation = require("./models/Conversation");
+const Profile = require("./models/Profile");
 
 exports.validateRegister = [
   check("name", "Please enter a name").not().isEmpty(),
@@ -92,6 +94,51 @@ exports.validateMarkNotification = [
       (await Notification.findById(id)) ? Promise.resolve() : Promise.reject()
     )
     .withMessage("No notification found with provided id."),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    next();
+  },
+];
+
+exports.validateMessagesQuery = [
+  param("convoId", "Need id of related conversation")
+    .custom((convoId) => mongoose.Types.ObjectId.isValid(convoId))
+    .withMessage("Provided conversation id is not valid")
+    .custom(async (convoId) =>
+      (await Conversation.findById(convoId).exec())
+        ? Promise.resolve()
+        : Promise.reject()
+    )
+    .withMessage("No conversation found with provided id"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    next();
+  },
+];
+
+exports.validateMessageData = [
+  check("receiverId")
+    .isString()
+    .custom((receiverId) => mongoose.Types.ObjectId.isValid(receiverId))
+    .withMessage("Not a valid receiver id")
+    .custom(async (receiverId) =>
+      (await Profile.findById(receiverId).exec())
+        ? Promise.resolve()
+        : Promise.reject()
+    )
+    .withMessage("No receiver found with provided id"),
+  check("content")
+    .isString()
+    .isLength({ min: 1, max: Infinity })
+    .withMessage("content must contain at least one character"),
   (req, res, next) => {
     const errors = validationResult(req);
 
