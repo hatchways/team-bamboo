@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("./models/User");
 const Notification = require("./models/Notification");
-const { check, param, validationResult } = require("express-validator");
+const { check, param, query, validationResult } = require("express-validator");
 const Conversation = require("./models/Conversation");
 const Profile = require("./models/Profile");
 
@@ -104,7 +104,25 @@ exports.validateMarkNotification = [
   },
 ];
 
+const messageSortFields = ["content", "createdAt", "updatedAt", "sender"];
+
 exports.validateConversationId = [
+  query("sort")
+    .isString()
+    .isIn(messageSortFields)
+    .withMessage(
+      `Must provide a sort field relevant to a message: ${messageSortFields.join(
+        " | "
+      )}`
+    )
+    .default("createdAt"),
+  query("order")
+    .isString()
+    .isIn("asc", "desc")
+    .default("asc")
+    .withMessage(
+      "Must provide either 'asc' or 'desc' when querying the order."
+    ),
   param("convoId", "Need id of related conversation")
     .custom((convoId) => mongoose.Types.ObjectId.isValid(convoId))
     .withMessage("Provided conversation id is not valid")
