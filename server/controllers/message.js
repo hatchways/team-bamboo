@@ -11,7 +11,7 @@ const { findConversationQuery } = require("../utils/conversationQueries");
 exports.getAllMessages = asyncHandler(async (req, res) => {
   const {
     params: { convoId },
-    query: { sort = "createdAt", order = "desc" },
+    query: { sort = "createdAt", order = "asc" },
   } = req;
   const limit = parseInt(req.query.limit || 30),
     page = parseInt(req.query.page || 1);
@@ -22,6 +22,14 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
     .limit(limit)
     .lean()
     .skip((page - 1) * limit)
+    .populate({
+      path: "sender",
+      select: {
+        _id: 1,
+        name: 1,
+        photo: 1,
+      },
+    })
     .sort({
       [sort]: order,
     })
@@ -70,6 +78,11 @@ exports.sendMessage = asyncHandler(async (req, res) => {
   return res.status(200).json({
     success: {
       message: {
+        sender: {
+          id: sender.id,
+          name: sender.name,
+          photo: sender.photo,
+        },
         conversationId: message.conversationId,
         content: message.content,
         createdAt: message.createdAt,
