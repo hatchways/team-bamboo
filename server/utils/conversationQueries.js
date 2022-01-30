@@ -88,3 +88,16 @@ exports.getPopulatedData = () => [
   },
   { $unwind: "$lastMessage" },
 ];
+
+exports.findConversationQuery = (senderId, receiverId) => ({
+  $or: [
+    {
+      user1: senderId,
+      user2: receiverId,
+    },
+    {
+      user1: receiverId,
+      user2: senderId,
+    },
+  ],
+});
