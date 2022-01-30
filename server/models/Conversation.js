@@ -11,6 +11,10 @@ const conversationSchema = new mongoose.Schema({
     ref: "Profile",
     required: [true, "A conversation must contain two profiles"],
   },
+  lastMessage: {
+    type: mongoose.Types.ObjectId,
+    ref: "Message",
+  },
 });
 
 module.exports = Conversation = mongoose.model(

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const messageSchema = new mongoose.Schema(
   {
     sender: {
-      type: mongoose.Types.Object,
+      type: mongoose.Types.ObjectId,
       ref: "Profile",
       required: [true, "A message must contain the sender"],
     },
