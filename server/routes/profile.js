@@ -6,6 +6,7 @@ const protect = require("../middleware/auth");
 const {
   editProfile,
   loadProfile,
+  loadProfileById,
   retriveImgUrls,
 } = require("../controllers/profile");
 
@@ -36,6 +37,7 @@ router
 
 router.route("/edit").put(protect, editProfile);
 
+router.route("/load/:id").get(loadProfileById);
 router.route("/load").get(protect, loadProfile);
 
 module.exports = router;
