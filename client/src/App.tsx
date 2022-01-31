@@ -36,8 +36,9 @@ function App(): JSX.Element {
                   <CssBaseline />
                   <Navbar />
                   <Switch>
-                    <ProtectedRoute exact path="/bookings" component={Bookings} />
+                    <Route exact path="/" component={Home} />
                     <Route exact path="/profile" component={Profile} />
+                    <ProtectedRoute exact path="/bookings" component={Bookings} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/signup" component={Signup} />
                     <Route exact path="/dashboard" component={Dashboard} />
