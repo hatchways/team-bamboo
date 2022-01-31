@@ -34,6 +34,7 @@ function App(): JSX.Element {
                 <CssBaseline />
                 <Navbar />
                 <Switch>
+                  <Route exact path="/" component={Home} />
                   <Route exact path="/profile" component={Profile} />
                   <Route exact path="/bookings" component={Bookings} />
                   <Route exact path="/login" component={Login} />
