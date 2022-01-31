@@ -1,6 +1,7 @@
 const Request = require("../models/Request");
 const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
+const { Types } = require("mongoose");
 
 // @route GET /requests/sitter
 // @desc get requests for logged in user
@@ -32,7 +33,7 @@ exports.createRequest = asyncHandler(async (req, res) => {
 
   const propertyIsMissing = !sitter || !start || !end;
 
-  if (propertyIsMissing || !mongoose.Types.ObjectId.isValid(sitter)) {
+  if (propertyIsMissing || !Types.ObjectId.isValid(sitter)) {
     res.status(400);
     throw new Error("Bad request");
   }
@@ -69,7 +70,7 @@ exports.updateRequestStatus = asyncHandler(async (req, res) => {
   const { requestId } = req.params;
   const request = await Request.findById(requestId);
 
-  if (!mongoose.Types.ObjectId.isValid(requestId)) {
+  if (!Types.ObjectId.isValid(requestId)) {
     res.status(400);
     throw new Error("Bad request");
   }
