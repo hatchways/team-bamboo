@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-exports.getConversationsQuery = (profileId) => ({
+exports.queryConversationsByProfile = (profileId) => ({
   $match: {
     $or: [
       {
@@ -17,7 +17,7 @@ exports.getConversationsQuery = (profileId) => ({
   },
 });
 
-exports.getFormattedData = (profileId) => ({
+exports.formatConversationFields = (profileId) => ({
   $project: {
     _id: 0,
     id: "$_id",
@@ -34,7 +34,7 @@ exports.getFormattedData = (profileId) => ({
   },
 });
 
-exports.getPopulatedData = () => [
+exports.populateOtherUser = () => [
   {
     $lookup: {
       from: "profiles",
@@ -60,6 +60,9 @@ exports.getPopulatedData = () => [
     },
   },
   { $unwind: "$otherUser" },
+];
+
+exports.populateLastMessage = () => [
   {
     $lookup: {
       from: "messages",

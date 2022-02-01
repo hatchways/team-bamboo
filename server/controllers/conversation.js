@@ -3,9 +3,10 @@ const Conversation = require("../models/Conversation");
 const Profile = require("../models/Profile");
 
 const {
-  getConversationsQuery,
-  getFormattedData,
-  getPopulatedData,
+  queryConversationsByProfile,
+  formatConversationFields,
+  populateOtherUser,
+  populateLastMessage,
 } = require("../utils/conversationQueries");
 
 // @route GET /conversations
@@ -17,9 +18,10 @@ exports.getAllConversations = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ userId: user.id }).exec();
 
   const conversations = await Conversation.aggregate([
-    getConversationsQuery(profile._id),
-    getFormattedData(profile._id),
-    ...getPopulatedData(),
+    queryConversationsByProfile(profile._id),
+    formatConversationFields(profile._id),
+    ...populateOtherUser(),
+    ...populateLastMessage(),
   ]);
 
   res.status(200).json({
