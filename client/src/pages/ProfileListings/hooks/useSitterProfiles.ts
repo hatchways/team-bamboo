@@ -19,8 +19,6 @@ interface StateItem {
 type OnSuccess<R> = (profiles: StateItem[]) => R;
 type MatchProfiles = <R>(onError: OnError<R>, onSuccess: OnSuccess<R>) => R;
 
-// I think we have two different arrays, one to represent the data that is loading and the other to represent that data that has loaded.
-
 const useSitterProfiles = (
   { delay = 500, loadOnMount = true, limit = 6, ...initialParams }: Options = { delay: 50000, limit: 6 },
 ) => {

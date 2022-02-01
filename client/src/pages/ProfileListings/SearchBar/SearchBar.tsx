@@ -30,21 +30,15 @@ interface Props {
   location: string | null;
 }
 
-const initialState = {
-  start: new Date(Date.now()),
-  end: new Date(Date.now()),
-  location: '',
-} as const;
-
 const formatInitialState = (from: string | null, to: string | null, location: string | null) => {
-  const curDate = new Date(Date.now()),
-    dateFrom = from ? new Date(parseInt(from)) : initialState.start,
-    dateTo = to ? new Date(parseInt(to)) : initialState.end,
+  const curDate = new Date(),
+    dateFrom = from ? new Date(parseInt(from)) : curDate,
+    dateTo = to ? new Date(parseInt(to)) : curDate,
     start = dateFrom.getTime() >= curDate.getTime() ? dateFrom : curDate,
     end = dateTo.getTime() >= curDate.getTime() && dateTo.getTime() >= start.getTime() ? dateTo : start;
 
   return {
-    location: location ? location : initialState.location,
+    location: location ? location : '',
     start,
     end,
   };
@@ -52,7 +46,7 @@ const formatInitialState = (from: string | null, to: string | null, location: st
 
 const SearchBar = ({ location, start, end }: Props) => {
   const classes = useStyles();
-  const curDate = new Date(Date.now());
+  const curDate = new Date();
   const [value, setValue] = useState<State>(formatInitialState(start, end, location));
 
   const handleChange =
