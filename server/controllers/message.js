@@ -10,39 +10,64 @@ const { findConversationQuery } = require("../utils/conversationQueries");
 // @access Private
 exports.getAllMessages = asyncHandler(async (req, res) => {
   const {
+    user,
     params: { convoId },
     query: { sort = "createdAt", order = "asc" },
   } = req;
   const limit = parseInt(req.query.limit || 30),
     page = parseInt(req.query.page || 1);
 
-  const messages = await Message.find({
-    conversationId: convoId,
-  })
-    .limit(limit)
-    .lean()
-    .skip((page - 1) * limit)
-    .populate({
-      path: "sender",
-      select: {
-        _id: 1,
-        name: 1,
-        photo: 1,
-      },
-    })
-    .sort({
-      [sort]: order,
-    })
-    .exec();
+  const profile = await Profile.findOne({ userId: user.id });
 
-  return res.status(200).json({
-    success: {
-      messages: messages.map(({ _id, ...message }) => {
-        message.id = _id;
-        return message;
-      }),
-    },
+  const conversation = await Conversation.findOne({
+    id: convoId,
+    $or: [
+      {
+        user1: {
+          $eq: profile.id,
+        },
+      },
+      {
+        user2: {
+          $eq: profile.id,
+        },
+      },
+    ],
   });
+
+  if (conversation) {
+    const messages = await Message.find({
+      conversationId: convoId,
+    })
+      .limit(limit)
+      .lean()
+      .skip((page - 1) * limit)
+      .populate({
+        path: "sender",
+        select: {
+          _id: 1,
+          name: 1,
+          photo: 1,
+        },
+      })
+      .sort({
+        [sort]: order,
+      })
+      .exec();
+
+    return res.status(200).json({
+      success: {
+        messages: messages.map(({ _id, ...message }) => {
+          message.id = _id;
+          return message;
+        }),
+      },
+    });
+  }
+
+  return res
+    .status(401)
+    .json({ error: { message: "User is not authorized." } });
 });
 
 // @route POST /messages/send
