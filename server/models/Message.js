@@ -11,6 +11,7 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Conversation",
       required: [true, "A message must contain the referenced conversation"],
+      index: true,
     },
     content: {
       type: String,
@@ -22,4 +23,8 @@ const messageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = Message = mongoose.model("Message", messageSchema);
+const Message = mongoose.model("Message", messageSchema);
+
+Message.syncIndexes();
+
+module.exports = Message;
