@@ -48,7 +48,6 @@ const RequestForm = ({ profile }: PropTypes) => {
     }
   };
 
-  profile.averageRating = placeholderAverageRating;
   return (
     <Card sx={{ width: '25%', minWidth: '250px' }}>
       <form onSubmit={handleSubmit}>
@@ -61,7 +60,7 @@ const RequestForm = ({ profile }: PropTypes) => {
         >
           <Typography variant="h6">${profile.hourlyRate}/hr</Typography>
           <Grid item>
-            <Rating readOnly value={profile.averageRating} />
+            <Rating readOnly value={placeholderAverageRating} />
           </Grid>
           <DateTimePicker
             disabled={!loggedInUser}
