@@ -1,7 +1,5 @@
 const Availability = require("../models/Availability");
-const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
-const Profile = require("../models/Profile");
 
 // @route GET /availability
 // @desc get all schedule
@@ -57,10 +55,15 @@ exports.getActiveSchedule = asyncHandler(async (req, res) => {
 // @desc set a schedule to active
 // @access Private
 exports.setScheduleActive = asyncHandler(async (req, res) => {
-  const schedule = await Availability.findById(req.params.scheduleId);
-  if (schedule) {
-    schedule.isActive = true;
-    const updatedSchedule = await schedule.save();
-    res.status(201).json({ success: { updatedSchedule } });
+  const alreadyActive = await Availability.findOne({ isActive: true });
+  if (alreadyActive) {
+    res.status(405).send("There has been already an active schedule.");
+  } else {
+    const schedule = await Availability.findById(req.params.scheduleId);
+    if (schedule) {
+      schedule.isActive = true;
+      const updatedSchedule = await schedule.save();
+      res.status(201).json({ success: { updatedSchedule } });
+    }
   }
 });
