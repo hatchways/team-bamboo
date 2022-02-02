@@ -102,7 +102,7 @@ exports.getAvatar = async (req, res) => {
     res.status(404);
     throw new Error("Profile doesn't exist");
   }
-  res.status(201).json({
+  res.status(200).json({
     imagePath: profile.photo
   });
 };
@@ -120,5 +120,5 @@ exports.deleteProfilePhoto = async (req, res) => {
   const result = await deleteFile(key);
   profile.photo = "";
   await profile.save();
-  res.status(201).json("profile photo deleted");
+  res.status(200).json("profile photo deleted");
 };

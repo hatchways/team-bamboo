@@ -13,8 +13,6 @@ const ProfilePhoto = (): JSX.Element => {
   const { photoKey, setPhotoKey, photoPath } = useProfilePhoto();
   const { updateSnackBarMessage } = useSnackBar();
 
-  // console.log(photoPath);
-
   const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setFile(e.target.files[0]);

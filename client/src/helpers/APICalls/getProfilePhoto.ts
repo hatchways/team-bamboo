@@ -1,7 +1,7 @@
 import { FetchOptions } from '../../interface/FetchOptions';
-import { getPhotoData } from '../../interface/getPhotoData';
+import { GetPhotoData } from '../../interface/getPhotoData';
 
-const getProfilePhoto = async (photoKey: string): Promise<getPhotoData> => {
+const getProfilePhoto = async (photoKey: string): Promise<GetPhotoData> => {
   const fetchOptions: FetchOptions = {
     method: 'GET',
     credentials: 'include',

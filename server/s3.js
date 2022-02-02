@@ -13,7 +13,6 @@ const s3 = new AWS.S3({
   region
 });
 
-// upload one file to S3
 const uploadFileToS3 = (file) => {
   const fileStream = fs.createReadStream(file.path);
   const uploadParams = {
@@ -25,7 +24,6 @@ const uploadFileToS3 = (file) => {
   return s3.upload(uploadParams).promise();
 };
 
-// delete a file from s3
 const deleteFile = (fileKey) => {
   const deleteParams = {
     Key: fileKey,
@@ -34,7 +32,6 @@ const deleteFile = (fileKey) => {
   return s3.deleteObject(deleteParams).promise();
 };
 
-// upload files to s3
 const uploadImages = (files) => {
   const uploadPromises = [];
   for (let i = 0; i < files.length; i++) {

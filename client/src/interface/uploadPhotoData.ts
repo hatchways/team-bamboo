@@ -1,4 +1,4 @@
-export interface uploadPhotoData {
+export interface UploadPhotoData {
   imageKey: string;
   error?: string;
 }

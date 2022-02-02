@@ -1,4 +1,4 @@
-export interface getPhotoData {
+export interface GetPhotoData {
   imagePath: string;
   error?: string;
 }

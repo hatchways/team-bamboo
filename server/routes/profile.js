@@ -26,7 +26,13 @@ const upload = multer({
   storage: fileStorageEngine,
   fileFilter: function (req, file, callback) {
     const ext = path.extname(file.originalname);
-    if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg") {
+    if (
+      ext !== ".png" &&
+      ext !== ".jpg" &&
+      ext !== ".gif" &&
+      ext !== ".jpeg" &&
+      ext !== ".webp"
+    ) {
       return callback(new Error("Only images are allowed"));
     }
     callback(null, true);
