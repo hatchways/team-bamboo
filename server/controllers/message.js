@@ -25,7 +25,7 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
 
   if (conversation) {
     const messages = await Message.find({
-      conversationId: convoId,
+      conversationId: conversation.id,
     })
       .limit(limit)
       .lean()
