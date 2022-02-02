@@ -115,18 +115,18 @@ exports.validateGetMessagesQuery = [
     .custom(idExists(Conversation))
     .withMessage("No conversation found with provided id"),
   query("sort")
+    .default("createdAt")
     .isString()
     .isIn(messageSortFields)
     .withMessage(
       `Must provide a sort field relevant to a message: ${messageSortFields.join(
         " | "
       )}`
-    )
-    .default("createdAt"),
+    ),
   query("order")
-    .isString()
-    .isIn("asc", "desc")
     .default("asc")
+    .isString()
+    .isIn(["asc", "desc"])
     .withMessage(
       "Must provide either 'asc' or 'desc' when querying the order."
     ),
