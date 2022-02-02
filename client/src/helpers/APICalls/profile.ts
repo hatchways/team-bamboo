@@ -8,6 +8,6 @@ interface ProfileResponse {
 }
 
 export const getProfile = async (id: string): Promise<ProfileResponse> => {
-  const response = await fetch('/profile/load/' + id);
+  const response = await fetch('/profile/' + id);
   return response.json();
 };
