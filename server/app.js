@@ -12,6 +12,7 @@ const cors = require("cors");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
+const requestRouter = require("./routes/request");
 const profileRouter = require("./routes/profile");
 const notificationsRouter = require("./routes/notification");
 
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/profile", profileRouter);
+app.use("/requests", requestRouter);
 app.use("/notifications", notificationsRouter);
 
 if (process.env.NODE_ENV === "production") {

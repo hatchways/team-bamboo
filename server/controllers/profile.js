@@ -1,5 +1,6 @@
 const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
+const path = require("path");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);

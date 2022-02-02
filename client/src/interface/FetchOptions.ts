@@ -5,4 +5,5 @@ export interface FetchOptions {
   };
   body?: string | FormData;
   credentials: RequestCredentials;
+  signal?: AbortSignal;
 }
