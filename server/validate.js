@@ -5,6 +5,10 @@ const { check, param, query, validationResult } = require("express-validator");
 const Conversation = require("./models/Conversation");
 const Profile = require("./models/Profile");
 
+const isValidMongoId = (id) => mongoose.Types.ObjectId.isValid(id);
+const idExists = (Schema) => async (id) =>
+  (await Schema.findById(id).exec()) ? Promise.resolve() : Promise.reject();
+
 exports.validateRegister = [
   check("name", "Please enter a name").not().isEmpty(),
   check("email", "Please enter a valid email address").isEmail(),
@@ -88,11 +92,9 @@ exports.validateNotification = [
 
 exports.validateMarkNotification = [
   param("id", "Notification is not valid")
-    .custom((id) => mongoose.Types.ObjectId.isValid(id))
+    .custom(isValidMongoId)
     .withMessage("Provided id is not a valid")
-    .custom(async (id) =>
-      (await Notification.findById(id)) ? Promise.resolve() : Promise.reject()
-    )
+    .custom(idExists(Notification))
     .withMessage("No notification found with provided id."),
   (req, res, next) => {
     const errors = validationResult(req);
@@ -106,7 +108,12 @@ exports.validateMarkNotification = [
 
 const messageSortFields = ["content", "createdAt", "updatedAt", "sender"];
 
-exports.validateConversationId = [
+exports.validateGetMessagesQuery = [
+  param("id", "Need id of related conversation")
+    .custom(isValidMongoId)
+    .withMessage("Provided conversation id is not valid")
+    .custom(idExists(Conversation))
+    .withMessage("No conversation found with provided id"),
   query("sort")
     .isString()
     .isIn(messageSortFields)
@@ -123,15 +130,6 @@ exports.validateConversationId = [
     .withMessage(
       "Must provide either 'asc' or 'desc' when querying the order."
     ),
-  param("convoId", "Need id of related conversation")
-    .custom((convoId) => mongoose.Types.ObjectId.isValid(convoId))
-    .withMessage("Provided conversation id is not valid")
-    .custom(async (convoId) =>
-      (await Conversation.findById(convoId).exec())
-        ? Promise.resolve()
-        : Promise.reject()
-    )
-    .withMessage("No conversation found with provided id"),
   (req, res, next) => {
     const errors = validationResult(req);
 
@@ -142,17 +140,28 @@ exports.validateConversationId = [
   },
 ];
 
+exports.validateOtherUserId = [
+  check("otherUserId", "Need id of related conversation")
+    .custom(isValidMongoId)
+    .withMessage("Provided user id is not valid")
+    .custom(idExists(User))
+    .withMessage("No user found with provided id"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(404).json({ errors: errors.array() });
+
+    next();
+  },
+];
+
 exports.validateMessageData = [
-  check("receiverId")
-    .isString()
-    .custom((receiverId) => mongoose.Types.ObjectId.isValid(receiverId))
-    .withMessage("Not a valid receiver id")
-    .custom(async (receiverId) =>
-      (await Profile.findById(receiverId).exec())
-        ? Promise.resolve()
-        : Promise.reject()
-    )
-    .withMessage("No receiver found with provided id"),
+  param("id", "Need id of related conversation")
+    .custom(isValidMongoId)
+    .withMessage("Provided conversation id is not valid")
+    .custom(idExists(Conversation))
+    .withMessage("No conversation found with provided id"),
   check("content")
     .isString()
     .isLength({ min: 1, max: Infinity })
