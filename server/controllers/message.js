@@ -53,9 +53,7 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
     });
   }
 
-  return res
-    .status(401)
-    .json({ error: { message: "User is not authorized." } });
+  return res.status(401).json({ error: "User is not authorized." });
 });
 
 // @route POST /conversations/:id/messages
