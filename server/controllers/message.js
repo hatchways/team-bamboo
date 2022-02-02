@@ -53,7 +53,9 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
     });
   }
 
-  return res.status(401).json({ error: "User is not authorized." });
+  return res
+    .status(401)
+    .json({ error: "User is not apart of the conversation." });
 });
 
 // @route POST /conversations/:id/messages
@@ -72,27 +74,33 @@ exports.sendMessage = asyncHandler(async (req, res) => {
     conversationContainsUser(id, sender.id)
   );
 
-  const message = await new Message({
-    sender,
-    conversationId: id,
-    content,
-  }).save();
+  if (conversation) {
+    const message = await new Message({
+      sender,
+      conversationId: id,
+      content,
+    }).save();
 
-  conversation.lastMessage = message._id;
-  await conversation.save();
+    conversation.lastMessage = message._id;
+    await conversation.save();
 
-  return res.status(200).json({
-    success: {
-      message: {
-        sender: {
-          id: sender.id,
-          name: sender.name,
-          photo: sender.photo,
+    return res.status(200).json({
+      success: {
+        message: {
+          id: message._id,
+          sender: {
+            id: sender.id,
+            name: sender.name,
+            photo: sender.photo,
+          },
+          conversationId: message.conversationId,
+          content: message.content,
+          createdAt: message.createdAt,
         },
-        conversationId: message.conversationId,
-        content: message.content,
-        createdAt: message.createdAt,
       },
-    },
+    });
+  }
+  return res.status(401).json({
+    error: "User is not apart of the conversation",
   });
 });
