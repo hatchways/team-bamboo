@@ -3,15 +3,15 @@ const Profile = require("../models/Profile");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 
-const { findConversationQuery } = require("../utils/conversationQueries");
+const { conversationContainsUser } = require("../utils/conversationQueries");
 
-// @route GET /messages/:convoId
+// @route GET /conversations/:id/messages?limit=30&page=1&sort=createdAt&order=asc
 // @desc retrieves all messages by a given conversation id
 // @access Private
 exports.getAllMessages = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { convoId },
+    params: { id },
     query: { sort = "createdAt", order = "asc" },
   } = req;
   const limit = parseInt(req.query.limit || 30),
@@ -19,21 +19,9 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
 
   const profile = await Profile.findOne({ userId: user.id });
 
-  const conversation = await Conversation.findOne({
-    id: convoId,
-    $or: [
-      {
-        user1: {
-          $eq: profile.id,
-        },
-      },
-      {
-        user2: {
-          $eq: profile.id,
-        },
-      },
-    ],
-  });
+  const conversation = await Conversation.findOne(
+    conversationContainsUser(id, profile.id)
+  );
 
   if (conversation) {
     const messages = await Message.find({
@@ -70,30 +58,25 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
     .json({ error: { message: "User is not authorized." } });
 });
 
-// @route POST /messages/send
+// @route POST /conversations/:id/messages
 // @desc Creates a new message.
 // @access Private
 exports.sendMessage = asyncHandler(async (req, res) => {
   const {
     user,
-    body: { receiverId, content },
+    params: { id },
+    body: { content },
   } = req;
 
   const sender = await Profile.findOne({ userId: user.id });
 
-  let conversation = await Conversation.findOne(
-    findConversationQuery(sender.id, receiverId)
+  const conversation = await Conversation.findOne(
+    conversationContainsUser(id, sender.id)
   );
-
-  if (!conversation) {
-    conversation = await new Conversation(
-      findConversationQuery(sender.id, receiverId)
-    ).save();
-  }
 
   const message = await new Message({
     sender,
-    conversationId: conversation.id,
+    conversationId: id,
     content,
   }).save();
 
