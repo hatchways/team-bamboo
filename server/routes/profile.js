@@ -35,9 +35,9 @@ router
   .route("/upload")
   .post(protect, upload.array("images", 5), retriveImgUrls);
 
-router.route("/edit").put(protect, editProfile);
+router.route("/").put(protect, editProfile);
 
-router.route("/load/:id").get(loadProfileById);
-router.route("/load").get(protect, loadProfile);
+router.route("/:id").get(loadProfileById);
+router.route("/").get(protect, loadProfile);
 
 module.exports = router;
