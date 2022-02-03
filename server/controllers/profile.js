@@ -118,7 +118,7 @@ exports.deleteProfilePhoto = async (req, res) => {
     throw new Error("Profile doesn't exist");
   }
   const key = req.params.key;
-  const result = await deleteFile(key);
+  await deleteFile(key);
   profile.photo = "";
   await profile.save();
   res.status(200).json("profile photo deleted");

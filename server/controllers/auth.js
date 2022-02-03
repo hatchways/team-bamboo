@@ -109,7 +109,9 @@ exports.loadUser = asyncHandler(async (req, res, next) => {
         name: user.name,
         email: user.email
       },
-      profile
+      profile: {
+        photo: profile.photo
+      }
     }
   });
 });
