@@ -1,5 +1,6 @@
 import { useContext, createContext, ReactElement, useState, FunctionComponent, MouseEvent } from 'react';
 import { NotificationsProvider, NotificationsConsumer } from '../../../context/useNotificationContext';
+import { useSocket } from '../../../context/useSocketContext';
 import { markNotificationRead } from '../../../helpers/APICalls/notifications';
 
 interface UnreadNotificationsPopperContext {
@@ -31,6 +32,7 @@ export const UnreadNotificationsPopperContext = createContext<UnreadNotification
 export const UnreadNotificationsPopperProvider: FunctionComponent = ({ children }): ReactElement => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const { socket } = useSocket();
 
   const toggleOpen = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget as HTMLElement);
