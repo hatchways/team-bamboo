@@ -28,7 +28,6 @@ exports.getRequests = asyncHandler(async (req, res) => {
 // @desc Create a new request
 // @access Private
 exports.createRequest = asyncHandler(async (req, res) => {
-
   const { sitter, start, end } = req.body;
 
   const propertyIsMissing = !sitter || !start || !end;
