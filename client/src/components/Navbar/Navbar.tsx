@@ -1,5 +1,5 @@
 import { FinalCheck, MenuItemData } from './interface/Navbar';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import clsx from 'clsx';
 import { useAuth } from '../../context/useAuthContext';
 import { useProfilePhoto } from '../../context/useProfilePhotoContext';
@@ -109,6 +109,23 @@ const Navbar: React.FC = () => {
   const { loggedInUser, logout, profile } = useAuth();
   const { photoPath } = useProfilePhoto();
   const open = Boolean(anchorEl);
+  const [imgUrl, setImgUrl] = useState<string>('');
+  const [fallback, setFallback] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (profile?.photo) {
+      setImgUrl(profile.photo);
+    }
+  }, [profile?.photo]);
+
+  const reload = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (fallback) {
+      e.currentTarget.src = '/img/blank_profile.png';
+    } else {
+      e.currentTarget.src = profile?.photo;
+      setFallback(true);
+    }
+  };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -157,7 +174,12 @@ const Navbar: React.FC = () => {
                     onClick={handleMenuOpen}
                     color="inherit"
                   >
-                    <img style={{ width: 50 }} src={`https://robohash.org/${loggedInUser.email}`} />
+                    <img
+                      key={Date.now()}
+                      style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover' }}
+                      src={imgUrl ? imgUrl : `https://robohash.org/${loggedInUser.email}`}
+                      onError={reload}
+                    />
                   </IconButton>
                   <Menu
                     id="menu-appbar"
