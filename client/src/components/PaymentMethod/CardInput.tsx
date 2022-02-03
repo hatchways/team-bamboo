@@ -48,7 +48,10 @@ const CardInput = ({ text, setCard }: PropTypes) => {
     try {
       setIsLoading(true);
       e.preventDefault();
-      if (!stripe || !elements) return;
+      if (!stripe || !elements) {
+        setIsLoading(false);
+        return;
+      }
 
       const card = elements.getElement(CardElement);
       if (!card) {
@@ -82,7 +85,7 @@ const CardInput = ({ text, setCard }: PropTypes) => {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <Button type="submit" disabled={isLoading || !stripe || !elements} color="primary" variant="contained">
+        <Button type="submit" disabled={!stripe || !elements} color="primary" variant="contained">
           {text} card
         </Button>
       )}
