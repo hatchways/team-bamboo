@@ -26,10 +26,10 @@ const HandleRequestButton = ({ bookingId }: PropTypes) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (status?: Status) => {
+  const handleClose = async (status?: Status) => {
     if (status) {
-      setBookingStatus(bookingId, status);
-      updateSnackBarMessage('Request ' + status);
+      const { success } = await setBookingStatus(bookingId, status);
+      if (success) updateSnackBarMessage('Request ' + status);
     }
     setAnchorEl(null);
   };
