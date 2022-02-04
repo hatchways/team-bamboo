@@ -1,6 +1,7 @@
 const Request = require("../models/Request");
 const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
+const { Types } = require("mongoose");
 
 // @route GET /requests/sitter
 // @desc get requests for logged in user
@@ -10,14 +11,24 @@ exports.getRequests = asyncHandler(async (req, res) => {
     { userId: req.user.id },
     "isSitter -_id"
   );
-  const selectedUserType = isSitter ? "sitter" : "owner";
-  const requests = await Request.find({
-    [selectedUserType]: req.user.id,
-  })
-    .populate("sitter")
-    .populate("owner")
+  const currentUserType = isSitter ? "sitter" : "owner";
+  const otherUserType = isSitter ? "owner" : "sitter";
+  const queryResults = await Request.find(
+    {
+      [currentUserType]: req.user.id,
+    },
+    `-${currentUserType}`
+  )
+    .populate(otherUserType)
     .sort("start")
     .exec();
+
+  const requests = queryResults.map((r) => {
+    const request = r.toJSON();
+    request.otherUser = request[otherUserType];
+    delete request[otherUserType];
+    return request;
+  });
 
   res.status(200).json({
     success: { requests },
@@ -32,7 +43,7 @@ exports.createRequest = asyncHandler(async (req, res) => {
 
   const propertyIsMissing = !sitter || !start || !end;
 
-  if (propertyIsMissing || !mongoose.Types.ObjectId.isValid(sitter)) {
+  if (propertyIsMissing || !Types.ObjectId.isValid(sitter)) {
     res.status(400);
     throw new Error("Bad request");
   }
@@ -69,7 +80,7 @@ exports.updateRequestStatus = asyncHandler(async (req, res) => {
   const { requestId } = req.params;
   const request = await Request.findById(requestId);
 
-  if (!mongoose.Types.ObjectId.isValid(requestId)) {
+  if (!Types.ObjectId.isValid(requestId)) {
     res.status(400);
     throw new Error("Bad request");
   }
