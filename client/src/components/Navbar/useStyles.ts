@@ -6,13 +6,19 @@ export const useStyles = makeStyles((theme: Theme) => ({
     boxShadow: '4px 4px 13px 7px rgba(217,217,217,0.26)',
     padding: theme.spacing(2),
     background: 'white',
+    color: theme.palette.grey[900],
   },
   transparentNavbar: {
     boxShadow: 'none',
     background: 'none',
+    position: 'absolute',
+    color: theme.palette.primary.contrastText,
+    [theme.breakpoints.down('md')]: {
+      color: theme.palette.text.primary,
+    },
   },
   navbarItem: {
-    color: theme.palette.grey[900],
+    color: 'inherit',
     fontWeight: 700,
     textDecoration: 'none',
     transition: 'color 120ms ease-in-out',
