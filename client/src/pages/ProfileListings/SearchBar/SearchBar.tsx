@@ -61,7 +61,6 @@ const SearchBar = ({ location, start, end }: Props) => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(event);
   };
 
   const onEnterPress = (event: KeyboardEvent<HTMLFormElement>) => (event.key === 'Enter' ? handleSubmit(event) : null);
