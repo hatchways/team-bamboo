@@ -13,9 +13,7 @@ const {
 // @desc retrieves all conversations from the current logged in user.
 // @access Private
 exports.getAllConversations = asyncHandler(async (req, res) => {
-  const { user } = req;
-
-  const profile = await Profile.findOne({ userId: user.id }).exec();
+  const { profile } = req;
 
   const conversations = await Conversation.aggregate([
     queryConversationsByProfile(profile._id),
