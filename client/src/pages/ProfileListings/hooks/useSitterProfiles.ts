@@ -81,7 +81,6 @@ const useSitterProfiles = (
   const matchProfiles: MatchProfiles = useCallback(
     (onError, onSuccess) => {
       if (error) return onError(error);
-      // if (profiles.length) return onSuccess(profiles);
       return onSuccess(profiles);
     },
     [error, profiles],
