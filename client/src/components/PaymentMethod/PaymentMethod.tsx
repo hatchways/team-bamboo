@@ -54,7 +54,7 @@ const PaymentMethod = () => {
       <SettingHeader header="Payment Method" />
       <CardDetails card={card} />
       {card && (
-        <Button sx={{ marginTop: '10px' }} onClick={deleteCard}>
+        <Button sx={{ marginTop: '5px', marginBottom: '30px' }} onClick={deleteCard}>
           Remove Payment Method
         </Button>
       )}
