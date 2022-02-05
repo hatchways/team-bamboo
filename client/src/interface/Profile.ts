@@ -1,11 +1,17 @@
+export interface ImgUrlSchema {
+  _id: string;
+  filePath: string;
+}
+
 export interface Profile {
+  _id: string;
   coverPhoto: string;
   photo: string;
-  uploadedImages: string[];
+  uploadedImages: ImgUrlSchema[];
   name: string;
   description: string;
   hourlyRate: number;
-  availability: boolean[];
-  city: string;
-  averageRating: number;
+  address: string;
+  jobTitle: string;
+  userId: string;
 }

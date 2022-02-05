@@ -1,7 +1,7 @@
 import { Booking } from '../../interface/Booking';
-import { Avatar, Card, CardContent, Grid, IconButton, Typography, Box } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { Avatar, Card, CardContent, Grid, Typography, Box } from '@mui/material';
 import format from 'date-fns/format';
+import HandleRequestButton from '../HandleRequestButton/HandleRequestButton';
 
 interface PropTypes {
   booking: Booking;
@@ -15,18 +15,16 @@ const BookingCard = ({ booking }: PropTypes) => {
           <Typography sx={{ fontSize: '0.8rem' }}>
             {format(booking.start, 'd LLLL y, haaa')} - {format(booking.end, 'haaa')}
           </Typography>
-          <IconButton>
-            <SettingsIcon />
-          </IconButton>
+          <HandleRequestButton bookingId={booking._id} />
         </Grid>
         <Box sx={{ height: '10px' }}></Box>
         <Grid container alignItems="center">
           <Grid item xs={2}>
-            <Avatar src={`https://robohash.org/${booking.sitter.email}`}>{booking.sitter.name[0]}</Avatar>
+            <Avatar src={`https://robohash.org/${booking.otherUser.email}`}>{booking.otherUser.name[0]}</Avatar>
           </Grid>
           <Grid item xs={7}>
             <Typography sx={{ fontSize: '0.8rem', fontWeight: 'bold', marginLeft: '5px' }}>
-              {booking.sitter.name}
+              {booking.otherUser.name}
             </Typography>
           </Grid>
           <Grid item xs={3}>
