@@ -21,9 +21,20 @@ export interface PostBody {
   end: Date;
 }
 
-export const getBookings = async (sitter = false): Promise<BookingResponse> => {
-  const url = '/requests' + (sitter ? '?isSitter=true' : '');
-  const response = await fetch(url);
+export const getBookings = async (): Promise<BookingResponse> => {
+  const response = await fetch('/requests');
+  return response.json();
+};
+
+export const updateBooking = async (booking: Pick<Booking, 'status'>, id: string): Promise<SingleBookingResponse> => {
+  const fetchOptions: FetchOptions = {
+    credentials: 'include',
+    method: 'PATCH',
+    body: JSON.stringify(booking),
+    headers: { 'Content-Type': 'application/json' },
+  };
+  const url = '/requests/' + id;
+  const response = await fetch(url, fetchOptions);
   return response.json();
 };
 

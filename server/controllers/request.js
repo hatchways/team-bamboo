@@ -11,14 +11,24 @@ exports.getRequests = asyncHandler(async (req, res) => {
     { userId: req.user.id },
     "isSitter -_id"
   );
-  const selectedUserType = isSitter ? "sitter" : "owner";
-  const requests = await Request.find({
-    [selectedUserType]: req.user.id,
-  })
-    .populate("sitter")
-    .populate("owner")
+  const currentUserType = isSitter ? "sitter" : "owner";
+  const otherUserType = isSitter ? "owner" : "sitter";
+  const queryResults = await Request.find(
+    {
+      [currentUserType]: req.user.id,
+    },
+    `-${currentUserType}`
+  )
+    .populate(otherUserType)
     .sort("start")
     .exec();
+
+  const requests = queryResults.map((r) => {
+    const request = r.toJSON();
+    request.otherUser = request[otherUserType];
+    delete request[otherUserType];
+    return request;
+  });
 
   res.status(200).json({
     success: { requests },
