@@ -44,6 +44,7 @@ function App(): JSX.Element {
                     <Route exact path="/dashboard" component={Dashboard} />
                     <Route exact path="/listings" component={ProfileListings} />
                     <Route path="/profile/settings" component={Settings} />
+                    <Route exact path="/profile/:id" component={Profile} />
                     <Route path="*">
                       <NotFound />
                     </Route>

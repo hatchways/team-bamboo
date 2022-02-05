@@ -1,10 +1,27 @@
 const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
-const path = require("path");
+const { Types } = require("mongoose");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const { uploadImages } = require("../s3");
+
+// @route GET /profile/load/:id
+// @desc Get user profile data
+// @access Public
+exports.loadProfileById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!Types.ObjectId.isValid(id)) {
+    res.status(400);
+    throw new Error("Bad request");
+  }
+
+  const profile = await Profile.findById(id);
+  res.status(200).json({
+    success: { profile },
+  });
+});
 
 // @route PUT /profile/edit
 // @desc edit user profile
