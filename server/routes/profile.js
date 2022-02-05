@@ -8,8 +8,8 @@ const {
   loadProfile,
   retrieveImgUrls,
   retrieveAvatarUrl,
-  getAvatar,
-  deleteProfilePhoto
+  deleteProfilePhoto,
+  loadProfileById
 } = require("../controllers/profile");
 
 const fileStorageEngine = multer.diskStorage({
@@ -49,8 +49,9 @@ router
 
 router.route("/photo/:key").delete(protect, deleteProfilePhoto);
 
-router.route("/edit").put(protect, editProfile);
+router.route("/").put(protect, editProfile);
 
-router.route("/load").get(protect, loadProfile);
+router.route("/:id").get(loadProfileById);
+router.route("/").get(protect, loadProfile);
 
 module.exports = router;

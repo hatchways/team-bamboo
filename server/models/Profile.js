@@ -19,11 +19,6 @@ const profileSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
-  isSitter: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
   name: {
     type: String,
     default: "",
@@ -51,6 +46,25 @@ const profileSchema = new mongoose.Schema({
   photo: {
     type: String,
     default: "",
+  },
+  jobTitle: {
+    type: String,
+    max: 20,
+    trim: "",
+    default: "",
+  },
+  coverPhoto: {
+    type: String,
+    default: "",
+  },
+  hourlyRate: {
+    type: Number,
+    validate: [
+      function (val) {
+        return val > 0;
+      },
+      "Hourly rate must be a positive number",
+    ],
   },
   uploadedImages: [imgUrlSchema],
 });
