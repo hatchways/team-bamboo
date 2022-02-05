@@ -47,7 +47,26 @@ const profileSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
-  uploadedImages: [imgUrlSchema]
+  uploadedImages: [imgUrlSchema],
+  jobTitle: {
+    type: String,
+    max: 20,
+    trim: "",
+    default: ""
+  },
+  coverPhoto: {
+    type: String,
+    default: ""
+  },
+  hourlyRate: {
+    type: Number,
+    validate: [
+      function (val) {
+        return val > 0;
+      },
+      "Hourly rate must be a positive number"
+    ]
+  }
 });
 
 module.exports = Profile = mongoose.model("Profile", profileSchema);
