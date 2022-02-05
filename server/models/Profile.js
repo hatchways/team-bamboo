@@ -4,55 +4,50 @@ const imgUrlSchema = new mongoose.Schema({
   filePath: {
     type: String,
     required: true,
-    unique: true,
-  },
+    unique: true
+  }
 });
 
 const profileSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "User",
+    ref: "User"
   },
   isSitter: {
     type: Boolean,
     required: true,
-    default: false,
-  },
-  isSitter: {
-    type: Boolean,
-    required: true,
-    default: false,
+    default: false
   },
   name: {
     type: String,
-    default: "",
+    default: ""
   },
   description: {
     type: String,
-    default: "",
+    default: ""
   },
   gender: {
     type: String,
-    enum: ["male", "female", "other"],
+    enum: ["male", "female", "other"]
   },
   address: {
     type: String,
-    default: "",
+    default: ""
   },
   telephone: {
     type: String,
-    default: "",
+    default: ""
   },
   birthday: {
     type: Date,
-    default: null,
+    default: null
   },
   photo: {
     type: String,
-    default: "",
+    default: ""
   },
-  uploadedImages: [imgUrlSchema],
+  uploadedImages: [imgUrlSchema]
 });
 
 module.exports = Profile = mongoose.model("Profile", profileSchema);
