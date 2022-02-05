@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
                     color="inherit"
                   >
                     <img
-                      style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover' }}
+                      className={classes.profilePhoto}
                       src={photoPath ? photoPath : `https://robohash.org/${loggedInUser.email}`}
                     />
                   </IconButton>
