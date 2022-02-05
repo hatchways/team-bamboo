@@ -4,7 +4,7 @@ const { Types } = require("mongoose");
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
-const { uploadImages } = require("../s3");
+const { uploadFileToS3, uploadImages, deleteFile } = require("../s3");
 
 // @route GET /profile/load/:id
 // @desc Get user profile data
@@ -37,8 +37,8 @@ exports.editProfile = asyncHandler(async (req, res, next) => {
   const updatedProfile = await profile.save();
   res.status(200).json({
     success: {
-      profile: updatedProfile,
-    },
+      profile: updatedProfile
+    }
   });
 });
 
@@ -55,15 +55,15 @@ exports.loadProfile = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: {
-      profile: profile,
-    },
+      profile: profile
+    }
   });
 });
 
 // @route POST /profile/upload
 // @desc Upload images to server
 // @access Private
-exports.retriveImgUrls = asyncHandler(async (req, res) => {
+exports.retrieveImgUrls = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ userId: req.user.id });
   if (!profile) {
     res.status(404);
@@ -75,7 +75,7 @@ exports.retriveImgUrls = asyncHandler(async (req, res) => {
   const saveImagesToDb = async (results) => {
     for (let i = 0; i < results.length; i++) {
       const imageUrl = {
-        filePath: results[i].Location,
+        filePath: results[i].Location
       };
       profile.uploadedImages.push(imageUrl);
       await profile.save();
@@ -91,3 +91,38 @@ exports.retriveImgUrls = asyncHandler(async (req, res) => {
   );
   res.status(201).json("image uploaded");
 });
+
+// @route POST /profile/upload-avatar
+// @desc Upload a profile photo to server
+// @access Private
+exports.retrieveAvatarUrl = asyncHandler(async (req, res) => {
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (!profile) {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
+  }
+  const file = req.file;
+  const result = await uploadFileToS3(file);
+  profile.photo = result.Location;
+  await profile.save();
+  await unlinkFile(file.path);
+  res.status(201).json({
+    imageKey: result.Key
+  });
+});
+
+// @route DELETE /profile/photo/:key
+// @desc Delete a profile photo from sever
+// @access Private
+exports.deleteProfilePhoto = async (req, res) => {
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (!profile) {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
+  }
+  const key = req.params.key;
+  await deleteFile(key);
+  profile.photo = "";
+  await profile.save();
+  res.status(200).json("profile photo deleted");
+};

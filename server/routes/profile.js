@@ -6,8 +6,10 @@ const protect = require("../middleware/auth");
 const {
   editProfile,
   loadProfile,
-  loadProfileById,
-  retriveImgUrls,
+  retrieveImgUrls,
+  retrieveAvatarUrl,
+  deleteProfilePhoto,
+  loadProfileById
 } = require("../controllers/profile");
 
 const fileStorageEngine = multer.diskStorage({
@@ -15,25 +17,37 @@ const fileStorageEngine = multer.diskStorage({
     cb(null, "./uploads");
   },
   filename: function (req, file, cb) {
-    const fileName = `${Date.now()} ${path.extname(file.originalname)}`;
+    const fileName = `${Date.now()}${path.extname(file.originalname)}`;
     cb(null, fileName);
-  },
+  }
 });
 
 const upload = multer({
   storage: fileStorageEngine,
   fileFilter: function (req, file, callback) {
-    var ext = path.extname(file.originalname);
-    if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg") {
+    const ext = path.extname(file.originalname);
+    if (
+      ext !== ".png" &&
+      ext !== ".jpg" &&
+      ext !== ".gif" &&
+      ext !== ".jpeg" &&
+      ext !== ".webp"
+    ) {
       return callback(new Error("Only images are allowed"));
     }
     callback(null, true);
-  },
+  }
 });
 
 router
   .route("/upload")
-  .post(protect, upload.array("images", 5), retriveImgUrls);
+  .post(protect, upload.array("images", 5), retrieveImgUrls);
+
+router
+  .route("/upload-avatar")
+  .post(protect, upload.single("avatar"), retrieveAvatarUrl);
+
+router.route("/photo/:key").delete(protect, deleteProfilePhoto);
 
 router.route("/").put(protect, editProfile);
 
