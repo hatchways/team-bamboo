@@ -109,23 +109,6 @@ const Navbar: React.FC = () => {
   const { loggedInUser, logout, profile } = useAuth();
   const { photoPath } = useProfilePhoto();
   const open = Boolean(anchorEl);
-  const [imgUrl, setImgUrl] = useState<string>('');
-  const [fallback, setFallback] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (profile?.photo) {
-      setImgUrl(profile.photo);
-    }
-  }, [profile?.photo]);
-
-  const reload = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    if (fallback) {
-      e.currentTarget.src = '/img/blank_profile.png';
-    } else {
-      e.currentTarget.src = profile?.photo;
-      setFallback(true);
-    }
-  };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -175,10 +158,8 @@ const Navbar: React.FC = () => {
                     color="inherit"
                   >
                     <img
-                      key={Date.now()}
                       style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover' }}
-                      src={imgUrl ? imgUrl : `https://robohash.org/${loggedInUser.email}`}
-                      onError={reload}
+                      src={photoPath ? photoPath : `https://robohash.org/${loggedInUser.email}`}
                     />
                   </IconButton>
                   <Menu

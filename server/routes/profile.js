@@ -47,8 +47,6 @@ router
   .route("/upload-avatar")
   .post(protect, upload.single("avatar"), retrieveAvatarUrl);
 
-router.route("/photo/:key").get(protect, getAvatar);
-
 router.route("/photo/:key").delete(protect, deleteProfilePhoto);
 
 router.route("/edit").put(protect, editProfile);

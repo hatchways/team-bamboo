@@ -1,35 +1,25 @@
 import { createContext, useState, FunctionComponent, useContext, useEffect } from 'react';
-import getProfilePhoto from '../helpers/APICalls/getProfilePhoto';
+import { useAuth } from './useAuthContext';
 
 interface IProfilePhotoContext {
-  photoKey: string;
-  photoPath: string;
-  setPhotoKey: (photoKey: string) => void;
-  setPhotoPath?: (photoPath: string) => void;
+  photoPath: string | undefined;
+  setPhotoPath: (photoPath?: string | undefined) => void;
 }
 
 export const ProfilePhotoContext = createContext<IProfilePhotoContext>({
-  photoKey: '',
   photoPath: '',
-  setPhotoKey: (photoKey: string) => null,
-  setPhotoPath: (photoPath: string) => null,
+  setPhotoPath: (photoPath: string | undefined) => null,
 });
 
 export const ProfilePhotoProvider: FunctionComponent = ({ children }): JSX.Element => {
-  const [photoKey, setPhotoKey] = useState<string>('');
-  const [photoPath, setPhotoPath] = useState<string>('');
+  const [photoPath, setPhotoPath] = useState<string | undefined>('');
+  const { profile } = useAuth();
 
   useEffect(() => {
-    const fetchProfilePhoto = async () => {
-      const result = await getProfilePhoto(photoKey);
-      setPhotoPath(result.imagePath);
-    };
-    fetchProfilePhoto();
-  }, [photoKey]);
+    setPhotoPath(profile?.photo);
+  }, [profile?.photo]);
 
-  return (
-    <ProfilePhotoContext.Provider value={{ photoKey, setPhotoKey, photoPath }}>{children}</ProfilePhotoContext.Provider>
-  );
+  return <ProfilePhotoContext.Provider value={{ photoPath, setPhotoPath }}>{children}</ProfilePhotoContext.Provider>;
 };
 
 export function useProfilePhoto(): IProfilePhotoContext {

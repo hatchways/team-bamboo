@@ -94,20 +94,6 @@ exports.retrieveAvatarUrl = asyncHandler(async (req, res) => {
   });
 });
 
-// @route GET /profile/photo/:key
-// @desc Get a profile photo from sever
-// @access Private
-exports.getAvatar = async (req, res) => {
-  const profile = await Profile.findOne({ userId: req.user.id });
-  if (!profile) {
-    res.status(404);
-    throw new Error("Profile doesn't exist");
-  }
-  res.status(200).json({
-    imagePath: profile.photo
-  });
-};
-
 // @route DELETE /profile/photo/:key
 // @desc Delete a profile photo from sever
 // @access Private
