@@ -23,7 +23,7 @@ const settingsMenu = [
   {
     name: 'Availability',
     to: '/profile/settings/availability',
-    component: <SettingHeader header="Availability" />,
+    component: <SettingHeader header="Your availability" />,
   },
   {
     name: 'Payment methods',
