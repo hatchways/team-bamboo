@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
 const User = require("./models/User");
 const Notification = require("./models/Notification");
-const { check, param, validationResult } = require("express-validator");
+const { check, param, query, validationResult } = require("express-validator");
+const Conversation = require("./models/Conversation");
+const Profile = require("./models/Profile");
+
+const isValidMongoId = (id) => mongoose.Types.ObjectId.isValid(id);
+const idExists = (Schema) => async (id) =>
+  (await Schema.findById(id).exec()) ? Promise.resolve() : Promise.reject();
 
 exports.validateRegister = [
   check("name", "Please enter a name").not().isEmpty(),
@@ -86,12 +92,80 @@ exports.validateNotification = [
 
 exports.validateMarkNotification = [
   param("id", "Notification is not valid")
-    .custom((id) => mongoose.Types.ObjectId.isValid(id))
+    .custom(isValidMongoId)
     .withMessage("Provided id is not a valid")
-    .custom(async (id) =>
-      (await Notification.findById(id)) ? Promise.resolve() : Promise.reject()
-    )
+    .custom(idExists(Notification))
     .withMessage("No notification found with provided id."),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    next();
+  },
+];
+
+const messageSortFields = ["content", "createdAt", "updatedAt", "sender"];
+
+exports.validateGetMessagesQuery = [
+  param("id", "Need id of related conversation")
+    .custom(isValidMongoId)
+    .withMessage("Provided conversation id is not valid")
+    .custom(idExists(Conversation))
+    .withMessage("No conversation found with provided id"),
+  query("sort")
+    .default("createdAt")
+    .isString()
+    .isIn(messageSortFields)
+    .withMessage(
+      `Must provide a sort field relevant to a message: ${messageSortFields.join(
+        " | "
+      )}`
+    ),
+  query("order")
+    .default("asc")
+    .isString()
+    .isIn(["asc", "desc"])
+    .withMessage(
+      "Must provide either 'asc' or 'desc' when querying the order."
+    ),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    next();
+  },
+];
+
+exports.validateOtherUserId = [
+  check("otherUserId", "Need id of related conversation")
+    .custom(isValidMongoId)
+    .withMessage("Provided user id is not valid")
+    .custom(idExists(User))
+    .withMessage("No user found with provided id"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(404).json({ errors: errors.array() });
+
+    next();
+  },
+];
+
+exports.validateMessageData = [
+  param("id", "Need id of related conversation")
+    .custom(isValidMongoId)
+    .withMessage("Provided conversation id is not valid")
+    .custom(idExists(Conversation))
+    .withMessage("No conversation found with provided id"),
+  check("content")
+    .isString()
+    .isLength({ min: 1, max: Infinity })
+    .withMessage("content must contain at least one character"),
   (req, res, next) => {
     const errors = validationResult(req);
 

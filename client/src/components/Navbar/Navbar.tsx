@@ -1,7 +1,8 @@
 import { FinalCheck, MenuItemData } from './interface/Navbar';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import clsx from 'clsx';
 import { useAuth } from '../../context/useAuthContext';
+import { useProfilePhoto } from '../../context/useProfilePhotoContext';
 import {
   Button,
   Divider,
@@ -106,6 +107,7 @@ const Navbar: React.FC = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { loggedInUser, logout, profile } = useAuth();
+  const { photoPath } = useProfilePhoto();
   const open = Boolean(anchorEl);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -155,7 +157,10 @@ const Navbar: React.FC = () => {
                     onClick={handleMenuOpen}
                     color="inherit"
                   >
-                    <img style={{ width: 50 }} src={`https://robohash.org/${loggedInUser.email}`} />
+                    <img
+                      className={classes.profilePhoto}
+                      src={photoPath ? photoPath : `https://robohash.org/${loggedInUser.email}`}
+                    />
                   </IconButton>
                   <Menu
                     id="menu-appbar"

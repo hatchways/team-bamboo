@@ -10,12 +10,14 @@ const cookieParser = require("cookie-parser");
 const socketCookieParser = require("socket.io-cookie-parser");
 const logger = require("morgan");
 const { protectSocket } = require("./middleware/socket");
+const cors = require("cors");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const requestRouter = require("./routes/request");
 const profileRouter = require("./routes/profile");
 const notificationsRouter = require("./routes/notification");
+const conversationsRouter = require("./routes/conversation");
 
 const { json, urlencoded } = express;
 
@@ -59,6 +61,7 @@ app.use("/users", userRouter);
 app.use("/profile", profileRouter);
 app.use("/requests", requestRouter);
 app.use("/notifications", notificationsRouter);
+app.use("/conversations", conversationsRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/client/build")));
