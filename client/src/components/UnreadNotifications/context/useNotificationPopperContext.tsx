@@ -57,6 +57,9 @@ export const UnreadNotificationsPopperProvider: FunctionComponent = ({ children 
                   markNotificationRead(id);
                 }),
               );
+              if (socket) {
+                socket.emit('mark-notification-read');
+              }
             }
           };
           return (
