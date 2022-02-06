@@ -66,7 +66,7 @@ exports.createRequest = asyncHandler(async (req, res) => {
   });
 });
 
-// @route PATCH /requests/
+// @route PATCH /requests/:requestId
 // @desc Update request status
 // @access Private
 exports.updateRequestStatus = asyncHandler(async (req, res) => {
