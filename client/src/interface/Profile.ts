@@ -1,3 +1,8 @@
+export interface ImgUrlSchema {
+  _id: string;
+  filePath: string;
+}
+
 export interface Profile {
   id: string;
   userId: string;

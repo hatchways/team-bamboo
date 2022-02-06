@@ -29,4 +29,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
   navbarLogo: {
     width: 180,
   },
+  profilePhoto: {
+    width: 50,
+    height: 50,
+    borderRadius: '50%',
+    objectFit: 'cover',
+  },
 }));
