@@ -14,7 +14,7 @@ exports.protectSocket = async (socket, next) => {
 
     if (user) {
       socket.request.user = {
-        id: user.id,
+        id: user._id.toString(),
         name: user.name,
         email: user.email,
       };
