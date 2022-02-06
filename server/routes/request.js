@@ -7,8 +7,11 @@ const {
   updateRequestStatus,
 } = require("../controllers/request");
 
+const { payForRequest } = require("../controllers/stripe");
+
 router.route("/").get(protect, getRequests);
 router.route("/").post(protect, createRequest);
 router.route("/:requestId").patch(protect, updateRequestStatus);
+router.route("/:requestId/pay").post(protect, payForRequest);
 
 module.exports = router;
