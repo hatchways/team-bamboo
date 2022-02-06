@@ -15,12 +15,8 @@ const userRouter = require("./routes/user");
 const requestRouter = require("./routes/request");
 const profileRouter = require("./routes/profile");
 const notificationsRouter = require("./routes/notification");
-<<<<<<< HEAD
 const availabilityRouter = require("./routes/availability");
-||||||| c9a34f7
-=======
 const conversationsRouter = require("./routes/conversation");
->>>>>>> 193e2492d69ecf1ea2068e37624b50a5b0f3abe7
 
 const { json, urlencoded } = express;
 
@@ -56,12 +52,8 @@ app.use("/users", userRouter);
 app.use("/profile", profileRouter);
 app.use("/requests", requestRouter);
 app.use("/notifications", notificationsRouter);
-<<<<<<< HEAD
 app.use("/availability", availabilityRouter);
-||||||| c9a34f7
-=======
 app.use("/conversations", conversationsRouter);
->>>>>>> 193e2492d69ecf1ea2068e37624b50a5b0f3abe7
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/client/build")));
