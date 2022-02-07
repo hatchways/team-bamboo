@@ -7,6 +7,11 @@ function formatDate(time) {
 }
 
 const availableDaySchema = new mongoose.Schema({
+  isActive: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   start: {
     type: Date,
     set: formatDate
@@ -50,7 +55,7 @@ const availabilitySchema = new mongoose.Schema({
   sitterId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "User"
+    ref: "Profile"
   },
   isActive: {
     type: Boolean,

@@ -1,61 +1,61 @@
 const mongoose = require("mongoose");
-
 const imgUrlSchema = new mongoose.Schema({
   filePath: {
     type: String,
     required: true,
-    unique: true,
-  },
+    unique: true
+  }
 });
 
 const profileSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "User",
+    ref: "User"
   },
   isSitter: {
     type: Boolean,
     required: true,
-    default: false,
+    default: false
   },
   name: {
     type: String,
-    default: "",
+    default: ""
   },
   description: {
     type: String,
-    default: "",
+    default: ""
   },
   gender: {
     type: String,
-    enum: ["male", "female", "other"],
+    enum: ["male", "female", "other"]
   },
   address: {
     type: String,
-    default: "",
+    default: ""
   },
   telephone: {
     type: String,
-    default: "",
+    default: ""
   },
   birthday: {
     type: Date,
-    default: null,
+    default: null
   },
   photo: {
     type: String,
-    default: "",
+    default: ""
   },
+  uploadedImages: [imgUrlSchema],
   jobTitle: {
     type: String,
     max: 20,
     trim: "",
-    default: "",
+    default: ""
   },
   coverPhoto: {
     type: String,
-    default: "",
+    default: ""
   },
   hourlyRate: {
     type: Number,
@@ -63,10 +63,14 @@ const profileSchema = new mongoose.Schema({
       function (val) {
         return val > 0;
       },
-      "Hourly rate must be a positive number",
-    ],
+      "Hourly rate must be a positive number"
+    ]
   },
-  uploadedImages: [imgUrlSchema],
+  schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: "Availability" }],
+  activeSchedule: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Availability"
+  }
 });
 
 module.exports = Profile = mongoose.model("Profile", profileSchema);
