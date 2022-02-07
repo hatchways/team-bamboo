@@ -55,7 +55,7 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
 
   return res
     .status(401)
-    .json({ error: "User is not apart of the conversation." });
+    .json({ error: { message: "User is not apart of the conversation." } });
 });
 
 // @route POST /conversations/:id/messages
@@ -101,6 +101,6 @@ exports.sendMessage = asyncHandler(async (req, res) => {
     });
   }
   return res.status(401).json({
-    error: "User is not apart of the conversation",
+    error: { message: "User is not apart of the conversation" },
   });
 });

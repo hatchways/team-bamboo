@@ -40,7 +40,9 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
 
   if (user.id === otherUserId) {
     return res.status(400).json({
-      error: "A conversation can only exists between two different users.",
+      error: {
+        message: "A conversation can only exists between two different users.",
+      },
     });
   }
 
