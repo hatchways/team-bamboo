@@ -8,6 +8,7 @@ const connectDB = require("./db");
 const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const cors = require("cors");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
@@ -15,6 +16,7 @@ const requestRouter = require("./routes/request");
 const profileRouter = require("./routes/profile");
 const notificationsRouter = require("./routes/notification");
 const availabilityRouter = require("./routes/availability");
+const conversationsRouter = require("./routes/conversation");
 
 const { json, urlencoded } = express;
 
@@ -51,6 +53,7 @@ app.use("/profile", profileRouter);
 app.use("/requests", requestRouter);
 app.use("/notifications", notificationsRouter);
 app.use("/availability", availabilityRouter);
+app.use("/conversations", conversationsRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/client/build")));
