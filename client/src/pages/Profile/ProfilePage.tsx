@@ -45,9 +45,7 @@ const ProfilePage = () => {
     <PageContainer>
       <Grid container justifyContent="space-evenly" alignItems="flex-start">
         <ProfileDetailsCard profile={profile} />
-        <NotificationsProvider loadOnMount={false}>
-          <RequestForm profile={profile} />
-        </NotificationsProvider>
+        <RequestForm profile={profile} />
       </Grid>
     </PageContainer>
   );
