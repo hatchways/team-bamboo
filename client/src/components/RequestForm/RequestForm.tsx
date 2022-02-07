@@ -2,6 +2,7 @@ import { DateTimePicker } from '@mui/lab';
 import { Button, Card, Grid, Rating, TextField, Typography } from '@mui/material';
 import { FormEvent, useState } from 'react';
 import { useAuth } from '../../context/useAuthContext';
+import { useNotifications } from '../../context/useNotificationContext';
 import { useSnackBar } from '../../context/useSnackbarContext';
 import { createBooking } from '../../helpers/APICalls/requests';
 import { Profile } from '../../interface/Profile';
@@ -17,6 +18,7 @@ const placeholderAverageRating = 3;
 const RequestForm = ({ profile }: PropTypes) => {
   const hourFromNowTimestamp = Date.now() + MILLISECONDS_PER_HOUR;
   const [dropoff, setDropoff] = useState<Date | null>(new Date());
+  const { sendNewRequestNotification } = useNotifications();
   const [pickup, setPickup] = useState<Date | null>(new Date(hourFromNowTimestamp));
   const { loggedInUser } = useAuth();
   const { updateSnackBarMessage } = useSnackBar();
@@ -33,6 +35,7 @@ const RequestForm = ({ profile }: PropTypes) => {
       start: dropoff,
       end: pickup,
     };
+    sendNewRequestNotification({ start: dropoff, end: pickup, receivers: [{ id: profile.userId }] });
     try {
       setIsButtonDisabled(true);
       const { success } = await createBooking(reqBody);
