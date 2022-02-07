@@ -14,6 +14,7 @@ import { SocketProvider } from './context/useSocketContext';
 import { SnackBarProvider } from './context/useSnackbarContext';
 import { ProfilePhotoProvider } from './context/useProfilePhotoContext';
 import { LocalizationProvider } from '@mui/lab';
+import { NotificationsProvider } from './context/useNotificationContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { Navbar } from './components/Navbar/Navbar';
 import Settings from './pages/Settings/Settings';
@@ -35,22 +36,24 @@ function App(): JSX.Element {
               <AuthProvider unAuthUserRoutes={unAuthUserRoutes}>
                 <SocketProvider>
                   <ProfilePhotoProvider>
-                    <CssBaseline />
-                    <Navbar />
-                    <Switch>
-                      <Route exact path="/" component={Home} />
-                      <Route exact path="/profile" component={Profile} />
-                      <ProtectedRoute exact path="/bookings" component={Bookings} />
-                      <Route exact path="/login" component={Login} />
-                      <Route exact path="/signup" component={Signup} />
-                      <Route exact path="/dashboard" component={Dashboard} />
-                      <Route exact path="/listings" component={ProfileListings} />
-                      <Route path="/profile/settings" component={Settings} />
-                      <Route exact path="/profile/:id" component={Profile} />
-                      <Route path="*">
-                        <NotFound />
-                      </Route>
-                    </Switch>
+                    <NotificationsProvider loadOnMount={false}>
+                      <CssBaseline />
+                      <Navbar />
+                      <Switch>
+                        <Route exact path="/" component={Home} />
+                        <Route exact path="/profile" component={Profile} />
+                        <ProtectedRoute exact path="/bookings" component={Bookings} />
+                        <Route exact path="/login" component={Login} />
+                        <Route exact path="/signup" component={Signup} />
+                        <Route exact path="/dashboard" component={Dashboard} />
+                        <Route exact path="/listings" component={ProfileListings} />
+                        <Route path="/profile/settings" component={Settings} />
+                        <Route exact path="/profile/:id" component={Profile} />
+                        <Route path="*">
+                          <NotFound />
+                        </Route>
+                      </Switch>
+                    </NotificationsProvider>
                   </ProfilePhotoProvider>
                 </SocketProvider>
               </AuthProvider>

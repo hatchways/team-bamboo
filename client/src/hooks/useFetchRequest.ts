@@ -10,6 +10,7 @@ const useFetchRequest = <D>(delay = 0) => {
   const makeRequest = useCallback(
     (fetcher: Fetcher<D>) => {
       setIsLoading(true);
+      setError(null);
       fetcher()
         .then((res) => {
           if (res.success) return setData(res.success);

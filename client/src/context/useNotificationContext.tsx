@@ -1,8 +1,25 @@
 import type { ValidationError, RequestError, OnSuccess, OnError, OnLoading } from '../interface/ApiData';
-import type { GetNotificationsData } from '../interface/Notification';
+import type { GetNotificationsData, NotificationReceiver } from '../interface/Notification';
 import { useContext, createContext, useEffect, ReactElement, useCallback, useRef, ReactNode } from 'react';
 import { useFetchRequest } from '../hooks';
-import { getNotifications } from '../helpers/APICalls/notifications';
+import { getNotifications, createNotification } from '../helpers/APICalls/notifications';
+import { useAuth } from './useAuthContext';
+import { useSocket } from './useSocketContext';
+import moment from 'moment';
+import { Status } from '../interface/Booking';
+
+interface SendNewRequestNotificationOptions {
+  start: Date;
+  end: Date;
+  receivers: Omit<NotificationReceiver, 'read'>[];
+}
+type SendNewRequestNotification = (options: SendNewRequestNotificationOptions) => void;
+interface SendRequestStatusNotificationOptions {
+  status: Status;
+  receivers: Omit<NotificationReceiver, 'read'>[];
+}
+
+type SendRequestStatusNotification = (options: SendRequestStatusNotificationOptions) => void;
 
 interface NotificationsContext {
   isLoading: boolean;
@@ -14,6 +31,8 @@ interface NotificationsContext {
     onError: OnError<R>,
     onSuccess: OnSuccess<GetNotificationsData, R>,
   ) => any;
+  sendNewRequestNotification: SendNewRequestNotification;
+  sendRequestStatusNotification: SendRequestStatusNotification;
 }
 
 export const NotificationsContext = createContext<NotificationsContext>({
@@ -26,6 +45,8 @@ export const NotificationsContext = createContext<NotificationsContext>({
   matchNotifications: () => {
     return null;
   },
+  sendNewRequestNotification: () => null,
+  sendRequestStatusNotification: () => null,
 });
 
 interface Props {
@@ -41,20 +62,74 @@ interface Props {
 
 export const NotificationsProvider = ({ children, loadOnMount, delay, ...params }: Props): ReactElement => {
   const { data, error, isLoading, makeRequest, matchRequest } = useFetchRequest<GetNotificationsData>(delay || 0);
+  const { loggedInUser, profile } = useAuth();
+  const { socket } = useSocket();
   const loaded = useRef(false);
 
   const loadNotifications = useCallback(() => makeRequest(() => getNotifications(params)), [makeRequest, params]);
 
+  const sendNewRequestNotification = useCallback<SendNewRequestNotification>(
+    ({ start, end, receivers }) => {
+      if (loggedInUser && profile) {
+        const title = 'Dog Sitting',
+          timeDiff = moment(end).diff(moment(start), 'hours'),
+          hour = timeDiff > 2 ? 'hour' : 'hours',
+          description = `${profile?.name || loggedInUser.name} has requested your service for ${timeDiff} ${hour}`;
+
+        createNotification({
+          title,
+          description,
+          receivers,
+          notifyType: 'user',
+        }).then((res) => {
+          if (res.success && socket) {
+            socket.emit('send-notification', res.success.notification.receivers);
+          }
+        });
+      }
+    },
+    [profile, socket, loggedInUser],
+  );
+
+  const sendRequestStatusNotification = useCallback<SendRequestStatusNotification>(
+    ({ status, receivers }) => {
+      if (loggedInUser && profile) {
+        const title = 'Dog Sitting',
+          description = `${profile?.name || loggedInUser.name} has ${status} your request.`;
+
+        createNotification({
+          title,
+          description,
+          receivers,
+          notifyType: 'user',
+        }).then((res) => {
+          if (res.success && socket) {
+            socket.emit('send-notification', res.success.notification.receivers);
+          }
+        });
+      }
+    },
+    [profile, socket, loggedInUser],
+  );
+
   useEffect(() => {
-    if (loadOnMount && !loaded.current) {
+    if (loadOnMount && !loaded.current && loggedInUser) {
       loadNotifications();
       loaded.current = true;
     }
-  }, [loadNotifications, loadOnMount]);
+  }, [loadNotifications, loadOnMount, loggedInUser]);
 
   return (
     <NotificationsContext.Provider
-      value={{ isLoading, data, error, loadNotifications, matchNotifications: matchRequest }}
+      value={{
+        isLoading,
+        data,
+        error,
+        loadNotifications,
+        matchNotifications: matchRequest,
+        sendNewRequestNotification,
+        sendRequestStatusNotification,
+      }}
     >
       {children}
     </NotificationsContext.Provider>

@@ -7,8 +7,15 @@ const { notFound, errorHandler } = require("./middleware/error");
 const connectDB = require("./db");
 const { join } = require("path");
 const cookieParser = require("cookie-parser");
+const socketCookieParser = require("socket.io-cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+
+const { protectSocket } = require("./middleware/socket");
+const {
+  registerUserHandlers,
+  registerNotificationHandlers,
+} = require("./controllers/socket/index");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
@@ -29,8 +36,13 @@ const io = socketio(server, {
   },
 });
 
+io.use(socketCookieParser());
+
+io.use(protectSocket);
+
 io.on("connection", (socket) => {
-  console.log("connected");
+  registerUserHandlers(io, socket);
+  registerNotificationHandlers(io, socket);
 });
 
 if (process.env.NODE_ENV === "development") {
