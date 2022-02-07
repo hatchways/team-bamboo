@@ -1,4 +1,5 @@
 const Availability = require("../models/Availability");
+const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
 
 // @route GET /availability
@@ -31,7 +32,14 @@ exports.addSchedule = asyncHandler(async (req, res) => {
     sitterId: req.user.id,
     availability
   });
-  const createdSchedule = schedule.save();
+  const createdSchedule = await schedule.save();
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (!profile) {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
+  }
+  profile.schedules.push(createdSchedule);
+  await profile.save();
   res.status(201).json({ success: { createdSchedule } });
 });
 
@@ -57,12 +65,15 @@ exports.getActiveSchedule = asyncHandler(async (req, res) => {
 exports.setScheduleActive = asyncHandler(async (req, res) => {
   const alreadyActive = await Availability.findOne({ isActive: true });
   if (alreadyActive) {
-    res.status(405).send("There has been already an active schedule.");
+    res.status(400).send("There has been already an active schedule.");
   } else {
+    const profile = await Profile.findOne({ userId: req.user.id });
     const schedule = await Availability.findById(req.params.scheduleId);
-    if (schedule) {
+    if (schedule && profile) {
       schedule.isActive = true;
       const updatedSchedule = await schedule.save();
+      profile.activeSchedule = schedule._id;
+      await profile.save();
       res.status(201).json({ success: { updatedSchedule } });
     }
   }
