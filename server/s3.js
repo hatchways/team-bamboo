@@ -10,29 +10,34 @@ const accessKey = process.env.AWS_ACCESS_KEY_ID;
 const s3 = new AWS.S3({
   accessKey,
   secretKey,
-  region,
+  region
 });
 
-// upload files to s3
-exports.uploadImages = (files) => {
+const uploadFileToS3 = (file) => {
+  const fileStream = fs.createReadStream(file.path);
+  const uploadParams = {
+    Bucket: bucketName,
+    Body: fileStream,
+    ContentType: file.mimetype,
+    Key: file.filename
+  };
+  return s3.upload(uploadParams).promise();
+};
+
+const deleteFile = (fileKey) => {
+  const deleteParams = {
+    Key: fileKey,
+    Bucket: bucketName
+  };
+  return s3.deleteObject(deleteParams).promise();
+};
+
+const uploadImages = (files) => {
   const uploadPromises = [];
   for (let i = 0; i < files.length; i++) {
-    const fileStream = fs.createReadStream(files[i].path);
-    const uploadParams = {
-      Bucket: bucketName,
-      Body: fileStream,
-      Key: files[i].filename,
-    };
-    const uploadPromise = s3
-      .upload(uploadParams, (error, data) => {
-        if (error) {
-          console.error(error);
-        }
-        console.log(`File uploaded successfully at ${data.Location}`);
-        resolve(data.Location);
-      })
-      .promise();
-    uploadPromises.push(uploadPromise);
+    uploadPromises.push(uploadFileToS3(files[i]));
   }
   return uploadPromises;
 };
+
+module.exports = { uploadFileToS3, uploadImages, deleteFile };
