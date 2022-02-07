@@ -66,6 +66,10 @@ const profileSchema = new mongoose.Schema({
       },
       "Hourly rate must be a positive number"
     ]
+  },
+  activeSchedule: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Availability"
   }
 });
 

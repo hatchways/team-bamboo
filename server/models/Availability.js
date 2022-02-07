@@ -57,7 +57,7 @@ const availabilitySchema = new mongoose.Schema({
     required: true,
     ref: "Profile"
   },
-  activeSchedule: {
+  isActive: {
     type: Boolean,
     required: true,
     default: false
