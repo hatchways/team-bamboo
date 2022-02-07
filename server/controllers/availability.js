@@ -33,13 +33,6 @@ exports.addSchedule = asyncHandler(async (req, res) => {
     availability
   });
   const createdSchedule = await schedule.save();
-  const profile = await Profile.findOne({ userId: req.user.id });
-  if (!profile) {
-    res.status(404);
-    throw new Error("Profile doesn't exist");
-  }
-  profile.schedules.push(createdSchedule);
-  await profile.save();
   res.status(201).json({ success: { createdSchedule } });
 });
 
