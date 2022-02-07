@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import PageContainer from '../../components/PageContainer/PageContainer';
 import ProfileDetailsCard from '../../components/ProfileDetailsCard/ProfileDetailsCard';
 import RequestForm from '../../components/RequestForm/RequestForm';
+import { NotificationsProvider } from '../../context/useNotificationContext';
 import { getProfile } from '../../helpers/APICalls/profile';
 import { Profile } from '../../interface/Profile';
 import NotFound from '../NotFound/NotFound';
@@ -44,7 +45,9 @@ const ProfilePage = () => {
     <PageContainer>
       <Grid container justifyContent="space-evenly" alignItems="flex-start">
         <ProfileDetailsCard profile={profile} />
-        <RequestForm profile={profile} />
+        <NotificationsProvider loadOnMount={false}>
+          <RequestForm profile={profile} />
+        </NotificationsProvider>
       </Grid>
     </PageContainer>
   );
