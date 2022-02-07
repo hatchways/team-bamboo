@@ -70,7 +70,9 @@ const UnreadNotificationsPopper = () => {
                           <NoNotificationsText />
                         ) : (
                           data.notifications.map(({ id, notifyType, receivers, ...notification }) => {
-                            return <UnreadNotificationItem key={id} to={'#notification'} {...notification} />;
+                            let to = '/messages';
+                            if (notifyType === 'user') to = '/bookings';
+                            return <UnreadNotificationItem key={id} to={to} {...notification} />;
                           })
                         ),
                     )}
