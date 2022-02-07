@@ -6,6 +6,7 @@ import { getNotifications, createNotification } from '../helpers/APICalls/notifi
 import { useAuth } from './useAuthContext';
 import { useSocket } from './useSocketContext';
 import moment from 'moment';
+import { Status } from '../interface/Booking';
 
 interface SendNewRequestNotificationOptions {
   start: Date;
@@ -13,6 +14,12 @@ interface SendNewRequestNotificationOptions {
   receivers: Omit<NotificationReceiver, 'read'>[];
 }
 type SendNewRequestNotification = (options: SendNewRequestNotificationOptions) => void;
+interface SendRequestStatusNotificationOptions {
+  status: Status;
+  receivers: Omit<NotificationReceiver, 'read'>[];
+}
+
+type SendRequestStatusNotification = (options: SendRequestStatusNotificationOptions) => void;
 
 interface NotificationsContext {
   isLoading: boolean;
@@ -25,6 +32,7 @@ interface NotificationsContext {
     onSuccess: OnSuccess<GetNotificationsData, R>,
   ) => any;
   sendNewRequestNotification: SendNewRequestNotification;
+  sendRequestStatusNotification: SendRequestStatusNotification;
 }
 
 export const NotificationsContext = createContext<NotificationsContext>({
@@ -38,6 +46,7 @@ export const NotificationsContext = createContext<NotificationsContext>({
     return null;
   },
   sendNewRequestNotification: () => null,
+  sendRequestStatusNotification: () => null,
 });
 
 interface Props {
@@ -82,6 +91,27 @@ export const NotificationsProvider = ({ children, loadOnMount, delay, ...params 
     [profile, socket, loggedInUser],
   );
 
+  const sendRequestStatusNotification = useCallback<SendRequestStatusNotification>(
+    ({ status, receivers }) => {
+      if (loggedInUser && profile) {
+        const title = 'Dog Sitting',
+          description = `${profile?.name || loggedInUser.name} has ${status} your request.`;
+
+        createNotification({
+          title,
+          description,
+          receivers,
+          notifyType: 'user',
+        }).then((res) => {
+          if (res.success && socket) {
+            socket.emit('send-notification', res.success.notification.receivers);
+          }
+        });
+      }
+    },
+    [profile, socket, loggedInUser],
+  );
+
   useEffect(() => {
     if (loadOnMount && !loaded.current && loggedInUser) {
       loadNotifications();
@@ -98,6 +128,7 @@ export const NotificationsProvider = ({ children, loadOnMount, delay, ...params 
         loadNotifications,
         matchNotifications: matchRequest,
         sendNewRequestNotification,
+        sendRequestStatusNotification,
       }}
     >
       {children}
