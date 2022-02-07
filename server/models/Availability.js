@@ -29,24 +29,31 @@ const availableDaySchema = new mongoose.Schema({
 
 const availableWeekSchema = new mongoose.Schema({
   mon: {
+    type: Date,
     availableTime: availableDaySchema
   },
   tue: {
+    type: Date,
     availableTime: availableDaySchema
   },
   wed: {
+    type: Date,
     availableTime: availableDaySchema
   },
   thu: {
+    type: Date,
     availableTime: availableDaySchema
   },
   fri: {
+    type: Date,
     availableTime: availableDaySchema
   },
   sat: {
+    type: Date,
     availableTime: availableDaySchema
   },
   sun: {
+    type: Date,
     availableTime: availableDaySchema
   }
 });
