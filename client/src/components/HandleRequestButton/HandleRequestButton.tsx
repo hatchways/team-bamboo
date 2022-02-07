@@ -5,14 +5,17 @@ import { Status } from '../../interface/Booking';
 import { useBookings } from '../../context/useBookingsContext';
 import { useAuth } from '../../context/useAuthContext';
 import { useSnackBar } from '../../context/useSnackbarContext';
+import { useNotifications } from '../../context/useNotificationContext';
 
 interface PropTypes {
   bookingId: string;
+  otherUserId?: string;
 }
 
-const HandleRequestButton = ({ bookingId }: PropTypes) => {
+const HandleRequestButton = ({ bookingId, otherUserId }: PropTypes) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { setBookingStatus } = useBookings();
+  const { sendRequestStatusNotification } = useNotifications();
   const { profile } = useAuth();
   const { updateSnackBarMessage } = useSnackBar();
 
@@ -29,7 +32,12 @@ const HandleRequestButton = ({ bookingId }: PropTypes) => {
   const handleClose = async (status?: Status) => {
     if (status) {
       const { success } = await setBookingStatus(bookingId, status);
-      if (success) updateSnackBarMessage('Request ' + status);
+      if (success) {
+        updateSnackBarMessage('Request ' + status);
+        if (otherUserId) {
+          sendRequestStatusNotification({ status, receivers: [{ id: otherUserId }] });
+        }
+      }
     }
     setAnchorEl(null);
   };

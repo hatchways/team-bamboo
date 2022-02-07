@@ -15,7 +15,7 @@ const BookingCard = ({ booking }: PropTypes) => {
           <Typography sx={{ fontSize: '0.8rem' }}>
             {format(booking.start, 'd LLLL y, haaa')} - {format(booking.end, 'haaa')}
           </Typography>
-          <HandleRequestButton bookingId={booking._id} />
+          <HandleRequestButton bookingId={booking._id} otherUserId={booking.otherUser?._id} />
         </Grid>
         <Box sx={{ height: '10px' }}></Box>
         <Grid container alignItems="center">
