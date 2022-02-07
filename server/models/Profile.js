@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const imgUrlSchema = new mongoose.Schema({
   filePath: {
     type: String,
@@ -67,6 +66,7 @@ const profileSchema = new mongoose.Schema({
       "Hourly rate must be a positive number"
     ]
   },
+  schedules: [{ type: mongoose.Schema.Types.ObjectId, ref: "Availability" }],
   activeSchedule: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Availability"
