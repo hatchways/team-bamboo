@@ -57,11 +57,6 @@ const availabilitySchema = new mongoose.Schema({
     required: true,
     ref: "Profile"
   },
-  isActive: {
-    type: Boolean,
-    required: true,
-    default: false
-  },
   availability: availableWeekSchema
 });
 

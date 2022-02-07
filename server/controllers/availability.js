@@ -40,13 +40,16 @@ exports.addSchedule = asyncHandler(async (req, res) => {
 // @desc get active schedule
 // @access Private
 exports.getActiveSchedule = asyncHandler(async (req, res) => {
-  const activeSchedule = await Availability.find({ isActive: true });
-  if (activeSchedule) {
-    res.status(200).json({
-      success: {
-        activeSchedule
-      }
-    });
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (!profile) {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
+  }
+  if (profile.activeSchedule) {
+    const populatedProfile = await profile.populate("activeSchedule");
+    res
+      .status(200)
+      .json({ success: { scheduleDetails: populatedProfile.activeSchedule } });
   } else {
     res.send("No schedule is active yet.");
   }
@@ -56,18 +59,14 @@ exports.getActiveSchedule = asyncHandler(async (req, res) => {
 // @desc set a schedule to active
 // @access Private
 exports.setScheduleActive = asyncHandler(async (req, res) => {
-  const alreadyActive = await Availability.findOne({ isActive: true });
-  if (alreadyActive) {
-    res.status(400).send("There has been already an active schedule.");
-  } else {
-    const profile = await Profile.findOne({ userId: req.user.id });
+  const profile = await Profile.findOne({ userId: req.user.id });
+  if (profile) {
     const schedule = await Availability.findById(req.params.scheduleId);
-    if (schedule && profile) {
-      schedule.isActive = true;
-      const updatedSchedule = await schedule.save();
-      profile.activeSchedule = schedule._id;
-      await profile.save();
-      res.status(201).json({ success: { updatedSchedule } });
-    }
+    profile.activeSchedule = schedule._id;
+    await profile.save();
+    res.status(201).send("The schedule has been set active!");
+  } else {
+    res.status(404);
+    throw new Error("Profile doesn't exist");
   }
 });
