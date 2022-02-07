@@ -3,7 +3,8 @@ const imgUrlSchema = new mongoose.Schema({
   filePath: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    sparse: true
   }
 });
 
