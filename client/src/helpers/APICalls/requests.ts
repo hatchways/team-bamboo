@@ -1,3 +1,4 @@
+import ApiData from '../../interface/ApiData';
 import { Booking } from '../../interface/Booking';
 import { FetchOptions } from '../../interface/FetchOptions';
 
@@ -46,5 +47,11 @@ export const createBooking = async (body: PostBody): Promise<SingleBookingRespon
     body: JSON.stringify(body),
   };
   const response = await fetch('/requests', fetchOptions);
+  return response.json();
+};
+
+export const payForBooking = async (requestId: string): Promise<ApiData<unknown>> => {
+  const url = `/requests/${requestId}/pay`;
+  const response = await fetch(url);
   return response.json();
 };

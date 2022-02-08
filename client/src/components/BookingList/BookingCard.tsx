@@ -1,7 +1,7 @@
 import { Booking } from '../../interface/Booking';
 import { Avatar, Card, CardContent, Grid, Typography, Box } from '@mui/material';
 import format from 'date-fns/format';
-import HandleRequestButton from '../HandleRequestButton/HandleRequestButton';
+import BookingActionButton from '../BookingActionButton/BookingActionButton';
 
 interface PropTypes {
   booking: Booking;
@@ -15,7 +15,7 @@ const BookingCard = ({ booking }: PropTypes) => {
           <Typography sx={{ fontSize: '0.8rem' }}>
             {format(booking.start, 'd LLLL y, haaa')} - {format(booking.end, 'haaa')}
           </Typography>
-          <HandleRequestButton bookingId={booking._id} />
+          <BookingActionButton bookingId={booking._id} bookingStatus={booking.status} />
         </Grid>
         <Box sx={{ height: '10px' }}></Box>
         <Grid container alignItems="center">

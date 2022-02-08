@@ -21,6 +21,8 @@ import Bookings from './pages/Bookings/Bookings';
 import Profile from './pages/Profile/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { BookingsProvider } from './context/useBookingsContext';
+import ConfirmPayment from './pages/ConfirmPayment/ConfirmPayment';
+import TransactionResult from './pages/TransactionResult/TransactionResult';
 
 const unAuthUserRoutes = ['/', '/login', '/signup', '/listings'];
 
@@ -38,6 +40,8 @@ function App(): JSX.Element {
                   <Switch>
                     <Route exact path="/" component={Home} />
                     <Route exact path="/profile" component={Profile} />
+                    <ProtectedRoute exact path="/transactionResult" component={TransactionResult} />
+                    <ProtectedRoute exact path="/bookings/:id/confirm" component={ConfirmPayment} />
                     <ProtectedRoute exact path="/bookings" component={Bookings} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/signup" component={Signup} />
