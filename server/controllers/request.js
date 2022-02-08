@@ -3,7 +3,7 @@ const Profile = require("../models/Profile");
 const asyncHandler = require("express-async-handler");
 const { Types } = require("mongoose");
 
-// @route GET /requests/sitter
+// @route GET /requests
 // @desc get requests for logged in user
 // @access Private
 exports.getRequests = asyncHandler(async (req, res) => {
