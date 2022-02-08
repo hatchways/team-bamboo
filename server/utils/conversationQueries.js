@@ -89,7 +89,7 @@ exports.populateLastMessage = () => [
       as: "lastMessage",
     },
   },
-  { $unwind: "$lastMessage" },
+  { $unwind: { path: "$lastMessage", preserveNullAndEmptyArrays: true } },
 ];
 
 exports.conversationContainsUser = (id, senderId) => ({
