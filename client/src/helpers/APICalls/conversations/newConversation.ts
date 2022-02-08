@@ -1,13 +1,13 @@
 import type ApiData from '../../../interface/ApiData';
 import type { FetchOptions } from '../../../interface/FetchOptions';
-import type { Conversation } from '../../../interface/Conversation';
+import type { NewConversationResponse } from '../../../interface/Conversation';
 
 const newConversation = async (
   data: {
     otherUserId: string;
   },
   controller?: AbortController,
-): Promise<ApiData<Conversation>> => {
+): Promise<ApiData<NewConversationResponse>> => {
   const fetchOptions: FetchOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

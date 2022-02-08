@@ -1,6 +1,6 @@
 import type ApiData from '../../../interface/ApiData';
 import type { FetchOptions } from '../../../interface/FetchOptions';
-import type { Message } from '../../../interface/Message';
+import type { SendMessageResponse } from '../../../interface/Message';
 
 const sendMessage = async (
   params: {
@@ -10,7 +10,7 @@ const sendMessage = async (
     content: string;
   },
   controller?: AbortController,
-): Promise<ApiData<Message>> => {
+): Promise<ApiData<SendMessageResponse>> => {
   const fetchOptions: FetchOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

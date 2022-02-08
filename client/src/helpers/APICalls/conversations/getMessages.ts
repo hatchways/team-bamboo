@@ -1,8 +1,12 @@
 import type ApiData from '../../../interface/ApiData';
-import { Message } from '../../../interface/Message';
+import { GetMessagesResponse, MessageQueryOptions } from '../../../interface/Message';
 import type { FetchOptions } from '../../../interface/FetchOptions';
 
-const getMessages = async (param: { id: string }, controller?: AbortController): Promise<ApiData<Message[]>> => {
+const getMessages = async (
+  param: { id: string },
+  query: MessageQueryOptions = {},
+  controller?: AbortController,
+): Promise<ApiData<GetMessagesResponse>> => {
   const fetchOptions: FetchOptions = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -10,7 +14,11 @@ const getMessages = async (param: { id: string }, controller?: AbortController):
     signal: controller?.signal,
   };
 
-  return await fetch(`/conversations/${param.id}/messages`, fetchOptions)
+  const queries = Object.entries(query)
+    .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+    .join('&');
+
+  return await fetch(`/conversations/${param.id}/messages?${queries}`, fetchOptions)
     .then((res) => res.json())
     .catch(() => ({
       error: { message: 'Unable to connect to server. Please try again.' },
