@@ -1,15 +1,21 @@
 import { Message } from './Message';
 
-export interface LastMessage extends Omit<Message, 'sender'> {
-  sender: string;
+export interface OtherUser {
+  name: string;
+  photo: string;
+  id: string;
+  userId: string;
 }
-
 export interface Conversation {
   id: string;
-  otherUser: {
-    name: string;
-    photo: string;
-    id: string;
-  };
-  lastMessage?: LastMessage;
+  otherUser: OtherUser;
+  lastMessage?: Message;
+}
+
+export interface GetConversationsResponse {
+  conversations: Conversation[];
+}
+
+export interface NewConversationResponse {
+  conversation: Conversation;
 }
