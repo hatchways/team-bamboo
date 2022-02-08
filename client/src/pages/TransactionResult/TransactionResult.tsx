@@ -4,7 +4,6 @@ import PageContainer from '../../components/PageContainer/PageContainer';
 
 const useStyles = makeStyles((theme: Theme) => ({
   text: {
-    // margin: 'auto',
     textAlign: 'center',
     color: theme.palette.primary.main,
   },
