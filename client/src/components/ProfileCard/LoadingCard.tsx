@@ -11,16 +11,9 @@ import {
   styled,
   Divider,
   Box,
+  Skeleton,
 } from '@mui/material';
-import LinesEllipsis from 'react-lines-ellipsis';
 import { LocationOn, Star } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
-
-const ProfileAvatar = styled(Avatar)(({ theme }) => ({
-  width: 104,
-  height: 104,
-  background: theme.palette.grey[300],
-}));
 
 const StyledCard = styled(Card)(() => ({
   boxShadow: '4px 4px 13px 7px rgba(217,217,217,0.26)',
@@ -40,13 +33,11 @@ const Status = styled(Typography)(({ theme }) => ({
   color: theme.palette.grey[500],
 }));
 
-const Description = styled(LinesEllipsis)(({ theme }) => ({
+const Description = styled(Typography)(({ theme }) => ({
   ...theme.typography.body1,
   textAlign: 'center',
   fontSize: 16,
   fontWeight: 400,
-  height: 50,
-  maxHeight: 50,
 }));
 
 const Location = styled(Typography)(({ theme }) => ({
@@ -54,45 +45,48 @@ const Location = styled(Typography)(({ theme }) => ({
   color: theme.palette.grey[500],
 }));
 
-interface Props extends Omit<Profile, 'userId' | 'isSitter' | 'gender' | 'telephone' | 'birthday' | 'uploadedImages'> {
-  hourlyRate: number;
-}
-
-const ProfileCard: FunctionComponent<Props> = (profile) => {
+const ProfileCard: FunctionComponent = () => {
   return (
     <StyledCard variant="elevation">
-      <CardActionArea component={Link} to={`profile-details/${profile.id}`} disableRipple>
+      <CardActionArea component="div" disableRipple disabled>
         <CardContent sx={{ p: 0 }}>
           <Stack alignItems="center" gap={1} p={2} pt={4}>
-            <ProfileAvatar src={profile.photo || `https://robohash.org/${profile.id}`} />
-            <Stack alignItems="center">
-              <Title>{profile?.name || 'No Name'}</Title>
-              <Status>{profile?.jobTitle || 'Unknown'}</Status>
+            <Skeleton variant="circular" sx={{ width: 104, height: 104 }} animation="wave" />
+            <Stack alignItems="center" width="100%">
+              <Skeleton variant="text" animation="wave" sx={{ width: '100%' }}>
+                <Title>Loading Profile Name</Title>
+              </Skeleton>
+              <Skeleton variant="text" animation="wave">
+                <Status>Loading Job Title</Status>
+              </Skeleton>
               <Rating
                 name="rating"
                 readOnly
-                value={profile?.averageRating || 0}
+                value={0}
                 size="small"
                 emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
               />
             </Stack>
-            <Description
-              text={profile?.description || 'No description provided'}
-              maxLine="2"
-              basedOn="letters"
-              trimRight
-            />
+            <Skeleton variant="text" animation="wave">
+              <Description variant="body1" fontSize={14}>
+                Loading the all knowing description
+              </Description>
+            </Skeleton>
           </Stack>
           <Box pt={3}>
             <Divider />
-            <Stack direction="row" justifyContent="space-between" alignItems="center" p={3}>
-              <Stack direction="row" spacing={0.5}>
+            <Stack direction="row" alignItems="center" p={3}>
+              <Stack direction="row" spacing={0.5} sx={{ width: '100%' }}>
                 <LocationOn color="primary" />
-                <Location>{profile?.address || 'No location'}</Location>
+                <Skeleton variant="text" animation="wave">
+                  <Location>Loading location</Location>
+                </Skeleton>
               </Stack>
-              <Typography fontWeight="bold" variant="h6">
-                ${profile.hourlyRate}/hr
-              </Typography>
+              <Skeleton variant="text" animation="wave">
+                <Typography fontWeight="bold" variant="h6">
+                  rate
+                </Typography>
+              </Skeleton>
             </Stack>
           </Box>
         </CardContent>

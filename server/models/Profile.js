@@ -28,6 +28,12 @@ const profileSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  jobTitle: {
+    type: String,
+    max: 20,
+    trim: "",
+    default: "",
+  },
   gender: {
     type: String,
     enum: ["male", "female", "other"],
@@ -46,12 +52,6 @@ const profileSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    default: "",
-  },
-  jobTitle: {
-    type: String,
-    max: 20,
-    trim: "",
     default: "",
   },
   coverPhoto: {
