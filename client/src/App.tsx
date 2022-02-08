@@ -14,12 +14,15 @@ import { SocketProvider } from './context/useSocketContext';
 import { SnackBarProvider } from './context/useSnackbarContext';
 import { ProfilePhotoProvider } from './context/useProfilePhotoContext';
 import { LocalizationProvider } from '@mui/lab';
+import { NotificationsProvider } from './context/useNotificationContext';
+import { ActiveConversationProvider } from './context/useActiveConversationContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { Navbar } from './components/Navbar/Navbar';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound/NotFound';
 import Bookings from './pages/Bookings/Bookings';
 import Profile from './pages/Profile/ProfilePage';
+import Messages from './pages/Messages/Messages';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { BookingsProvider } from './context/useBookingsContext';
 
@@ -35,22 +38,27 @@ function App(): JSX.Element {
               <AuthProvider unAuthUserRoutes={unAuthUserRoutes}>
                 <SocketProvider>
                   <ProfilePhotoProvider>
-                    <CssBaseline />
-                    <Navbar />
-                    <Switch>
-                      <Route exact path="/" component={Home} />
-                      <Route exact path="/profile" component={Profile} />
-                      <ProtectedRoute exact path="/bookings" component={Bookings} />
-                      <Route exact path="/login" component={Login} />
-                      <Route exact path="/signup" component={Signup} />
-                      <Route exact path="/dashboard" component={Dashboard} />
-                      <Route exact path="/listings" component={ProfileListings} />
-                      <Route path="/profile/settings" component={Settings} />
-                      <Route exact path="/profile/:id" component={Profile} />
-                      <Route path="*">
-                        <NotFound />
-                      </Route>
-                    </Switch>
+                    <NotificationsProvider loadOnMount={false}>
+                      <ActiveConversationProvider loadOnMount delay={500}>
+                        <CssBaseline />
+                        <Navbar />
+                        <Switch>
+                          <Route exact path="/" component={Home} />
+                          <Route exact path="/profile" component={Profile} />
+                          <ProtectedRoute exact path="/bookings" component={Bookings} />
+                          <ProtectedRoute exact path="/messages" component={Messages} />
+                          <Route exact path="/login" component={Login} />
+                          <Route exact path="/signup" component={Signup} />
+                          <Route exact path="/dashboard" component={Dashboard} />
+                          <Route exact path="/listings" component={ProfileListings} />
+                          <Route path="/profile/settings" component={Settings} />
+                          <Route exact path="/profile/:id" component={Profile} />
+                          <Route path="*">
+                            <NotFound />
+                          </Route>
+                        </Switch>
+                      </ActiveConversationProvider>
+                    </NotificationsProvider>
                   </ProfilePhotoProvider>
                 </SocketProvider>
               </AuthProvider>

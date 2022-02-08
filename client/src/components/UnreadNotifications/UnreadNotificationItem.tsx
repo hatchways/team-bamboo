@@ -3,16 +3,18 @@ import { Box, Avatar, Stack, Typography, styled } from '@mui/material';
 import moment from 'moment';
 import { NavLink } from 'react-router-dom';
 
-type Props = Omit<Notification, 'receivers' | 'id'>;
+interface Props extends Omit<Notification, 'receivers' | 'id' | 'notifyType'> {
+  to: string;
+}
 
 const Link = styled(NavLink)(({ theme }) => ({
   textDecoration: 'none',
   color: theme.palette.text.primary,
 }));
 
-const NotificationItem = ({ notifyType, title, description, sender, createdAt }: Props) => {
+const NotificationItem = ({ title, description, sender, createdAt, to }: Props) => {
   return (
-    <Link to="#notification">
+    <Link to={to}>
       <Stack direction="row" spacing={2}>
         <Avatar
           alt={sender?.name || 'Robot'}

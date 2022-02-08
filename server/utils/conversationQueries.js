@@ -51,6 +51,7 @@ exports.populateOtherUser = () => [
           $project: {
             _id: 0,
             id: "$_id",
+            userId: 1,
             name: 1,
             photo: 1,
           },
@@ -89,11 +90,11 @@ exports.populateLastMessage = () => [
       as: "lastMessage",
     },
   },
-  { $unwind: "$lastMessage" },
+  { $unwind: { path: "$lastMessage", preserveNullAndEmptyArrays: true } },
 ];
 
 exports.conversationContainsUser = (id, senderId) => ({
-  id,
+  _id: id,
   $or: [
     {
       user1: senderId,

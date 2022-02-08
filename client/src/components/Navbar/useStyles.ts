@@ -8,6 +8,11 @@ export const useStyles = makeStyles((theme: Theme) => ({
     background: 'white',
     color: theme.palette.grey[900],
   },
+  messagingNavbar: {
+    boxShadow: 'none',
+    background: 'none',
+    color: theme.palette.grey[900],
+  },
   transparentNavbar: {
     boxShadow: 'none',
     background: 'none',

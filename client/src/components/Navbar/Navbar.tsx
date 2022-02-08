@@ -135,7 +135,11 @@ const Navbar: React.FC = () => {
   return (
     <UnreadNotifications>
       <Grid
-        className={clsx(classes.navbar, location.pathname === '/' && classes.transparentNavbar)}
+        className={clsx(
+          classes.navbar,
+          location.pathname === '/' && classes.transparentNavbar,
+          location.pathname === '/messages' && classes.messagingNavbar,
+        )}
         justifyContent="space-between"
         alignItems="center"
         container

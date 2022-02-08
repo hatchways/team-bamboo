@@ -16,8 +16,8 @@ exports.getAllConversations = asyncHandler(async (req, res) => {
   const { profile } = req;
 
   const conversations = await Conversation.aggregate([
-    queryConversationsByProfile(profile._id),
-    formatConversationFields(profile._id),
+    queryConversationsByProfile(profile._id.toString()),
+    formatConversationFields(profile._id.toString()),
     ...populateOtherUser(),
     ...populateLastMessage(),
   ]);
@@ -40,7 +40,9 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
 
   if (user.id === otherUserId) {
     return res.status(400).json({
-      error: "A conversation can only exists between two different users.",
+      error: {
+        message: "A conversation can only exists between two different users.",
+      },
     });
   }
 
@@ -56,6 +58,7 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
   })
     .select({
       _id: 1,
+      userId: 1,
       name: 1,
       photo: 1,
     })
@@ -81,7 +84,7 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
     }).save();
   }
 
-  const otherUser = user1.id === otherUserId ? user1 : user2;
+  const otherUser = user1.userId.toString() === otherUserId ? user1 : user2;
 
   return res.status(200).json({
     success: {
@@ -89,6 +92,7 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
         id: conversation.id,
         otherUser: {
           id: otherUser._id,
+          userId: otherUser.userId,
           name: otherUser.name,
           photo: otherUser.photo,
         },

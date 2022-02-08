@@ -11,6 +11,9 @@ export const theme = createTheme({
     info: {
       main: '#555',
     },
+    success: {
+      main: '#35DF87',
+    },
   },
   typography: {
     fontFamily: '"Roboto", "Open Sans", "sans-serif"',

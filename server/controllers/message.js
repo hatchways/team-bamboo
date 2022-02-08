@@ -36,6 +36,7 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
           _id: 1,
           name: 1,
           photo: 1,
+          userId: 1,
         },
       })
       .sort({
@@ -55,7 +56,7 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
 
   return res
     .status(401)
-    .json({ error: "User is not apart of the conversation." });
+    .json({ error: { message: "User is not apart of the conversation." } });
 });
 
 // @route POST /conversations/:id/messages
@@ -63,20 +64,18 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
 // @access Private
 exports.sendMessage = asyncHandler(async (req, res) => {
   const {
-    user,
+    profile,
     params: { id },
     body: { content },
   } = req;
 
-  const sender = await Profile.findOne({ userId: user.id });
-
   const conversation = await Conversation.findOne(
-    conversationContainsUser(id, sender.id)
+    conversationContainsUser(id, profile._id)
   );
 
   if (conversation) {
     const message = await new Message({
-      sender,
+      sender: profile,
       conversationId: id,
       content,
     }).save();
@@ -89,9 +88,10 @@ exports.sendMessage = asyncHandler(async (req, res) => {
         message: {
           id: message._id,
           sender: {
-            id: sender.id,
-            name: sender.name,
-            photo: sender.photo,
+            id: profile._id,
+            name: profile.name,
+            photo: profile.photo,
+            userId: profile.userId,
           },
           conversationId: message.conversationId,
           content: message.content,
@@ -101,6 +101,6 @@ exports.sendMessage = asyncHandler(async (req, res) => {
     });
   }
   return res.status(401).json({
-    error: "User is not apart of the conversation",
+    error: { message: "User is not apart of the conversation" },
   });
 });
