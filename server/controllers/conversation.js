@@ -16,8 +16,8 @@ exports.getAllConversations = asyncHandler(async (req, res) => {
   const { profile } = req;
 
   const conversations = await Conversation.aggregate([
-    queryConversationsByProfile(profile._id),
-    formatConversationFields(profile._id),
+    queryConversationsByProfile(profile._id.toString()),
+    formatConversationFields(profile._id.toString()),
     ...populateOtherUser(),
     ...populateLastMessage(),
   ]);
@@ -58,6 +58,7 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
   })
     .select({
       _id: 1,
+      userId: 1,
       name: 1,
       photo: 1,
     })
@@ -83,7 +84,7 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
     }).save();
   }
 
-  const otherUser = user1.id === otherUserId ? user1 : user2;
+  const otherUser = user1.userId.toString() === otherUserId ? user1 : user2;
 
   return res.status(200).json({
     success: {

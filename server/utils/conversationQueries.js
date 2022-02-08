@@ -24,7 +24,7 @@ exports.formatConversationFields = (profileId) => ({
     otherUser: {
       $cond: {
         if: {
-          $eq: ["$user1", mongoose.Types.ObjectId(profileId)],
+          $eq: ["$user1", profileId],
         },
         then: "$user2",
         else: "$user1",
@@ -93,7 +93,7 @@ exports.populateLastMessage = () => [
 ];
 
 exports.conversationContainsUser = (id, senderId) => ({
-  id,
+  _id: id,
   $or: [
     {
       user1: senderId,
