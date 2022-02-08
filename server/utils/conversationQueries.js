@@ -24,7 +24,7 @@ exports.formatConversationFields = (profileId) => ({
     otherUser: {
       $cond: {
         if: {
-          $eq: ["$user1", profileId],
+          $eq: ["$user1", mongoose.Types.ObjectId(profileId)],
         },
         then: "$user2",
         else: "$user1",
@@ -51,6 +51,7 @@ exports.populateOtherUser = () => [
           $project: {
             _id: 0,
             id: "$_id",
+            userId: 1,
             name: 1,
             photo: 1,
           },
