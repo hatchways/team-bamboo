@@ -36,6 +36,7 @@ exports.getAllMessages = asyncHandler(async (req, res) => {
           _id: 1,
           name: 1,
           photo: 1,
+          userId: 1,
         },
       })
       .sort({
@@ -90,6 +91,7 @@ exports.sendMessage = asyncHandler(async (req, res) => {
             id: profile._id,
             name: profile.name,
             photo: profile.photo,
+            userId: profile.userId,
           },
           conversationId: message.conversationId,
           content: message.content,

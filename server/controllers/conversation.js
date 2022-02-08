@@ -92,6 +92,7 @@ exports.createNewConversation = asyncHandler(async (req, res) => {
         id: conversation.id,
         otherUser: {
           id: otherUser._id,
+          userId: otherUser.userId,
           name: otherUser.name,
           photo: otherUser.photo,
         },
