@@ -23,12 +23,23 @@ exports.getRequests = asyncHandler(async (req, res) => {
     .sort("start")
     .exec();
 
+  const promises = [];
   const requests = queryResults.map((r) => {
     const request = r.toJSON();
     request.otherUser = request[otherUserType];
+    promises.push(
+      Profile.findOne({ userId: request.otherUser._id }, "hourlyRate -_id")
+    );
     delete request[otherUserType];
     return request;
   });
+
+  const profiles = await Promise.all(promises);
+
+  for (let i = 0; i < requests.length; ++i) {
+    const { hourlyRate } = profiles[i];
+    requests[i].hourlyRate = hourlyRate;
+  }
 
   res.status(200).json({
     success: { requests },

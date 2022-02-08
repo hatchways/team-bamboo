@@ -14,7 +14,7 @@ const cardMap: CardMap = {
   MasterCard: Mastercard,
   Visa: Visa,
 };
-//
+
 const CardDetails = ({ card }: PropTypes) => {
   if (!card) return <Typography sx={{ textAlign: 'center', marginBottom: '30px' }}>No payment method saved</Typography>;
 

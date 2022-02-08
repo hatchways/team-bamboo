@@ -6,7 +6,7 @@ const Request = require("../models/Request");
 const { Types } = require("mongoose");
 const differenceInHours = require("date-fns/differenceInHours");
 
-// @route POST /requests/:requestId/pay
+// @route GET /requests/:requestId/pay
 // @desc complete payment for this request
 // @access Private
 exports.payForRequest = asyncHandler(async (req, res) => {
